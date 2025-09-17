@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FisioMater - Fisioterapia Domiciliar Especializada</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-3">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gradient-to-r from-pink-500 to-rose-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">🤱</span>
+                    </div>
+                    <h1 class="text-xl md:text-2xl font-bold text-gray-800">FisioMater</h1>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="md:hidden p-2 text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+
+                <!-- Desktop Menu -->
+                <div id="nav-menu" class="hidden md:flex space-x-4">
+                    <button onclick="showDashboard()" class="text-gray-600 hover:text-pink-600 px-3 py-2 rounded-md transition-colors">Dashboard</button>
+                    <button onclick="showStudents()" class="text-gray-600 hover:text-pink-600 px-3 py-2 rounded-md transition-colors">Pacientes</button>
+                    <button onclick="showPlans()" class="text-gray-600 hover:text-pink-600 px-3 py-2 rounded-md transition-colors">Sessões</button>
+                    <button onclick="showCreatePlan()" class="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition-colors">Nova Sessão</button>
+                    <button onclick="logout()" class="text-red-600 hover:text-red-700 px-3 py-2 rounded-md transition-colors">Sair</button>
+                </div>
+                
+                <div id="login-btn" class="block">
+                    <button onclick="showLogin()" class="bg-pink-600 text-white px-4 py-2 text-sm md:px-6 rounded-lg hover:bg-pink-700 transition-colors">Entrar</button>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200 py-2">
+                <div class="flex flex-col space-y-2">
+                    <button onclick="showDashboard(); closeMobileMenu()" class="text-left text-gray-600 hover:text-pink-600 px-3 py-2 rounded-md transition-colors">📊 Dashboard</button>
+                    <button onclick="showStudents(); closeMobileMenu()" class="text-left text-gray-600 hover:text-pink-600 px-3 py-2 rounded-md transition-colors">🤰 Pacientes</button>
+                    <button onclick="showPlans(); closeMobileMenu()" class="text-left text-gray-600 hover:text-pink-600 px-3 py-2 rounded-md transition-colors">📋 Sessões</button>
+                    <button onclick="showCreatePlan(); closeMobileMenu()" class="text-left bg-pink-50 text-pink-600 px-3 py-2 rounded-md hover:bg-pink-100 transition-colors">➕ Nova Sessão</button>
+                    <button onclick="logout(); closeMobileMenu()" class="text-left text-red-600 hover:text-red-700 px-3 py-2 rounded-md transition-colors">🚪 Sair</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Page -->
+    <div id="login-page" class="max-w-md mx-auto mt-8 md:mt-20 p-4 md:p-6 bg-white rounded-xl shadow-lg fade-in">
+        <div class="text-center mb-6">
+            <div class="w-16 h-16 bg-gradient-to-r from-pink-500 to-rose-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="text-white font-bold text-2xl">🤱</span>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">FisioMater</h2>
+            <p class="text-gray-600">Fisioterapia Domiciliar Especializada</p>
+        </div>
+        <form onsubmit="login(event)" class="space-y-4 md:space-y-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                <input type="email" id="login-email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base" placeholder="seu@email.com">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Senha</label>
+                <input type="password" id="login-password" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base" placeholder="••••••••">
+            </div>
+            <button type="submit" class="w-full bg-pink-600 text-white py-3 rounded-lg hover:bg-pink-700 transition-colors font-medium text-base">Entrar</button>
+        </form>
+        <div class="mt-6 p-4 bg-pink-50 rounded-lg">
+            <p class="text-sm text-pink-800 font-medium mb-2">Conta de demonstração:</p>
+            <p class="text-xs text-pink-600">Email: ana@fisiomater.com</p>
+            <p class="text-xs text-pink-600">Senha: fisio123</p>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard-page" class="hidden max-w-7xl mx-auto mt-4 md:mt-8 p-4 md:p-6 fade-in">
+        <!-- Fisioterapeuta Info -->
+        <div class="bg-white rounded-xl shadow-lg p-4 md:p-8 mb-6 md:mb-8">
+            <div class="flex flex-col sm:flex-row items-center sm:space-x-4 mb-6">
+                <div class="w-16 h-16 bg-gradient-to-r from-pink-500 to-rose-600 rounded-full flex items-center justify-center mb-4 sm:mb-0">
+                    <span class="text-white font-bold text-2xl" id="trainer-avatar">F</span>
+                </div>
+                <div class="text-center sm:text-left">
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-800" id="trainer-name">Fisioterapeuta</h2>
+                    <p class="text-gray-600 text-sm md:text-base" id="trainer-email">fisio@email.com</p>
+                </div>
+            </div>
+            
+            <!-- Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
+                <div class="bg-pink-50 p-3 md:p-4 rounded-lg text-center">
+                    <div class="text-xl md:text-2xl font-bold text-pink-600" id="total-students">0</div>
+                    <div class="text-gray-600 text-xs md:text-sm">Pacientes Ativas</div>
+                </div>
+                <div class="bg-green-50 p-3 md:p-4 rounded-lg text-center">
+                    <div class="text-xl md:text-2xl font-bold text-green-600" id="total-plans">0</div>
+                    <div class="text-gray-600 text-xs md:text-sm">Sessões Realizadas</div>
+                </div>
+                <div class="bg-purple-50 p-3 md:p-4 rounded-lg text-center">
+                    <div class="text-xl md:text-2xl font-bold text-purple-600" id="total-exercises">0</div>
+                    <div class="text-gray-600 text-xs md:text-sm">Exercícios Aplicados</div>
+                </div>
+                <div class="bg-orange-50 p-3 md:p-4 rounded-lg text-center">
+                    <div class="text-xl md:text-2xl font-bold text-orange-600" id="active-plans">0</div>
+                    <div class="text-gray-600 text-xs md:text-sm">Tratamentos Ativos</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+            <!-- Recent Patients -->
+            <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-gray-800">Pacientes Recentes</h3>
+                    <button onclick="showStudents()" class="text-pink-600 hover:text-pink-700 text-sm">Ver todas</button>
+                </div>
+                <div id="recent-students" class="space-y-3">
+                    <!-- Recent patients will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Recent Sessions -->
+            <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-gray-800">Sessões Recentes</h3>
+                    <button onclick="showPlans()" class="text-pink-600 hover:text-pink-700 text-sm">Ver todas</button>
+                </div>
+                <div id="recent-plans" class="space-y-3">
+                    <!-- Recent sessions will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patients Page -->
+    <div id="students-page" class="hidden max-w-7xl mx-auto mt-4 md:mt-8 p-4 md:p-6 fade-in">
+        <div class="bg-white rounded-xl shadow-lg p-4 md:p-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-3 sm:space-y-0">
+                <h2 class="text-xl md:text-2xl font-bold text-gray-800">Minhas Pacientes</h2>
+                <button onclick="showAddStudent()" class="w-full sm:w-auto bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm md:text-base">+ Adicionar Paciente</button>
+            </div>
+            <div id="students-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                <!-- Students will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Sessions Page -->
+    <div id="plans-page" class="hidden max-w-7xl mx-auto mt-4 md:mt-8 p-4 md:p-6 fade-in">
+        <div class="bg-white rounded-xl shadow-lg p-4 md:p-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-3 sm:space-y-0">
+                <h2 class="text-xl md:text-2xl font-bold text-gray-800">Sessões de Fisioterapia</h2>
+                <button onclick="showCreatePlan()" class="w-full sm:w-auto bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition-colors text-sm md:text-base">+ Nova Sessão</button>
+            </div>
+            <div id="plans-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                <!-- Plans will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Session Page -->
+    <div id="create-plan-page" class="hidden max-w-6xl mx-auto mt-4 md:mt-8 p-4 md:p-6 fade-in">
+        <div class="bg-white rounded-xl shadow-lg p-4 md:p-8">
+            <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-6">Registrar Nova Sessão de Fisioterapia</h2>
+            
+            <form onsubmit="savePlan(event)" class="space-y-4 md:space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Título da Sessão</label>
+                        <input type="text" id="plan-name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-base" placeholder="Ex: Sessão Pré-Natal - Fortalecimento Pélvico">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Sessão</label>
+                        <select id="plan-category" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-base">
+                            <option value="pre-natal">Pré-Natal</option>
+                            <option value="pos-parto">Pós-Parto</option>
+                            <option value="preparacao-parto">Preparação para o Parto</option>
+                            <option value="reabilitacao">Reabilitação Pélvica</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Paciente</label>
+                        <select id="plan-student" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-base">
+                            <option value="">Selecione uma paciente...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Semana Gestacional / Pós-Parto</label>
+                        <input type="text" id="plan-difficulty" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-base" placeholder="Ex: 28ª semana ou 6 semanas pós-parto">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Observações da Sessão</label>
+                    <textarea id="plan-description" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-base" placeholder="Descreva como foi a sessão, evolução da paciente, observações importantes..."></textarea>
+                </div>
+
+                <div class="border-t pt-4 md:pt-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 space-y-3 sm:space-y-0">
+                        <h3 class="text-base md:text-lg font-semibold text-gray-800">Exercícios do Plano</h3>
+                        <button type="button" onclick="showExerciseSelector()" class="w-full sm:w-auto bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm md:text-base">+ Adicionar Exercício</button>
+                    </div>
+                    <div id="selected-exercises" class="space-y-3 md:space-y-4">
+                        <!-- Selected exercises will appear here -->
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
+                    <button type="submit" class="w-full sm:flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium text-base">Salvar Plano</button>
+                    <button type="button" onclick="showDashboard()" class="w-full sm:flex-1 bg-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-400 transition-colors font-medium text-base">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Student Modal -->
+    <div id="student-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full">
+            <div class="p-4 md:p-6 border-b">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg md:text-xl font-bold text-gray-800" id="student-modal-title">Adicionar Aluno</h3>
+                    <button onclick="closeStudentModal()" class="text-gray-500 hover:text-gray-700 text-2xl p-1">&times;</button>
+                </div>
+            </div>
+            <div class="p-4 md:p-6">
+                <form onsubmit="saveStudent(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Nome Completo</label>
+                        <input type="text" id="student-name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base" placeholder="Nome do aluno">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" id="student-email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base" placeholder="email@exemplo.com">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Telefone</label>
+                        <input type="tel" id="student-phone" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base" placeholder="(11) 99999-9999">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Objetivo</label>
+                        <select id="student-goal" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base">
+                            <option value="perda-peso">Perda de Peso</option>
+                            <option value="ganho-massa">Ganho de Massa</option>
+                            <option value="condicionamento">Condicionamento</option>
+                            <option value="reabilitacao">Reabilitação</option>
+                        </select>
+                    </div>
+                    <div class="flex space-x-4">
+                        <button type="submit" class="flex-1 bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium">Salvar</button>
+                        <button type="button" onclick="closeStudentModal()" class="flex-1 bg-gray-300 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-400 transition-colors font-medium">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exercise Selector Modal -->
+    <div id="exercise-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            <div class="p-4 md:p-6 border-b">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg md:text-xl font-bold text-gray-800">Selecionar Exercício</h3>
+                    <button onclick="closeExerciseModal()" class="text-gray-500 hover:text-gray-700 text-2xl p-1">&times;</button>
+                </div>
+            </div>
+            <div class="p-4 md:p-6 overflow-y-auto max-h-[70vh]">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4" id="exercise-list">
+                    <!-- Exercises will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Plan Details Modal -->
+    <div id="plan-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            <div class="p-4 md:p-6 border-b">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg md:text-xl font-bold text-gray-800" id="plan-modal-title">Detalhes do Plano</h3>
+                    <button onclick="closePlanModal()" class="text-gray-500 hover:text-gray-700 text-2xl p-1">&times;</button>
+                </div>
+            </div>
+            <div class="p-4 md:p-6 overflow-y-auto max-h-[70vh]" id="plan-modal-content">
+                <!-- Plan details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Database simulation
+        let trainers = JSON.parse(localStorage.getItem('fitplan_trainers') || '[]');
+        let currentTrainer = JSON.parse(localStorage.getItem('fitplan_current_trainer') || 'null');
+        let students = JSON.parse(localStorage.getItem('fitplan_students') || '[]');
+        let plans = JSON.parse(localStorage.getItem('fitplan_plans') || '[]');
+
+        // Exercise database
+        const exercises = [
+            {
+                id: 1,
+                name: "Supino Reto",
+                description: "Exercício fundamental para desenvolvimento do peitoral maior, tríceps e deltoides anterior.",
+                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150'%3E%3Crect fill='%23f3f4f6' width='200' height='150'/%3E%3Crect fill='%23374151' x='20' y='60' width='160' height='8' rx='4'/%3E%3Ccircle fill='%23ef4444' cx='40' cy='64' r='12'/%3E%3Ccircle fill='%23ef4444' cx='160' cy='64' r='12'/%3E%3Crect fill='%236b7280' x='95' y='40' width='10' height='48'/%3E%3Ctext x='100' y='120' text-anchor='middle' fill='%23374151' font-size='12'%3ESupino%3C/text%3E%3C/svg%3E",
+                category: "peito"
+            },
+            {
+                id: 2,
+                name: "Agachamento",
+                description: "Exercício composto que trabalha quadríceps, glúteos, isquiotibiais e core.",
+                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150'%3E%3Crect fill='%23f3f4f6' width='200' height='150'/%3E%3Crect fill='%23374151' x='80' y='30' width='40' height='8' rx='4'/%3E%3Crect fill='%236b7280' x='95' y='38' width='10' height='60'/%3E%3Crect fill='%236b7280' x='85' y='90' width='30' height='8'/%3E%3Crect fill='%236b7280' x='90' y='98' width='8' height='25'/%3E%3Crect fill='%236b7280' x='102' y='98' width='8' height='25'/%3E%3Ctext x='100' y='140' text-anchor='middle' fill='%23374151' font-size='12'%3EAgachamento%3C/text%3E%3C/svg%3E",
+                category: "pernas"
+            },
+            {
+                id: 3,
+                name: "Flexão de Braço",
+                description: "Exercício de peso corporal que fortalece peito, ombros, tríceps e core.",
+                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150'%3E%3Crect fill='%23f3f4f6' width='200' height='150'/%3E%3Crect fill='%236b7280' x='40' y='70' width='120' height='15' rx='7'/%3E%3Ccircle fill='%23f59e0b' cx='50' cy='77' r='8'/%3E%3Crect fill='%236b7280' x='45' y='85' width='10' height='30'/%3E%3Crect fill='%236b7280' x='145' y='85' width='10' height='30'/%3E%3Ctext x='100' y='130' text-anchor='middle' fill='%23374151' font-size='12'%3EFlexão%3C/text%3E%3C/svg%3E",
+                category: "peito"
+            },
+            {
+                id: 4,
+                name: "Levantamento Terra",
+                description: "Exercício composto que trabalha toda a cadeia posterior: glúteos, isquiotibiais e lombar.",
+                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150'%3E%3Crect fill='%23f3f4f6' width='200' height='150'/%3E%3Crect fill='%23374151' x='70' y='100' width='60' height='8' rx='4'/%3E%3Ccircle fill='%23ef4444' cx='85' cy='104' r='12'/%3E%3Ccircle fill='%23ef4444' cx='115' cy='104' r='12'/%3E%3Crect fill='%236b7280' x='95' y='50' width='10' height='54'/%3E%3Ctext x='100' y='135' text-anchor='middle' fill='%23374151' font-size='12'%3ETerra%3C/text%3E%3C/svg%3E",
+                category: "costas"
+            },
+            {
+                id: 5,
+                name: "Desenvolvimento Militar",
+                description: "Exercício para desenvolvimento dos deltoides, especialmente a porção anterior e medial.",
+                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150'%3E%3Crect fill='%23f3f4f6' width='200' height='150'/%3E%3Crect fill='%23374151' x='80' y='20' width='40' height='8' rx='4'/%3E%3Ccircle fill='%23ef4444' cx='90' cy='24' r='8'/%3E%3Ccircle fill='%23ef4444' cx='110' cy='24' r='8'/%3E%3Crect fill='%236b7280' x='95' y='32' width='10' height='80'/%3E%3Ctext x='100' y='125' text-anchor='middle' fill='%23374151' font-size='12'%3EDesenvolvimento%3C/text%3E%3C/svg%3E",
+                category: "ombros"
+            },
+            {
+                id: 6,
+                name: "Rosca Direta",
+                description: "Exercício de isolamento para desenvolvimento do bíceps braquial.",
+                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150'%3E%3Crect fill='%23f3f4f6' width='200' height='150'/%3E%3Crect fill='%23374151' x='70' y='80' width='60' height='6' rx='3'/%3E%3Ccircle fill='%2310b981' cx='80' cy='83' r='8'/%3E%3Ccircle fill='%2310b981' cx='120' cy='83' r='8'/%3E%3Crect fill='%236b7280' x='95' y='50' width='10' height='33'/%3E%3Ctext x='100' y='110' text-anchor='middle' fill='%23374151' font-size='12'%3ERosca%3C/text%3E%3C/svg%3E",
+                category: "bracos"
+            },
+            {
+                id: 7,
+                name: "Prancha",
+                description: "Exercício isométrico que fortalece o core, ombros e glúteos.",
+                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150'%3E%3Crect fill='%23f3f4f6' width='200' height='150'/%3E%3Crect fill='%236b7280' x='30' y='75' width='140' height='12' rx='6'/%3E%3Ccircle fill='%23f59e0b' cx='40' cy='81' r='6'/%3E%3Crect fill='%236b7280' x='35' y='87' width='8' height='20'/%3E%3Crect fill='%236b7280' x='157' y='87' width='8' height='20'/%3E%3Ctext x='100' y='120' text-anchor='middle' fill='%23374151' font-size='12'%3EPrancha%3C/text%3E%3C/svg%3E",
+                category: "core"
+            },
+            {
+                id: 8,
+                name: "Burpee",
+                description: "Exercício funcional que combina agachamento, prancha e salto vertical.",
+                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150'%3E%3Crect fill='%23f3f4f6' width='200' height='150'/%3E%3Ccircle fill='%23f59e0b' cx='100' cy='40' r='8'/%3E%3Crect fill='%236b7280' x='95' y='48' width='10' height='30'/%3E%3Crect fill='%236b7280' x='85' y='70' width='30' height='8'/%3E%3Crect fill='%236b7280' x='90' y='78' width='8' height='25'/%3E%3Crect fill='%236b7280' x='102' y='78' width='8' height='25'/%3E%3Cpath fill='%2306b6d4' d='M90 25 L100 15 L110 25 Z'/%3E%3Ctext x='100' y='120' text-anchor='middle' fill='%23374151' font-size='12'%3EBurpee%3C/text%3E%3C/svg%3E",
+                category: "funcional"
+            }
+        ];
+
+        let selectedExercises = [];
+        let editingStudentId = null;
+
+        // Initialize app
+        function initApp() {
+            createExampleData();
+            
+            if (currentTrainer) {
+                showDashboard();
+                document.getElementById('nav-menu').classList.remove('hidden');
+                document.getElementById('login-btn').classList.add('hidden');
+                updateTrainerInfo();
+            } else {
+                showLogin();
+            }
+        }
+
+        // Create example data
+        function createExampleData() {
+            // Create example trainer if none exists
+            if (trainers.length === 0) {
+                const exampleTrainer = {
+                    id: 1,
+                    name: "Dra. Ana Pereira",
+                    email: "ana@fisiomater.com",
+                    password: "fisio123",
+                    createdAt: new Date().toISOString()
+                };
+                trainers.push(exampleTrainer);
+                localStorage.setItem('fitplan_trainers', JSON.stringify(trainers));
+            }
+
+            // Create example students if none exist
+            if (students.length === 0) {
+                const exampleStudents = [
+                    {
+                        id: 1,
+                        trainerId: 1,
+                        name: "Ana Silva",
+                        email: "ana@email.com",
+                        phone: "(11) 99999-1111",
+                        goal: "perda-peso",
+                        createdAt: new Date(Date.now() - 86400000).toISOString()
+                    },
+                    {
+                        id: 2,
+                        trainerId: 1,
+                        name: "Pedro Santos",
+                        email: "pedro@email.com",
+                        phone: "(11) 99999-2222",
+                        goal: "ganho-massa",
+                        createdAt: new Date(Date.now() - 172800000).toISOString()
+                    },
+                    {
+                        id: 3,
+                        trainerId: 1,
+                        name: "Maria Oliveira",
+                        email: "maria@email.com",
+                        phone: "(11) 99999-3333",
+                        goal: "condicionamento",
+                        createdAt: new Date(Date.now() - 259200000).toISOString()
+                    }
+                ];
+                students.push(...exampleStudents);
+                localStorage.setItem('fitplan_students', JSON.stringify(students));
+            }
+
+            // Create example plans if none exist
+            if (plans.length === 0) {
+                const examplePlans = [
+                    {
+                        id: 1,
+                        trainerId: 1,
+                        studentId: 1,
+                        name: "Treino Cardio para Ana",
+                        category: "cardio",
+                        difficulty: "iniciante",
+                        description: "Plano focado em queima de gordura e condicionamento cardiovascular.",
+                        exercises: [
+                            { exerciseId: 8, sets: 3, reps: 10 },
+                            { exerciseId: 7, sets: 3, reps: 30 }
+                        ],
+                        createdAt: new Date(Date.now() - 86400000).toISOString()
+                    },
+                    {
+                        id: 2,
+                        trainerId: 1,
+                        studentId: 2,
+                        name: "Treino de Força para Pedro",
+                        category: "forca",
+                        difficulty: "intermediario",
+                        description: "Plano para ganho de massa muscular com foco em exercícios compostos.",
+                        exercises: [
+                            { exerciseId: 1, sets: 4, reps: 8 },
+                            { exerciseId: 2, sets: 4, reps: 10 },
+                            { exerciseId: 4, sets: 3, reps: 6 }
+                        ],
+                        createdAt: new Date(Date.now() - 172800000).toISOString()
+                    },
+                    {
+                        id: 3,
+                        trainerId: 1,
+                        studentId: 3,
+                        name: "Treino Funcional para Maria",
+                        category: "funcional",
+                        difficulty: "intermediario",
+                        description: "Treino funcional para melhora do condicionamento físico geral.",
+                        exercises: [
+                            { exerciseId: 3, sets: 3, reps: 15 },
+                            { exerciseId: 8, sets: 4, reps: 8 }
+                        ],
+                        createdAt: new Date(Date.now() - 259200000).toISOString()
+                    },
+                    {
+                        id: 4,
+                        trainerId: 1,
+                        studentId: null,
+                        name: "Treino Geral de Ombros",
+                        category: "forca",
+                        difficulty: "intermediario",
+                        description: "Plano genérico para desenvolvimento dos deltoides.",
+                        exercises: [
+                            { exerciseId: 5, sets: 4, reps: 12 }
+                        ],
+                        createdAt: new Date(Date.now() - 345600000).toISOString()
+                    }
+                ];
+                plans.push(...examplePlans);
+                localStorage.setItem('fitplan_plans', JSON.stringify(plans));
+            }
+        }
+
+        // Authentication
+        function showLogin() {
+            hideAllPages();
+            document.getElementById('login-page').classList.remove('hidden');
+        }
+
+        function login(event) {
+            event.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            const trainer = trainers.find(t => t.email === email && t.password === password);
+            if (trainer) {
+                currentTrainer = trainer;
+                localStorage.setItem('fitplan_current_trainer', JSON.stringify(currentTrainer));
+                document.getElementById('nav-menu').classList.remove('hidden');
+                document.getElementById('login-btn').classList.add('hidden');
+                showDashboard();
+                updateTrainerInfo();
+            } else {
+                alert('Email ou senha incorretos!');
+            }
+        }
+
+        function logout() {
+            currentTrainer = null;
+            localStorage.removeItem('fitplan_current_trainer');
+            document.getElementById('nav-menu').classList.add('hidden');
+            document.getElementById('login-btn').classList.remove('hidden');
+            showLogin();
+        }
+
+        // Page navigation
+        function hideAllPages() {
+            document.getElementById('login-page').classList.add('hidden');
+            document.getElementById('dashboard-page').classList.add('hidden');
+            document.getElementById('students-page').classList.add('hidden');
+            document.getElementById('plans-page').classList.add('hidden');
+            document.getElementById('create-plan-page').classList.add('hidden');
+        }
+
+        function showDashboard() {
+            hideAllPages();
+            document.getElementById('dashboard-page').classList.remove('hidden');
+            loadDashboardData();
+        }
+
+        function showStudents() {
+            hideAllPages();
+            document.getElementById('students-page').classList.remove('hidden');
+            loadStudents();
+        }
+
+        function showPlans() {
+            hideAllPages();
+            document.getElementById('plans-page').classList.remove('hidden');
+            loadPlans();
+        }
+
+        function showCreatePlan() {
+            hideAllPages();
+            document.getElementById('create-plan-page').classList.remove('hidden');
+            clearPlanForm();
+            loadStudentOptions();
+        }
+
+        // Update trainer info
+        function updateTrainerInfo() {
+            if (currentTrainer) {
+                document.getElementById('trainer-name').textContent = currentTrainer.name;
+                document.getElementById('trainer-email').textContent = currentTrainer.email;
+                document.getElementById('trainer-avatar').textContent = currentTrainer.name.charAt(0).toUpperCase();
+                
+                const trainerStudents = students.filter(s => s.trainerId === currentTrainer.id);
+                const trainerPlans = plans.filter(p => p.trainerId === currentTrainer.id);
+                const totalExercises = trainerPlans.reduce((sum, plan) => sum + plan.exercises.length, 0);
+                const activePlans = trainerPlans.filter(p => p.studentId !== null);
+                
+                document.getElementById('total-students').textContent = trainerStudents.length;
+                document.getElementById('total-plans').textContent = trainerPlans.length;
+                document.getElementById('total-exercises').textContent = totalExercises;
+                document.getElementById('active-plans').textContent = activePlans.length;
+            }
+        }
+
+        // Dashboard
+        function loadDashboardData() {
+            updateTrainerInfo();
+            loadRecentStudents();
+            loadRecentPlans();
+        }
+
+        function loadRecentStudents() {
+            const trainerStudents = students.filter(s => s.trainerId === currentTrainer.id)
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .slice(0, 3);
+            
+            const container = document.getElementById('recent-students');
+            
+            if (trainerStudents.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-4">Nenhum aluno cadastrado ainda</p>';
+                return;
+            }
+
+            container.innerHTML = trainerStudents.map(student => `
+                <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                    <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                        <span class="text-white font-medium text-sm">${student.name.charAt(0).toUpperCase()}</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-medium text-gray-800 text-sm">${student.name}</h4>
+                        <p class="text-xs text-gray-600">${student.goal.replace('-', ' ')}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadRecentPlans() {
+            const trainerPlans = plans.filter(p => p.trainerId === currentTrainer.id)
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .slice(0, 3);
+            
+            const container = document.getElementById('recent-plans');
+            
+            if (trainerPlans.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-4">Nenhum plano criado ainda</p>';
+                return;
+            }
+
+            container.innerHTML = trainerPlans.map(plan => {
+                const student = plan.studentId ? students.find(s => s.id === plan.studentId) : null;
+                return `
+                    <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                        <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                            <span class="text-white font-medium text-sm">📋</span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-800 text-sm">${plan.name}</h4>
+                            <p class="text-xs text-gray-600">${student ? student.name : 'Plano genérico'}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Students management
+        function loadStudents() {
+            const trainerStudents = students.filter(s => s.trainerId === currentTrainer.id);
+            const container = document.getElementById('students-list');
+            
+            if (trainerStudents.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <div class="text-gray-400 text-6xl mb-4">👥</div>
+                        <h3 class="text-lg font-medium text-gray-600 mb-2">Nenhum aluno cadastrado ainda</h3>
+                        <p class="text-gray-500 mb-4">Comece adicionando seu primeiro aluno!</p>
+                        <button onclick="showAddStudent()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">Adicionar Primeiro Aluno</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = trainerStudents.map(student => {
+                const studentPlans = plans.filter(p => p.studentId === student.id);
+                return `
+                    <div class="card-hover bg-white border border-gray-200 rounded-lg p-4 md:p-6">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold">${student.name.charAt(0).toUpperCase()}</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-gray-800">${student.name}</h4>
+                                <p class="text-sm text-gray-600">${student.email}</p>
+                            </div>
+                        </div>
+                        <div class="space-y-2 mb-4">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Objetivo:</span>
+                                <span class="font-medium">${student.goal.replace('-', ' ')}</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Planos:</span>
+                                <span class="font-medium">${studentPlans.length}</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Desde:</span>
+                                <span class="font-medium">${new Date(student.createdAt).toLocaleDateString('pt-BR')}</span>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="editStudent(${student.id})" class="flex-1 bg-blue-50 text-blue-600 py-2 rounded-md hover:bg-blue-100 transition-colors text-sm">Editar</button>
+                            <button onclick="deleteStudent(${student.id})" class="flex-1 bg-red-50 text-red-600 py-2 rounded-md hover:bg-red-100 transition-colors text-sm">Excluir</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function showAddStudent() {
+            editingStudentId = null;
+            document.getElementById('student-modal-title').textContent = 'Adicionar Aluno';
+            document.getElementById('student-name').value = '';
+            document.getElementById('student-email').value = '';
+            document.getElementById('student-phone').value = '';
+            document.getElementById('student-goal').value = 'perda-peso';
+            document.getElementById('student-modal').classList.remove('hidden');
+        }
+
+        function editStudent(studentId) {
+            const student = students.find(s => s.id === studentId);
+            if (!student) return;
+            
+            editingStudentId = studentId;
+            document.getElementById('student-modal-title').textContent = 'Editar Aluno';
+            document.getElementById('student-name').value = student.name;
+            document.getElementById('student-email').value = student.email;
+            document.getElementById('student-phone').value = student.phone || '';
+            document.getElementById('student-goal').value = student.goal;
+            document.getElementById('student-modal').classList.remove('hidden');
+        }
+
+        function saveStudent(event) {
+            event.preventDefault();
+            
+            const studentData = {
+                name: document.getElementById('student-name').value,
+                email: document.getElementById('student-email').value,
+                phone: document.getElementById('student-phone').value,
+                goal: document.getElementById('student-goal').value
+            };
+
+            if (editingStudentId) {
+                // Edit existing student
+                const studentIndex = students.findIndex(s => s.id === editingStudentId);
+                students[studentIndex] = { ...students[studentIndex], ...studentData };
+            } else {
+                // Add new student
+                const newStudent = {
+                    id: Date.now(),
+                    trainerId: currentTrainer.id,
+                    ...studentData,
+                    createdAt: new Date().toISOString()
+                };
+                students.push(newStudent);
+            }
+
+            localStorage.setItem('fitplan_students', JSON.stringify(students));
+            closeStudentModal();
+            loadStudents();
+            updateTrainerInfo();
+            alert(editingStudentId ? 'Aluno atualizado com sucesso!' : 'Aluno adicionado com sucesso!');
+        }
+
+        function deleteStudent(studentId) {
+            if (confirm('Tem certeza que deseja excluir este aluno? Todos os planos associados também serão removidos.')) {
+                students = students.filter(s => s.id !== studentId);
+                plans = plans.filter(p => p.studentId !== studentId);
+                localStorage.setItem('fitplan_students', JSON.stringify(students));
+                localStorage.setItem('fitplan_plans', JSON.stringify(plans));
+                loadStudents();
+                updateTrainerInfo();
+            }
+        }
+
+        function closeStudentModal() {
+            document.getElementById('student-modal').classList.add('hidden');
+        }
+
+        // Plans management
+        function loadPlans() {
+            const trainerPlans = plans.filter(p => p.trainerId === currentTrainer.id);
+            const container = document.getElementById('plans-list');
+            
+            if (trainerPlans.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <div class="text-gray-400 text-6xl mb-4">📋</div>
+                        <h3 class="text-lg font-medium text-gray-600 mb-2">Nenhum plano criado ainda</h3>
+                        <p class="text-gray-500 mb-4">Comece criando seu primeiro plano de treino!</p>
+                        <button onclick="showCreatePlan()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">Criar Primeiro Plano</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = trainerPlans.map(plan => {
+                const student = plan.studentId ? students.find(s => s.id === plan.studentId) : null;
+                return `
+                    <div class="card-hover bg-white border border-gray-200 rounded-lg p-4 md:p-6 cursor-pointer" onclick="viewPlan(${plan.id})">
+                        <div class="flex justify-between items-start mb-3">
+                            <h4 class="font-semibold text-gray-800 text-sm md:text-base">${plan.name}</h4>
+                            <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">${plan.category}</span>
+                        </div>
+                        <p class="text-gray-600 text-xs md:text-sm mb-3 line-clamp-2">${plan.description}</p>
+                        <div class="space-y-2 mb-4 text-xs md:text-sm text-gray-500">
+                            <div class="flex justify-between">
+                                <span>Aluno:</span>
+                                <span class="font-medium">${student ? student.name : 'Plano genérico'}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Exercícios:</span>
+                                <span class="font-medium">${plan.exercises.length}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Nível:</span>
+                                <span class="font-medium">${plan.difficulty}</span>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="event.stopPropagation(); editPlan(${plan.id})" class="flex-1 bg-blue-50 text-blue-600 py-2 rounded-md hover:bg-blue-100 transition-colors text-xs md:text-sm">Editar</button>
+                            <button onclick="event.stopPropagation(); deletePlan(${plan.id})" class="flex-1 bg-red-50 text-red-600 py-2 rounded-md hover:bg-red-100 transition-colors text-xs md:text-sm">Excluir</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function loadStudentOptions() {
+            const trainerStudents = students.filter(s => s.trainerId === currentTrainer.id);
+            const select = document.getElementById('plan-student');
+            
+            select.innerHTML = '<option value="">Selecione um aluno...</option>';
+            trainerStudents.forEach(student => {
+                select.innerHTML += `<option value="${student.id}">${student.name}</option>`;
+            });
+        }
+
+        function clearPlanForm() {
+            document.getElementById('plan-name').value = '';
+            document.getElementById('plan-category').value = 'forca';
+            document.getElementById('plan-student').value = '';
+            document.getElementById('plan-difficulty').value = 'iniciante';
+            document.getElementById('plan-description').value = '';
+            document.getElementById('selected-exercises').innerHTML = '';
+            selectedExercises = [];
+        }
+
+        function savePlan(event) {
+            event.preventDefault();
+            
+            if (selectedExercises.length === 0) {
+                alert('Adicione pelo menos um exercício ao plano!');
+                return;
+            }
+            
+            const planData = {
+                id: Date.now(),
+                trainerId: currentTrainer.id,
+                studentId: document.getElementById('plan-student').value || null,
+                name: document.getElementById('plan-name').value,
+                category: document.getElementById('plan-category').value,
+                difficulty: document.getElementById('plan-difficulty').value,
+                description: document.getElementById('plan-description').value,
+                exercises: selectedExercises,
+                createdAt: new Date().toISOString()
+            };
+
+            plans.push(planData);
+            localStorage.setItem('fitplan_plans', JSON.stringify(plans));
+            
+            alert('Plano salvo com sucesso!');
+            showPlans();
+            updateTrainerInfo();
+        }
+
+        function deletePlan(planId) {
+            if (confirm('Tem certeza que deseja excluir este plano?')) {
+                plans = plans.filter(p => p.id !== planId);
+                localStorage.setItem('fitplan_plans', JSON.stringify(plans));
+                loadPlans();
+                updateTrainerInfo();
+            }
+        }
+
+        function viewPlan(planId) {
+            const plan = plans.find(p => p.id === planId);
+            if (!plan) return;
+
+            const student = plan.studentId ? students.find(s => s.id === plan.studentId) : null;
+
+            document.getElementById('plan-modal-title').textContent = plan.name;
+            document.getElementById('plan-modal-content').innerHTML = `
+                <div class="space-y-4 md:space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-800 mb-2 text-sm md:text-base">Aluno</h4>
+                            <p class="text-gray-600 text-sm md:text-base">${student ? student.name : 'Plano genérico'}</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800 mb-2 text-sm md:text-base">Nível</h4>
+                            <p class="text-gray-600 text-sm md:text-base">${plan.difficulty}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-2 text-sm md:text-base">Descrição</h4>
+                        <p class="text-gray-600 text-sm md:text-base">${plan.description}</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-3 md:mb-4 text-sm md:text-base">Exercícios (${plan.exercises.length})</h4>
+                        <div class="space-y-3 md:space-y-4">
+                            ${plan.exercises.map(ex => {
+                                const exercise = exercises.find(e => e.id === ex.exerciseId);
+                                return `
+                                    <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 p-3 md:p-4 bg-gray-50 rounded-lg">
+                                        <img src="${exercise.image}" alt="${exercise.name}" class="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover">
+                                        <div class="flex-1 min-w-0">
+                                            <h5 class="font-medium text-gray-800 text-sm md:text-base">${exercise.name}</h5>
+                                            <p class="text-xs md:text-sm text-gray-600 line-clamp-2">${exercise.description}</p>
+                                            <div class="mt-2 flex flex-wrap gap-2 text-xs md:text-sm">
+                                                <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded">${ex.sets} séries</span>
+                                                <span class="bg-green-100 text-green-800 px-2 py-1 rounded">${ex.reps} repetições</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('plan-modal').classList.remove('hidden');
+        }
+
+        function closePlanModal() {
+            document.getElementById('plan-modal').classList.add('hidden');
+        }
+
+        // Exercise selection
+        function showExerciseSelector() {
+            loadExerciseList();
+            document.getElementById('exercise-modal').classList.remove('hidden');
+        }
+
+        function closeExerciseModal() {
+            document.getElementById('exercise-modal').classList.add('hidden');
+        }
+
+        function loadExerciseList() {
+            const container = document.getElementById('exercise-list');
+            container.innerHTML = exercises.map(exercise => `
+                <div class="card-hover bg-white border border-gray-200 rounded-lg p-3 md:p-4 cursor-pointer hover:border-blue-300" onclick="selectExercise(${exercise.id})">
+                    <img src="${exercise.image}" alt="${exercise.name}" class="w-full h-24 md:h-32 object-cover rounded-lg mb-2 md:mb-3">
+                    <h4 class="font-semibold text-gray-800 mb-2 text-sm md:text-base">${exercise.name}</h4>
+                    <p class="text-xs md:text-sm text-gray-600 mb-2 md:mb-3 line-clamp-2">${exercise.description}</p>
+                    <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">${exercise.category}</span>
+                </div>
+            `).join('');
+        }
+
+        function selectExercise(exerciseId) {
+            const exercise = exercises.find(e => e.id === exerciseId);
+            if (!exercise) return;
+
+            if (selectedExercises.find(ex => ex.exerciseId === exerciseId)) {
+                alert('Este exercício já foi adicionado ao plano!');
+                return;
+            }
+
+            const sets = prompt('Quantas séries?', '3');
+            const reps = prompt('Quantas repetições?', '12');
+
+            if (sets && reps) {
+                const exerciseData = {
+                    exerciseId: exerciseId,
+                    sets: parseInt(sets),
+                    reps: parseInt(reps)
+                };
+
+                selectedExercises.push(exerciseData);
+                updateSelectedExercisesList();
+                closeExerciseModal();
+            }
+        }
+
+        function updateSelectedExercisesList() {
+            const container = document.getElementById('selected-exercises');
+            
+            if (selectedExercises.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-8">Nenhum exercício selecionado ainda</p>';
+                return;
+            }
+
+            container.innerHTML = selectedExercises.map((ex, index) => {
+                const exercise = exercises.find(e => e.id === ex.exerciseId);
+                return `
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 p-3 md:p-4 bg-gray-50 rounded-lg">
+                        <img src="${exercise.image}" alt="${exercise.name}" class="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover">
+                        <div class="flex-1 min-w-0">
+                            <h5 class="font-medium text-gray-800 text-sm md:text-base">${exercise.name}</h5>
+                            <p class="text-xs md:text-sm text-gray-600 line-clamp-2">${exercise.description}</p>
+                        </div>
+                        <div class="flex items-center justify-between w-full sm:w-auto space-x-3 sm:space-x-4">
+                            <div class="text-center">
+                                <div class="text-xs md:text-sm text-gray-600 mb-1">Séries</div>
+                                <input type="number" value="${ex.sets}" min="1" max="10" class="w-12 md:w-16 px-2 py-1 border rounded text-center text-sm" onchange="updateExercise(${index}, 'sets', this.value)">
+                            </div>
+                            <div class="text-center">
+                                <div class="text-xs md:text-sm text-gray-600 mb-1">Reps</div>
+                                <input type="number" value="${ex.reps}" min="1" max="50" class="w-12 md:w-16 px-2 py-1 border rounded text-center text-sm" onchange="updateExercise(${index}, 'reps', this.value)">
+                            </div>
+                            <button onclick="removeExercise(${index})" class="text-red-600 hover:text-red-800 p-1 md:p-2">
+                                <svg class="w-4 h-4 md:w-5 md:h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateExercise(index, field, value) {
+            selectedExercises[index][field] = parseInt(value);
+        }
+
+        function removeExercise(index) {
+            selectedExercises.splice(index, 1);
+            updateSelectedExercisesList();
+        }
+
+        // Mobile menu functions
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        function closeMobileMenu() {
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            
+            if (!mobileMenu.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+
+        // Initialize the app
+        initApp();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98089ee7c3f094e9',t:'MTc1ODExMjI4OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
