@@ -1,1059 +1,2205 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FisioMater - Fisioterapia Domiciliar Especializada</title>
+    <title>FisioPlanos - Gestão de Planos de Fisioterapia</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .card-hover {
-            transition: all 0.3s ease;
-        }
-        .card-hover:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
         .fade-in {
-            animation: fadeIn 0.5s ease-in;
+            animation: fadeIn 0.3s ease-in;
         }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        .exercise-image {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
         }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
-    <!-- Navigation -->
-    <nav class="bg-white shadow-lg sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="flex justify-between items-center py-3">
-                <div class="flex items-center space-x-2">
-                    <div class="w-8 h-8 bg-gradient-to-r from-pink-500 to-rose-600 rounded-lg flex items-center justify-center">
-                        <span class="text-white font-bold text-lg">🤱</span>
+    <div id="app" class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Login Fisioterapeuta -->
+        <div id="physio-login" class="fade-in">
+            <div class="max-w-md mx-auto bg-white rounded-xl shadow-lg p-8">
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl font-bold text-gray-800 mb-2">FisioPlanos</h1>
+                    <p class="text-gray-600">Acesso Fisioterapeuta</p>
+                </div>
+                <form onsubmit="loginPhysio(event)">
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Código de Acesso</label>
+                        <input type="password" id="physio-code" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Digite seu código" required>
                     </div>
-                    <h1 class="text-xl md:text-2xl font-bold text-gray-800">FisioMater</h1>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200">
+                        Entrar
+                    </button>
+                </form>
+                <div class="text-center mt-6">
+                    <button onclick="showClientLogin()" class="text-blue-600 hover:text-blue-800 text-sm">
+                        Acesso Cliente
+                    </button>
                 </div>
                 
-                <!-- Mobile Menu Button -->
-                <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="md:hidden p-2 text-gray-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
-
-                <!-- Desktop Menu -->
-                <div id="nav-menu" class="hidden md:flex space-x-4">
-                    <button onclick="showDashboard()" class="text-gray-600 hover:text-pink-600 px-3 py-2 rounded-md transition-colors">Dashboard</button>
-                    <button onclick="showStudents()" class="text-gray-600 hover:text-pink-600 px-3 py-2 rounded-md transition-colors">Pacientes</button>
-                    <button onclick="showPlans()" class="text-gray-600 hover:text-pink-600 px-3 py-2 rounded-md transition-colors">Sessões</button>
-                    <button onclick="showCreatePlan()" class="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition-colors">Nova Sessão</button>
-                    <button onclick="logout()" class="text-red-600 hover:text-red-700 px-3 py-2 rounded-md transition-colors">Sair</button>
+                <div class="text-center mt-4">
+                    <button onclick="downloadHTML()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm transition duration-200">
+                        📥 Baixar Sistema Completo
+                    </button>
                 </div>
-                
-                <div id="login-btn" class="block">
-                    <button onclick="showLogin()" class="bg-pink-600 text-white px-4 py-2 text-sm md:px-6 rounded-lg hover:bg-pink-700 transition-colors">Entrar</button>
-                </div>
-            </div>
-            
-            <!-- Mobile Menu -->
-            <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200 py-2">
-                <div class="flex flex-col space-y-2">
-                    <button onclick="showDashboard(); closeMobileMenu()" class="text-left text-gray-600 hover:text-pink-600 px-3 py-2 rounded-md transition-colors">📊 Dashboard</button>
-                    <button onclick="showStudents(); closeMobileMenu()" class="text-left text-gray-600 hover:text-pink-600 px-3 py-2 rounded-md transition-colors">🤰 Pacientes</button>
-                    <button onclick="showPlans(); closeMobileMenu()" class="text-left text-gray-600 hover:text-pink-600 px-3 py-2 rounded-md transition-colors">📋 Sessões</button>
-                    <button onclick="showCreatePlan(); closeMobileMenu()" class="text-left bg-pink-50 text-pink-600 px-3 py-2 rounded-md hover:bg-pink-100 transition-colors">➕ Nova Sessão</button>
-                    <button onclick="logout(); closeMobileMenu()" class="text-left text-red-600 hover:text-red-700 px-3 py-2 rounded-md transition-colors">🚪 Sair</button>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Login Page -->
-    <div id="login-page" class="max-w-md mx-auto mt-8 md:mt-20 p-4 md:p-6 bg-white rounded-xl shadow-lg fade-in">
-        <div class="text-center mb-6">
-            <div class="w-16 h-16 bg-gradient-to-r from-pink-500 to-rose-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span class="text-white font-bold text-2xl">🤱</span>
-            </div>
-            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">FisioMater</h2>
-            <p class="text-gray-600">Fisioterapia Domiciliar Especializada</p>
-        </div>
-        <form onsubmit="login(event)" class="space-y-4 md:space-y-6">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                <input type="email" id="login-email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base" placeholder="seu@email.com">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Senha</label>
-                <input type="password" id="login-password" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base" placeholder="••••••••">
-            </div>
-            <button type="submit" class="w-full bg-pink-600 text-white py-3 rounded-lg hover:bg-pink-700 transition-colors font-medium text-base">Entrar</button>
-        </form>
-        <div class="mt-6 p-4 bg-pink-50 rounded-lg">
-            <p class="text-sm text-pink-800 font-medium mb-2">Conta de demonstração:</p>
-            <p class="text-xs text-pink-600">Email: ana@fisiomater.com</p>
-            <p class="text-xs text-pink-600">Senha: fisio123</p>
-        </div>
-    </div>
-
-    <!-- Dashboard -->
-    <div id="dashboard-page" class="hidden max-w-7xl mx-auto mt-4 md:mt-8 p-4 md:p-6 fade-in">
-        <!-- Fisioterapeuta Info -->
-        <div class="bg-white rounded-xl shadow-lg p-4 md:p-8 mb-6 md:mb-8">
-            <div class="flex flex-col sm:flex-row items-center sm:space-x-4 mb-6">
-                <div class="w-16 h-16 bg-gradient-to-r from-pink-500 to-rose-600 rounded-full flex items-center justify-center mb-4 sm:mb-0">
-                    <span class="text-white font-bold text-2xl" id="trainer-avatar">F</span>
-                </div>
-                <div class="text-center sm:text-left">
-                    <h2 class="text-xl md:text-2xl font-bold text-gray-800" id="trainer-name">Fisioterapeuta</h2>
-                    <p class="text-gray-600 text-sm md:text-base" id="trainer-email">fisio@email.com</p>
-                </div>
-            </div>
-            
-            <!-- Stats -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
-                <div class="bg-pink-50 p-3 md:p-4 rounded-lg text-center">
-                    <div class="text-xl md:text-2xl font-bold text-pink-600" id="total-students">0</div>
-                    <div class="text-gray-600 text-xs md:text-sm">Pacientes Ativas</div>
-                </div>
-                <div class="bg-green-50 p-3 md:p-4 rounded-lg text-center">
-                    <div class="text-xl md:text-2xl font-bold text-green-600" id="total-plans">0</div>
-                    <div class="text-gray-600 text-xs md:text-sm">Sessões Realizadas</div>
-                </div>
-                <div class="bg-purple-50 p-3 md:p-4 rounded-lg text-center">
-                    <div class="text-xl md:text-2xl font-bold text-purple-600" id="total-exercises">0</div>
-                    <div class="text-gray-600 text-xs md:text-sm">Exercícios Aplicados</div>
-                </div>
-                <div class="bg-orange-50 p-3 md:p-4 rounded-lg text-center">
-                    <div class="text-xl md:text-2xl font-bold text-orange-600" id="active-plans">0</div>
-                    <div class="text-gray-600 text-xs md:text-sm">Tratamentos Ativos</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Activity -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-            <!-- Recent Patients -->
-            <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-bold text-gray-800">Pacientes Recentes</h3>
-                    <button onclick="showStudents()" class="text-pink-600 hover:text-pink-700 text-sm">Ver todas</button>
-                </div>
-                <div id="recent-students" class="space-y-3">
-                    <!-- Recent patients will be loaded here -->
-                </div>
-            </div>
-
-            <!-- Recent Sessions -->
-            <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-bold text-gray-800">Sessões Recentes</h3>
-                    <button onclick="showPlans()" class="text-pink-600 hover:text-pink-700 text-sm">Ver todas</button>
-                </div>
-                <div id="recent-plans" class="space-y-3">
-                    <!-- Recent sessions will be loaded here -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Patients Page -->
-    <div id="students-page" class="hidden max-w-7xl mx-auto mt-4 md:mt-8 p-4 md:p-6 fade-in">
-        <div class="bg-white rounded-xl shadow-lg p-4 md:p-8">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-3 sm:space-y-0">
-                <h2 class="text-xl md:text-2xl font-bold text-gray-800">Minhas Pacientes</h2>
-                <button onclick="showAddStudent()" class="w-full sm:w-auto bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm md:text-base">+ Adicionar Paciente</button>
-            </div>
-            <div id="students-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                <!-- Students will be loaded here -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Sessions Page -->
-    <div id="plans-page" class="hidden max-w-7xl mx-auto mt-4 md:mt-8 p-4 md:p-6 fade-in">
-        <div class="bg-white rounded-xl shadow-lg p-4 md:p-8">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-3 sm:space-y-0">
-                <h2 class="text-xl md:text-2xl font-bold text-gray-800">Sessões de Fisioterapia</h2>
-                <button onclick="showCreatePlan()" class="w-full sm:w-auto bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition-colors text-sm md:text-base">+ Nova Sessão</button>
-            </div>
-            <div id="plans-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                <!-- Plans will be loaded here -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Create Session Page -->
-    <div id="create-plan-page" class="hidden max-w-6xl mx-auto mt-4 md:mt-8 p-4 md:p-6 fade-in">
-        <div class="bg-white rounded-xl shadow-lg p-4 md:p-8">
-            <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-6">Registrar Nova Sessão de Fisioterapia</h2>
-            
-            <form onsubmit="savePlan(event)" class="space-y-4 md:space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Título da Sessão</label>
-                        <input type="text" id="plan-name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-base" placeholder="Ex: Sessão Pré-Natal - Fortalecimento Pélvico">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Sessão</label>
-                        <select id="plan-category" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-base">
-                            <option value="pre-natal">Pré-Natal</option>
-                            <option value="pos-parto">Pós-Parto</option>
-                            <option value="preparacao-parto">Preparação para o Parto</option>
-                            <option value="reabilitacao">Reabilitação Pélvica</option>
-                        </select>
+                <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+                    <h3 class="text-sm font-semibold text-blue-800 mb-2">💡 Códigos de Teste Disponíveis:</h3>
+                    <div class="text-xs text-blue-700 space-y-1">
+                        <p><strong>Fisioterapeutas:</strong> FISIO123, FISIO456, FISIO789</p>
+                        <p><strong>Masters:</strong> MASTER001, MASTER002</p>
                     </div>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Paciente</label>
-                        <select id="plan-student" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-base">
-                            <option value="">Selecione uma paciente...</option>
-                        </select>
+                <div class="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg" id="config-status">
+                    <h3 class="text-sm font-semibold text-yellow-800 mb-2">⚙️ Status da Configuração:</h3>
+                    <div class="text-xs text-yellow-700" id="config-details">
+                        Verificando configuração do Google Sheets...
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Semana Gestacional / Pós-Parto</label>
-                        <input type="text" id="plan-difficulty" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-base" placeholder="Ex: 28ª semana ou 6 semanas pós-parto">
-                    </div>
+                    <button onclick="showConfigModal()" class="mt-2 text-xs bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-1 rounded transition duration-200">
+                        Configurar Google Sheets
+                    </button>
                 </div>
-                
+            </div>
+        </div>
+
+        <!-- Login Cliente -->
+        <div id="client-login" class="fade-in hidden">
+            <div class="max-w-md mx-auto bg-white rounded-xl shadow-lg p-8">
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl font-bold text-gray-800 mb-2">FisioPlanos</h1>
+                    <p class="text-gray-600">Acesso Cliente</p>
+                </div>
+                <form onsubmit="loginClient(event)">
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Código do Cliente</label>
+                        <input type="text" id="client-code" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Digite seu código" required>
+                    </div>
+                    <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200">
+                        Entrar
+                    </button>
+                </form>
+                <div class="text-center mt-6">
+                    <button onclick="showPhysioLogin()" class="text-green-600 hover:text-green-800 text-sm">
+                        Acesso Fisioterapeuta
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Fisioterapeuta -->
+        <div id="physio-dashboard" class="fade-in hidden">
+            <div class="flex justify-between items-center mb-8">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Observações da Sessão</label>
-                    <textarea id="plan-description" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-base" placeholder="Descreva como foi a sessão, evolução da paciente, observações importantes..."></textarea>
+                    <h1 class="text-3xl font-bold text-gray-800">Dashboard Fisioterapeuta</h1>
+                    <p class="text-gray-600">Bem-vinda, <span id="physio-name">Dra. Silva</span></p>
+                    <p class="text-gray-500 text-sm">Especialidade: <span id="physio-specialty">Ortopedia</span> | Código: <span id="physio-code-display">FISIO123</span></p>
                 </div>
-
-                <div class="border-t pt-4 md:pt-6">
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 space-y-3 sm:space-y-0">
-                        <h3 class="text-base md:text-lg font-semibold text-gray-800">Exercícios do Plano</h3>
-                        <button type="button" onclick="showExerciseSelector()" class="w-full sm:w-auto bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm md:text-base">+ Adicionar Exercício</button>
-                    </div>
-                    <div id="selected-exercises" class="space-y-3 md:space-y-4">
-                        <!-- Selected exercises will appear here -->
-                    </div>
-                </div>
-
-                <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
-                    <button type="submit" class="w-full sm:flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium text-base">Salvar Plano</button>
-                    <button type="button" onclick="showDashboard()" class="w-full sm:flex-1 bg-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-400 transition-colors font-medium text-base">Cancelar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Add Student Modal -->
-    <div id="student-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full">
-            <div class="p-4 md:p-6 border-b">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-lg md:text-xl font-bold text-gray-800" id="student-modal-title">Adicionar Aluno</h3>
-                    <button onclick="closeStudentModal()" class="text-gray-500 hover:text-gray-700 text-2xl p-1">&times;</button>
+                <div class="flex gap-4">
+                    <button onclick="showCreatePlan()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition duration-200">
+                        Novo Plano
+                    </button>
+                    <button onclick="showExerciseCreation()" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg transition duration-200">
+                        Criar Exercício
+                    </button>
+                    <button onclick="logout()" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition duration-200">
+                        Sair
+                    </button>
                 </div>
             </div>
-            <div class="p-4 md:p-6">
-                <form onsubmit="saveStudent(event)" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Nome Completo</label>
-                        <input type="text" id="student-name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base" placeholder="Nome do aluno">
+
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-lg">
+                    <h3 class="text-lg font-semibold text-yellow-800 mb-2">Pendentes Aprovação</h3>
+                    <p class="text-3xl font-bold text-yellow-600" id="pending-count">3</p>
+                </div>
+                <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-lg">
+                    <h3 class="text-lg font-semibold text-blue-800 mb-2">Planos Ativos</h3>
+                    <p class="text-3xl font-bold text-blue-600" id="active-count">8</p>
+                </div>
+                <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded-lg">
+                    <h3 class="text-lg font-semibold text-green-800 mb-2">Planos Concluídos</h3>
+                    <p class="text-3xl font-bold text-green-600" id="completed-count">15</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Planos Recentes</h2>
+                <div id="plans-list" class="space-y-4">
+                    <!-- Planos serão carregados aqui -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Criação de Plano -->
+        <div id="create-plan" class="fade-in hidden">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-800">Criar Novo Plano</h1>
+                <button onclick="showPhysioDashboard()" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition duration-200">
+                    Voltar
+                </button>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <form onsubmit="savePlan(event)">
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Nome do Cliente</label>
+                            <input type="text" id="client-name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Código do Cliente</label>
+                            <input type="text" id="plan-client-code" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                        <input type="email" id="student-email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base" placeholder="email@exemplo.com">
+
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Título do Plano</label>
+                        <input type="text" id="plan-title" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Telefone</label>
-                        <input type="tel" id="student-phone" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base" placeholder="(11) 99999-9999">
+
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Comentários Gerais</label>
+                        <textarea id="plan-comments" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Instruções gerais para o cliente..."></textarea>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Objetivo</label>
-                        <select id="student-goal" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base">
-                            <option value="perda-peso">Perda de Peso</option>
-                            <option value="ganho-massa">Ganho de Massa</option>
-                            <option value="condicionamento">Condicionamento</option>
-                            <option value="reabilitacao">Reabilitação</option>
-                        </select>
+
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Exercícios do Plano</h3>
+                            <div class="flex gap-2">
+                                <button type="button" onclick="addExistingExerciseToPlan()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-200">
+                                    Adicionar Existente
+                                </button>
+                                <button type="button" onclick="createNewExerciseInPlan()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition duration-200">
+                                    Criar Novo
+                                </button>
+                            </div>
+                        </div>
+                        <div id="plan-exercises" class="space-y-4">
+                            <!-- Exercícios serão adicionados aqui -->
+                        </div>
                     </div>
-                    <div class="flex space-x-4">
-                        <button type="submit" class="flex-1 bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium">Salvar</button>
-                        <button type="button" onclick="closeStudentModal()" class="flex-1 bg-gray-300 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-400 transition-colors font-medium">Cancelar</button>
+
+                    <div class="flex gap-4">
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg transition duration-200">
+                            Salvar Plano
+                        </button>
+                        <button type="button" onclick="showPhysioDashboard()" class="bg-gray-600 hover:bg-gray-700 text-white px-8 py-3 rounded-lg transition duration-200">
+                            Cancelar
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
-    </div>
 
-    <!-- Exercise Selector Modal -->
-    <div id="exercise-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
-            <div class="p-4 md:p-6 border-b">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-lg md:text-xl font-bold text-gray-800">Selecionar Exercício</h3>
-                    <button onclick="closeExerciseModal()" class="text-gray-500 hover:text-gray-700 text-2xl p-1">&times;</button>
+        <!-- Criação de Exercício -->
+        <div id="exercise-creation" class="fade-in hidden">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-800">Criar Novo Exercício</h1>
+                <button onclick="showPhysioDashboard()" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition duration-200">
+                    Voltar
+                </button>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <form onsubmit="saveExercise(event)">
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Nome do Exercício</label>
+                        <input type="text" id="exercise-name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Descrição</label>
+                        <textarea id="exercise-description" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Séries</label>
+                            <input type="number" id="exercise-sets" min="1" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Repetições</label>
+                            <input type="number" id="exercise-reps" min="1" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Imagens do Exercício</label>
+                        
+                        <!-- Campo para adicionar URL personalizada -->
+                        <div class="mb-4 p-4 bg-gray-50 rounded-lg">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Adicionar URL de Imagem</label>
+                            <div class="flex gap-2">
+                                <input type="url" id="custom-image-url" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="https://exemplo.com/imagem.jpg">
+                                <button type="button" onclick="addCustomImage()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition duration-200">
+                                    Adicionar
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Galeria de imagens disponíveis -->
+                        <div class="mb-4">
+                            <p class="text-sm text-gray-600 mb-2">Galeria de Imagens:</p>
+                            <div class="grid grid-cols-4 md:grid-cols-6 gap-4" id="available-images">
+                                <!-- Imagens disponíveis -->
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600 mb-2">Imagens Selecionadas:</p>
+                            <div id="selected-images" class="flex flex-wrap gap-2">
+                                <!-- Imagens selecionadas aparecerão aqui -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg transition duration-200">
+                            Salvar Exercício
+                        </button>
+                        <button type="button" onclick="showPhysioDashboard()" class="bg-gray-600 hover:bg-gray-700 text-white px-8 py-3 rounded-lg transition duration-200">
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Dashboard Cliente -->
+        <div id="client-dashboard" class="fade-in hidden">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800">Meus Planos</h1>
+                    <p class="text-gray-600">Bem-vindo, <span id="client-name-display">João Silva</span></p>
+                </div>
+                <button onclick="logout()" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition duration-200">
+                    Sair
+                </button>
+            </div>
+
+            <div class="grid gap-6" id="client-plans-list">
+                <!-- Planos do cliente serão carregados aqui -->
+            </div>
+        </div>
+
+        <!-- Dashboard Master -->
+        <div id="master-dashboard" class="fade-in hidden">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800">Dashboard Master</h1>
+                    <p class="text-gray-600">Bem-vindo, <span id="master-name">Dr. Master</span></p>
+                    <p class="text-gray-500 text-sm">Função: <span id="master-specialty">Supervisão Geral</span> | Código: <span id="master-code-display">MASTER001</span></p>
+                </div>
+                <div class="flex gap-4">
+                    <button onclick="showCreatePlan()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition duration-200">
+                        Novo Plano
+                    </button>
+                    <button onclick="showExerciseCreation()" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg transition duration-200">
+                        Criar Exercício
+                    </button>
+                    <button onclick="logout()" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition duration-200">
+                        Sair
+                    </button>
                 </div>
             </div>
-            <div class="p-4 md:p-6 overflow-y-auto max-h-[70vh]">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4" id="exercise-list">
-                    <!-- Exercises will be loaded here -->
+
+            <div class="grid md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-red-50 border-l-4 border-red-400 p-6 rounded-lg">
+                    <h3 class="text-lg font-semibold text-red-800 mb-2">Aguardando Aprovação</h3>
+                    <p class="text-3xl font-bold text-red-600" id="master-pending-count">3</p>
+                </div>
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-lg">
+                    <h3 class="text-lg font-semibold text-yellow-800 mb-2">Em Revisão</h3>
+                    <p class="text-3xl font-bold text-yellow-600" id="master-review-count">1</p>
+                </div>
+                <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-lg">
+                    <h3 class="text-lg font-semibold text-blue-800 mb-2">Planos Ativos</h3>
+                    <p class="text-3xl font-bold text-blue-600" id="master-active-count">8</p>
+                </div>
+                <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded-lg">
+                    <h3 class="text-lg font-semibold text-green-800 mb-2">Total Aprovados</h3>
+                    <p class="text-3xl font-bold text-green-600" id="master-approved-count">23</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Planos Pendentes de Aprovação</h2>
+                <div id="pending-approval-list" class="space-y-4">
+                    <!-- Planos pendentes serão carregados aqui -->
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-gray-800">Todos os Planos</h2>
+                    <button onclick="showExerciseManagement()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition duration-200">
+                        Gerenciar Exercícios
+                    </button>
+                </div>
+                <div id="all-plans-list" class="space-y-4">
+                    <!-- Todos os planos serão carregados aqui -->
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Plan Details Modal -->
-    <div id="plan-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
-            <div class="p-4 md:p-6 border-b">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-lg md:text-xl font-bold text-gray-800" id="plan-modal-title">Detalhes do Plano</h3>
-                    <button onclick="closePlanModal()" class="text-gray-500 hover:text-gray-700 text-2xl p-1">&times;</button>
+        <!-- Aprovação de Plano -->
+        <div id="plan-approval" class="fade-in hidden">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-800">Aprovar Plano</h1>
+                <button onclick="showMasterDashboard()" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition duration-200">
+                    Voltar
+                </button>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-2" id="approval-plan-title">Título do Plano</h2>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm text-gray-600 mb-4">
+                        <p><strong>Cliente:</strong> <span id="approval-client-name">Nome do Cliente</span></p>
+                        <p><strong>Código:</strong> <span id="approval-client-code">Código</span></p>
+                        <p><strong>Fisioterapeuta:</strong> <span id="approval-physio-name">Nome da Fisioterapeuta</span></p>
+                        <p><strong>Data de Criação:</strong> <span id="approval-created-date">Data</span></p>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Comentários Gerais</h3>
+                    <p class="text-gray-600 bg-gray-50 p-4 rounded-lg" id="approval-general-comments">Comentários gerais do plano...</p>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Exercícios do Plano</h3>
+                    <div id="approval-exercises-list" class="space-y-4">
+                        <!-- Exercícios do plano aparecerão aqui -->
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Observações do Master</h3>
+                    <textarea id="master-notes" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Adicione observações sobre este plano (opcional)..."></textarea>
+                </div>
+
+                <div class="flex gap-4">
+                    <button onclick="approvePlan()" class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg transition duration-200">
+                        ✓ Aprovar Plano
+                    </button>
+                    <button onclick="rejectPlan()" class="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-lg transition duration-200">
+                        ✗ Rejeitar Plano
+                    </button>
+                    <button onclick="requestRevision()" class="bg-yellow-600 hover:bg-yellow-700 text-white px-8 py-3 rounded-lg transition duration-200">
+                        📝 Solicitar Revisão
+                    </button>
                 </div>
             </div>
-            <div class="p-4 md:p-6 overflow-y-auto max-h-[70vh]" id="plan-modal-content">
-                <!-- Plan details will be loaded here -->
+        </div>
+
+        <!-- Gerenciamento de Exercícios -->
+        <div id="exercise-management" class="fade-in hidden">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-800">Gerenciar Exercícios</h1>
+                <div class="flex gap-4">
+                    <button onclick="showExerciseCreation()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition duration-200">
+                        Novo Exercício
+                    </button>
+                    <button onclick="showMasterDashboard()" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition duration-200">
+                        Voltar
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="grid gap-4" id="exercises-management-list">
+                    <!-- Lista de exercícios para gerenciar -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Edição de Exercício -->
+        <div id="edit-exercise" class="fade-in hidden">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-800">Editar Exercício</h1>
+                <button onclick="showExerciseManagement()" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition duration-200">
+                    Voltar
+                </button>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <form onsubmit="updateExercise(event)">
+                    <input type="hidden" id="edit-exercise-id">
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Nome do Exercício</label>
+                        <input type="text" id="edit-exercise-name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Descrição</label>
+                        <textarea id="edit-exercise-description" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Séries</label>
+                            <input type="number" id="edit-exercise-sets" min="1" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Repetições</label>
+                            <input type="number" id="edit-exercise-reps" min="1" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Imagens do Exercício</label>
+                        
+                        <!-- Campo para adicionar URL personalizada -->
+                        <div class="mb-4 p-4 bg-gray-50 rounded-lg">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Adicionar URL de Imagem</label>
+                            <div class="flex gap-2">
+                                <input type="url" id="edit-custom-image-url" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="https://exemplo.com/imagem.jpg">
+                                <button type="button" onclick="addEditCustomImage()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition duration-200">
+                                    Adicionar
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Galeria de imagens disponíveis -->
+                        <div class="mb-4">
+                            <p class="text-sm text-gray-600 mb-2">Galeria de Imagens:</p>
+                            <div class="grid grid-cols-4 md:grid-cols-6 gap-4" id="edit-available-images">
+                                <!-- Imagens disponíveis -->
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600 mb-2">Imagens Selecionadas:</p>
+                            <div id="edit-selected-images" class="flex flex-wrap gap-2">
+                                <!-- Imagens selecionadas aparecerão aqui -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg transition duration-200">
+                            Salvar Alterações
+                        </button>
+                        <button type="button" onclick="showExerciseManagement()" class="bg-gray-600 hover:bg-gray-700 text-white px-8 py-3 rounded-lg transition duration-200">
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Edição de Plano -->
+        <div id="edit-plan" class="fade-in hidden">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-800">Editar Plano</h1>
+                <button onclick="showMasterDashboard()" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition duration-200">
+                    Voltar
+                </button>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <form onsubmit="updatePlan(event)">
+                    <input type="hidden" id="edit-plan-id">
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Nome do Cliente</label>
+                            <input type="text" id="edit-client-name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Código do Cliente</label>
+                            <input type="text" id="edit-plan-client-code" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Título do Plano</label>
+                        <input type="text" id="edit-plan-title" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Status do Plano</label>
+                        <select id="edit-plan-status" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            <option value="pendente">Pendente</option>
+                            <option value="ativo">Ativo</option>
+                            <option value="concluido">Concluído</option>
+                            <option value="rejeitado">Rejeitado</option>
+                            <option value="revisao">Em Revisão</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Comentários Gerais</label>
+                        <textarea id="edit-plan-comments" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Instruções gerais para o cliente..."></textarea>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Observações do Master</label>
+                        <textarea id="edit-plan-master-notes" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Observações internas..."></textarea>
+                    </div>
+
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Exercícios do Plano</h3>
+                            <button type="button" onclick="addExerciseToEditPlan()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition duration-200">
+                                Adicionar Exercício
+                            </button>
+                        </div>
+                        <div id="edit-plan-exercises" class="space-y-4">
+                            <!-- Exercícios serão adicionados aqui -->
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg transition duration-200">
+                            Salvar Alterações
+                        </button>
+                        <button type="button" onclick="showMasterDashboard()" class="bg-gray-600 hover:bg-gray-700 text-white px-8 py-3 rounded-lg transition duration-200">
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal Criar Exercício no Plano -->
+        <div id="exercise-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-xl shadow-lg p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Criar Novo Exercício</h2>
+                    <button onclick="closeExerciseModal()" class="text-gray-500 hover:text-gray-700 text-2xl">×</button>
+                </div>
+
+                <form onsubmit="saveExerciseInPlan(event)">
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Nome do Exercício</label>
+                        <input type="text" id="modal-exercise-name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Descrição</label>
+                        <textarea id="modal-exercise-description" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Séries</label>
+                            <input type="number" id="modal-exercise-sets" min="1" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Repetições</label>
+                            <input type="number" id="modal-exercise-reps" min="1" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Imagens do Exercício</label>
+                        
+                        <!-- Campo para adicionar URL personalizada -->
+                        <div class="mb-4 p-4 bg-gray-50 rounded-lg">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Adicionar URL de Imagem</label>
+                            <div class="flex gap-2">
+                                <input type="url" id="modal-custom-image-url" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="https://exemplo.com/imagem.jpg">
+                                <button type="button" onclick="addModalCustomImage()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition duration-200">
+                                    Adicionar
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Galeria de imagens disponíveis -->
+                        <div class="mb-4">
+                            <p class="text-sm text-gray-600 mb-2">Galeria de Imagens:</p>
+                            <div class="grid grid-cols-4 md:grid-cols-6 gap-4" id="modal-available-images">
+                                <!-- Imagens disponíveis -->
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600 mb-2">Imagens Selecionadas:</p>
+                            <div id="modal-selected-images" class="flex flex-wrap gap-2">
+                                <!-- Imagens selecionadas aparecerão aqui -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg transition duration-200">
+                            Criar e Adicionar ao Plano
+                        </button>
+                        <button type="button" onclick="closeExerciseModal()" class="bg-gray-600 hover:bg-gray-700 text-white px-8 py-3 rounded-lg transition duration-200">
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal Selecionar Exercício Existente -->
+        <div id="select-exercise-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-xl shadow-lg p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Selecionar Exercício Existente</h2>
+                    <button onclick="closeSelectExerciseModal()" class="text-gray-500 hover:text-gray-700 text-2xl">×</button>
+                </div>
+
+                <div class="mb-4">
+                    <input type="text" id="exercise-search" placeholder="Buscar exercícios..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" onkeyup="filterExercises()">
+                </div>
+
+                <div id="existing-exercises-list" class="space-y-4 max-h-96 overflow-y-auto">
+                    <!-- Lista de exercícios existentes -->
+                </div>
+
+                <div class="flex justify-end mt-6">
+                    <button onclick="closeSelectExerciseModal()" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition duration-200">
+                        Fechar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detalhes do Plano (Cliente) -->
+        <div id="plan-details" class="fade-in hidden">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-800" id="plan-details-title">Detalhes do Plano</h1>
+                <button onclick="showClientDashboard()" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition duration-200">
+                    Voltar
+                </button>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-8 mb-6">
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-2">Instruções Gerais</h2>
+                    <p class="text-gray-600" id="plan-general-comments">Comentários gerais do plano aparecerão aqui...</p>
+                </div>
+
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Exercícios</h2>
+                    <div id="plan-exercises-details" class="space-y-6">
+                        <!-- Exercícios detalhados aparecerão aqui -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Configuração Google Sheets -->
+        <div id="config-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-xl shadow-lg p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Configurar Google Sheets</h2>
+                    <button onclick="closeConfigModal()" class="text-gray-500 hover:text-gray-700 text-2xl">×</button>
+                </div>
+
+                <!-- Guia Passo a Passo API Key -->
+                <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <h3 class="text-lg font-semibold text-green-800 mb-3">🔑 Como Obter a API Key do Google (Passo a Passo)</h3>
+                    
+                    <div class="space-y-4 text-sm text-green-700">
+                        <div class="bg-white p-3 rounded border-l-4 border-green-400">
+                            <h4 class="font-semibold mb-2">1️⃣ Acesse o Google Cloud Console</h4>
+                            <p class="mb-2">Vá para: <a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline">console.cloud.google.com</a></p>
+                            <p class="text-xs text-gray-600">• Faça login com sua conta Google</p>
+                        </div>
+
+                        <div class="bg-white p-3 rounded border-l-4 border-green-400">
+                            <h4 class="font-semibold mb-2">2️⃣ Criar ou Selecionar Projeto</h4>
+                            <p class="mb-2">• Clique no seletor de projeto (canto superior esquerdo)</p>
+                            <p class="mb-2">• Clique em "NOVO PROJETO" ou selecione um existente</p>
+                            <p class="text-xs text-gray-600">• Nome sugerido: "FisioPlanos-API"</p>
+                        </div>
+
+                        <div class="bg-white p-3 rounded border-l-4 border-green-400">
+                            <h4 class="font-semibold mb-2">3️⃣ Habilitar a API do Google Sheets</h4>
+                            <p class="mb-2">• No menu lateral, vá em "APIs e serviços" → "Biblioteca"</p>
+                            <p class="mb-2">• Pesquise por "Google Sheets API"</p>
+                            <p class="mb-2">• Clique em "Google Sheets API" e depois "ATIVAR"</p>
+                        </div>
+
+                        <div class="bg-white p-3 rounded border-l-4 border-green-400">
+                            <h4 class="font-semibold mb-2">4️⃣ Criar Credenciais (API Key)</h4>
+                            <p class="mb-2">• Vá em "APIs e serviços" → "Credenciais"</p>
+                            <p class="mb-2">• Clique em "+ CRIAR CREDENCIAIS" → "Chave de API"</p>
+                            <p class="mb-2">• Sua API Key será gerada automaticamente!</p>
+                            <p class="text-xs text-gray-600">• Copie e guarde em local seguro</p>
+                        </div>
+
+                        <div class="bg-white p-3 rounded border-l-4 border-yellow-400">
+                            <h4 class="font-semibold mb-2">5️⃣ Configurar Restrições (Recomendado)</h4>
+                            <p class="mb-2">• Clique no ícone de edição da sua API Key</p>
+                            <p class="mb-2">• Em "Restrições de API", selecione "Restringir chave"</p>
+                            <p class="mb-2">• Marque apenas "Google Sheets API"</p>
+                            <p class="text-xs text-gray-600">• Isso aumenta a segurança da sua chave</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 p-3 bg-blue-100 rounded">
+                        <p class="text-sm text-blue-800">
+                            <strong>💡 Dica:</strong> A API Key começa com "AIza..." e tem cerca de 39 caracteres.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mb-6 p-4 bg-blue-50 rounded-lg">
+                    <h3 class="text-lg font-semibold text-blue-800 mb-2">📋 Estrutura da Planilha</h3>
+                    <p class="text-sm text-blue-700 mb-3">Sua planilha deve ter uma aba chamada "Fisioterapeutas" com as seguintes colunas:</p>
+                    <div class="bg-white p-3 rounded border text-xs font-mono">
+                        <div class="grid grid-cols-5 gap-2 font-bold text-gray-700 border-b pb-1 mb-1">
+                            <span>A: Código</span>
+                            <span>B: Nome</span>
+                            <span>C: IsMaster</span>
+                            <span>D: Email</span>
+                            <span>E: Especialidade</span>
+                        </div>
+                        <div class="grid grid-cols-5 gap-2 text-gray-600">
+                            <span>FISIO123</span>
+                            <span>Dra. Ana Silva</span>
+                            <span>FALSE</span>
+                            <span>ana@clinica.com</span>
+                            <span>Ortopedia</span>
+                        </div>
+                        <div class="grid grid-cols-5 gap-2 text-gray-600">
+                            <span>MASTER001</span>
+                            <span>Dr. João Master</span>
+                            <span>TRUE</span>
+                            <span>joao@clinica.com</span>
+                            <span>Supervisão</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-6 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                    <h3 class="text-lg font-semibold text-purple-800 mb-2">📊 Como Preparar sua Planilha</h3>
+                    <div class="space-y-2 text-sm text-purple-700">
+                        <div class="bg-white p-3 rounded">
+                            <h4 class="font-semibold mb-2">1️⃣ Criar Nova Planilha</h4>
+                            <p>• Acesse <a href="https://sheets.google.com" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline">sheets.google.com</a></p>
+                            <p>• Clique em "+" para criar nova planilha</p>
+                        </div>
+                        
+                        <div class="bg-white p-3 rounded">
+                            <h4 class="font-semibold mb-2">2️⃣ Configurar Aba</h4>
+                            <p>• Renomeie a aba para "Fisioterapeutas"</p>
+                            <p>• Na linha 1, adicione os cabeçalhos: Código, Nome, IsMaster, Email, Especialidade</p>
+                        </div>
+                        
+                        <div class="bg-white p-3 rounded">
+                            <h4 class="font-semibold mb-2">3️⃣ Tornar Pública</h4>
+                            <p>• Clique em "Compartilhar" (canto superior direito)</p>
+                            <p>• Em "Obter link", altere para "Qualquer pessoa com o link"</p>
+                            <p>• Permissão: "Visualizador"</p>
+                        </div>
+                        
+                        <div class="bg-white p-3 rounded">
+                            <h4 class="font-semibold mb-2">4️⃣ Copiar ID da Planilha</h4>
+                            <p>• Na URL da planilha, copie o ID entre "/d/" e "/edit"</p>
+                            <p class="text-xs font-mono bg-gray-100 p-1 rounded">docs.google.com/spreadsheets/d/<span class="bg-yellow-200">1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms</span>/edit</p>
+                        </div>
+                    </div>
+                </div>
+
+                <form onsubmit="saveGoogleSheetsConfig(event)">
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">API Key do Google</label>
+                        <input type="text" id="config-api-key" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="AIzaSyC..." required>
+                        <p class="text-xs text-gray-500 mt-1">
+                            <a href="https://console.developers.google.com/apis/credentials" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800">
+                                Obter API Key no Google Console
+                            </a>
+                        </p>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">ID da Planilha</label>
+                        <input type="text" id="config-spreadsheet-id" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms" required>
+                        <p class="text-xs text-gray-500 mt-1">
+                            Encontre o ID na URL da sua planilha: docs.google.com/spreadsheets/d/<strong>ID_AQUI</strong>/edit
+                        </p>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Nome da Aba e Range</label>
+                        <input type="text" id="config-range" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value="Fisioterapeutas!A:E" required>
+                        <p class="text-xs text-gray-500 mt-1">
+                            Formato: NomeDaAba!ColunaInicial:ColunaFinal
+                        </p>
+                    </div>
+
+                    <div class="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <h4 class="text-sm font-semibold text-yellow-800 mb-2">⚠️ Importante:</h4>
+                        <ul class="text-xs text-yellow-700 space-y-1">
+                            <li>• A planilha deve estar pública ou compartilhada</li>
+                            <li>• A API do Google Sheets deve estar habilitada no seu projeto</li>
+                            <li>• A primeira linha deve conter os cabeçalhos</li>
+                            <li>• Use TRUE/FALSE na coluna IsMaster</li>
+                        </ul>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg transition duration-200">
+                            Salvar e Testar
+                        </button>
+                        <button type="button" onclick="testConnection()" class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg transition duration-200">
+                            Testar Conexão
+                        </button>
+                        <button type="button" onclick="closeConfigModal()" class="bg-gray-600 hover:bg-gray-700 text-white px-8 py-3 rounded-lg transition duration-200">
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+
+                <div id="test-results" class="mt-6 hidden">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Resultado do Teste:</h3>
+                    <div id="test-output" class="p-4 bg-gray-50 rounded-lg text-sm font-mono">
+                        <!-- Resultado aparecerá aqui -->
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Database simulation
-        let trainers = JSON.parse(localStorage.getItem('fitplan_trainers') || '[]');
-        let currentTrainer = JSON.parse(localStorage.getItem('fitplan_current_trainer') || 'null');
-        let students = JSON.parse(localStorage.getItem('fitplan_students') || '[]');
-        let plans = JSON.parse(localStorage.getItem('fitplan_plans') || '[]');
+        // Estado da aplicação
+        let currentUser = null;
+        let currentView = 'physio-login';
+        let exercises = [];
+        let plans = [];
+        let selectedImages = [];
+        let currentPlanForApproval = null;
 
-        // Exercise database
-        const exercises = [
-            {
-                id: 1,
-                name: "Supino Reto",
-                description: "Exercício fundamental para desenvolvimento do peitoral maior, tríceps e deltoides anterior.",
-                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150'%3E%3Crect fill='%23f3f4f6' width='200' height='150'/%3E%3Crect fill='%23374151' x='20' y='60' width='160' height='8' rx='4'/%3E%3Ccircle fill='%23ef4444' cx='40' cy='64' r='12'/%3E%3Ccircle fill='%23ef4444' cx='160' cy='64' r='12'/%3E%3Crect fill='%236b7280' x='95' y='40' width='10' height='48'/%3E%3Ctext x='100' y='120' text-anchor='middle' fill='%23374151' font-size='12'%3ESupino%3C/text%3E%3C/svg%3E",
-                category: "peito"
+        // Dados de exemplo
+        const sampleExercises = [
+            { id: 1, name: 'Flexão de Braço', description: 'Exercício para fortalecimento dos braços', sets: 3, reps: 10, images: ['https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=200&fit=crop', 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=300&h=200&fit=crop'] },
+            { id: 2, name: 'Agachamento', description: 'Exercício para fortalecimento das pernas', sets: 3, reps: 15, images: ['https://images.unsplash.com/photo-1566241440091-ec10de8db2e1?w=300&h=200&fit=crop', 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=200&fit=crop'] },
+            { id: 3, name: 'Prancha', description: 'Exercício para core', sets: 3, reps: 30, images: ['https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=300&h=200&fit=crop', 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=300&h=200&fit=crop'] }
+        ];
+
+        // Lista de imagens disponíveis por URL
+        const availableImageUrls = [
+            'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=200&fit=crop',
+            'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=300&h=200&fit=crop',
+            'https://images.unsplash.com/photo-1566241440091-ec10de8db2e1?w=300&h=200&fit=crop',
+            'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=300&h=200&fit=crop',
+            'https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=300&h=200&fit=crop',
+            'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=300&h=200&fit=crop',
+            'https://images.unsplash.com/photo-1549060279-7e168fcee0c2?w=300&h=200&fit=crop',
+            'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=300&h=200&fit=crop',
+            'https://images.unsplash.com/photo-1506629905607-d405872a4d86?w=300&h=200&fit=crop',
+            'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=300&h=200&fit=crop',
+            'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=300&h=200&fit=crop',
+            'https://images.unsplash.com/photo-1434608519344-49d77a699e1d?w=300&h=200&fit=crop'
+        ];
+
+        const samplePlans = [
+            { 
+                id: 1, 
+                title: 'Reabilitação Ombro', 
+                clientName: 'João Silva', 
+                clientCode: 'JS001', 
+                status: 'ativo', 
+                comments: 'Plano focado na recuperação do ombro direito após lesão.',
+                exercises: [1, 2],
+                createdAt: '2024-01-15',
+                physioName: 'Dra. Silva',
+                masterNotes: 'Plano aprovado. Exercícios adequados para o caso.'
             },
-            {
-                id: 2,
-                name: "Agachamento",
-                description: "Exercício composto que trabalha quadríceps, glúteos, isquiotibiais e core.",
-                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150'%3E%3Crect fill='%23f3f4f6' width='200' height='150'/%3E%3Crect fill='%23374151' x='80' y='30' width='40' height='8' rx='4'/%3E%3Crect fill='%236b7280' x='95' y='38' width='10' height='60'/%3E%3Crect fill='%236b7280' x='85' y='90' width='30' height='8'/%3E%3Crect fill='%236b7280' x='90' y='98' width='8' height='25'/%3E%3Crect fill='%236b7280' x='102' y='98' width='8' height='25'/%3E%3Ctext x='100' y='140' text-anchor='middle' fill='%23374151' font-size='12'%3EAgachamento%3C/text%3E%3C/svg%3E",
-                category: "pernas"
+            { 
+                id: 2, 
+                title: 'Fortalecimento Lombar', 
+                clientName: 'Maria Santos', 
+                clientCode: 'MS002', 
+                status: 'pendente', 
+                comments: 'Exercícios para alívio de dores lombares.',
+                exercises: [2, 3],
+                createdAt: '2024-01-16',
+                physioName: 'Dra. Silva',
+                masterNotes: ''
             },
-            {
-                id: 3,
-                name: "Flexão de Braço",
-                description: "Exercício de peso corporal que fortalece peito, ombros, tríceps e core.",
-                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150'%3E%3Crect fill='%23f3f4f6' width='200' height='150'/%3E%3Crect fill='%236b7280' x='40' y='70' width='120' height='15' rx='7'/%3E%3Ccircle fill='%23f59e0b' cx='50' cy='77' r='8'/%3E%3Crect fill='%236b7280' x='45' y='85' width='10' height='30'/%3E%3Crect fill='%236b7280' x='145' y='85' width='10' height='30'/%3E%3Ctext x='100' y='130' text-anchor='middle' fill='%23374151' font-size='12'%3EFlexão%3C/text%3E%3C/svg%3E",
-                category: "peito"
-            },
-            {
-                id: 4,
-                name: "Levantamento Terra",
-                description: "Exercício composto que trabalha toda a cadeia posterior: glúteos, isquiotibiais e lombar.",
-                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150'%3E%3Crect fill='%23f3f4f6' width='200' height='150'/%3E%3Crect fill='%23374151' x='70' y='100' width='60' height='8' rx='4'/%3E%3Ccircle fill='%23ef4444' cx='85' cy='104' r='12'/%3E%3Ccircle fill='%23ef4444' cx='115' cy='104' r='12'/%3E%3Crect fill='%236b7280' x='95' y='50' width='10' height='54'/%3E%3Ctext x='100' y='135' text-anchor='middle' fill='%23374151' font-size='12'%3ETerra%3C/text%3E%3C/svg%3E",
-                category: "costas"
-            },
-            {
-                id: 5,
-                name: "Desenvolvimento Militar",
-                description: "Exercício para desenvolvimento dos deltoides, especialmente a porção anterior e medial.",
-                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150'%3E%3Crect fill='%23f3f4f6' width='200' height='150'/%3E%3Crect fill='%23374151' x='80' y='20' width='40' height='8' rx='4'/%3E%3Ccircle fill='%23ef4444' cx='90' cy='24' r='8'/%3E%3Ccircle fill='%23ef4444' cx='110' cy='24' r='8'/%3E%3Crect fill='%236b7280' x='95' y='32' width='10' height='80'/%3E%3Ctext x='100' y='125' text-anchor='middle' fill='%23374151' font-size='12'%3EDesenvolvimento%3C/text%3E%3C/svg%3E",
-                category: "ombros"
-            },
-            {
-                id: 6,
-                name: "Rosca Direta",
-                description: "Exercício de isolamento para desenvolvimento do bíceps braquial.",
-                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150'%3E%3Crect fill='%23f3f4f6' width='200' height='150'/%3E%3Crect fill='%23374151' x='70' y='80' width='60' height='6' rx='3'/%3E%3Ccircle fill='%2310b981' cx='80' cy='83' r='8'/%3E%3Ccircle fill='%2310b981' cx='120' cy='83' r='8'/%3E%3Crect fill='%236b7280' x='95' y='50' width='10' height='33'/%3E%3Ctext x='100' y='110' text-anchor='middle' fill='%23374151' font-size='12'%3ERosca%3C/text%3E%3C/svg%3E",
-                category: "bracos"
-            },
-            {
-                id: 7,
-                name: "Prancha",
-                description: "Exercício isométrico que fortalece o core, ombros e glúteos.",
-                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150'%3E%3Crect fill='%23f3f4f6' width='200' height='150'/%3E%3Crect fill='%236b7280' x='30' y='75' width='140' height='12' rx='6'/%3E%3Ccircle fill='%23f59e0b' cx='40' cy='81' r='6'/%3E%3Crect fill='%236b7280' x='35' y='87' width='8' height='20'/%3E%3Crect fill='%236b7280' x='157' y='87' width='8' height='20'/%3E%3Ctext x='100' y='120' text-anchor='middle' fill='%23374151' font-size='12'%3EPrancha%3C/text%3E%3C/svg%3E",
-                category: "core"
-            },
-            {
-                id: 8,
-                name: "Burpee",
-                description: "Exercício funcional que combina agachamento, prancha e salto vertical.",
-                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150'%3E%3Crect fill='%23f3f4f6' width='200' height='150'/%3E%3Ccircle fill='%23f59e0b' cx='100' cy='40' r='8'/%3E%3Crect fill='%236b7280' x='95' y='48' width='10' height='30'/%3E%3Crect fill='%236b7280' x='85' y='70' width='30' height='8'/%3E%3Crect fill='%236b7280' x='90' y='78' width='8' height='25'/%3E%3Crect fill='%236b7280' x='102' y='78' width='8' height='25'/%3E%3Cpath fill='%2306b6d4' d='M90 25 L100 15 L110 25 Z'/%3E%3Ctext x='100' y='120' text-anchor='middle' fill='%23374151' font-size='12'%3EBurpee%3C/text%3E%3C/svg%3E",
-                category: "funcional"
+            { 
+                id: 3, 
+                title: 'Recuperação Joelho', 
+                clientName: 'Carlos Oliveira', 
+                clientCode: 'CO003', 
+                status: 'pendente', 
+                comments: 'Plano pós-cirúrgico para recuperação do joelho esquerdo.',
+                exercises: [1, 3],
+                createdAt: '2024-01-17',
+                physioName: 'Dra. Silva',
+                masterNotes: ''
             }
         ];
 
-        let selectedExercises = [];
-        let editingStudentId = null;
+        // Inicialização
+        exercises = [...sampleExercises];
+        plans = [...samplePlans];
 
-        // Initialize app
-        function initApp() {
-            createExampleData();
+        // Funções de navegação
+        function showView(viewId) {
+            document.querySelectorAll('#app > div').forEach(div => div.classList.add('hidden'));
+            document.getElementById(viewId).classList.remove('hidden');
+            currentView = viewId;
+        }
+
+        function showPhysioLogin() {
+            showView('physio-login');
+        }
+
+        function showClientLogin() {
+            showView('client-login');
+        }
+
+        function showPhysioDashboard() {
+            showView('physio-dashboard');
+            loadPhysioDashboard();
+        }
+
+        function showClientDashboard() {
+            showView('client-dashboard');
+            loadClientPlans();
+        }
+
+        function showCreatePlan() {
+            showView('create-plan');
+            loadAvailableExercises();
+        }
+
+        function showExerciseCreation() {
+            showView('exercise-creation');
+            loadAvailableImages();
+        }
+
+        function showPlanDetails(planId) {
+            showView('plan-details');
+            loadPlanDetails(planId);
+        }
+
+        function showMasterDashboard() {
+            showView('master-dashboard');
+            loadMasterDashboard();
+        }
+
+        function showPlanApproval(planId) {
+            showView('plan-approval');
+            loadPlanApproval(planId);
+        }
+
+        function showExerciseManagement() {
+            showView('exercise-management');
+            loadExerciseManagement();
+        }
+
+        function showEditExercise(exerciseId) {
+            showView('edit-exercise');
+            loadEditExercise(exerciseId);
+        }
+
+        function showEditPlan(planId) {
+            showView('edit-plan');
+            loadEditPlan(planId);
+        }
+
+        // Configuração do Google Sheets
+        const GOOGLE_SHEETS_CONFIG = {
+            apiKey: 'SUA_API_KEY_AQUI', // Substitua pela sua API Key do Google
+            spreadsheetId: 'SEU_SPREADSHEET_ID_AQUI', // Substitua pelo ID da sua planilha
+            range: 'Fisioterapeutas!A:E' // Nome da aba e range das colunas
+        };
+
+        // Cache para dados das fisioterapeutas
+        let physiotherapistsCache = null;
+        let cacheTimestamp = null;
+        const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
+
+        // Lista de fisioterapeutas de fallback (caso a API falhe)
+        const fallbackPhysiotherapists = [
+            { code: 'FISIO123', name: 'Dra. Ana Silva', isMaster: false, email: 'ana.silva@clinica.com', specialty: 'Ortopedia' },
+            { code: 'FISIO456', name: 'Dr. Carlos Santos', isMaster: false, email: 'carlos.santos@clinica.com', specialty: 'Neurologia' },
+            { code: 'FISIO789', name: 'Dra. Maria Oliveira', isMaster: false, email: 'maria.oliveira@clinica.com', specialty: 'Respiratória' },
+            { code: 'MASTER001', name: 'Dr. João Master', isMaster: true, email: 'joao.master@clinica.com', specialty: 'Supervisão Geral' },
+            { code: 'MASTER002', name: 'Dra. Paula Master', isMaster: true, email: 'paula.master@clinica.com', specialty: 'Coordenação Clínica' }
+        ];
+
+        // Função para buscar dados do Google Sheets
+        async function fetchPhysiotherapistsFromSheets() {
+            // Verificar cache primeiro
+            const now = Date.now();
+            if (physiotherapistsCache && cacheTimestamp && (now - cacheTimestamp) < CACHE_DURATION) {
+                console.log('📋 Usando dados do cache');
+                return physiotherapistsCache;
+            }
+
+            try {
+                console.log('🔄 Buscando dados do Google Sheets...');
+                
+                // Verificar se as configurações estão definidas
+                if (!GOOGLE_SHEETS_CONFIG.apiKey || GOOGLE_SHEETS_CONFIG.apiKey === 'SUA_API_KEY_AQUI') {
+                    throw new Error('API Key do Google Sheets não configurada');
+                }
+                
+                if (!GOOGLE_SHEETS_CONFIG.spreadsheetId || GOOGLE_SHEETS_CONFIG.spreadsheetId === 'SEU_SPREADSHEET_ID_AQUI') {
+                    throw new Error('ID da planilha não configurado');
+                }
+
+                const url = `https://sheets.googleapis.com/v4/spreadsheets/${GOOGLE_SHEETS_CONFIG.spreadsheetId}/values/${GOOGLE_SHEETS_CONFIG.range}?key=${GOOGLE_SHEETS_CONFIG.apiKey}`;
+                
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`Erro na API: ${response.status} - ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (!data.values || data.values.length < 2) {
+                    throw new Error('Planilha vazia ou sem dados válidos');
+                }
+                
+                // Processar dados (pular cabeçalho)
+                const physiotherapists = data.values.slice(1).map((row, index) => {
+                    if (row.length < 5) {
+                        console.warn(`⚠️ Linha ${index + 2} incompleta:`, row);
+                        return null;
+                    }
+                    
+                    return {
+                        code: row[0]?.toString().trim().toUpperCase(),
+                        name: row[1]?.toString().trim(),
+                        isMaster: row[2]?.toString().trim().toUpperCase() === 'TRUE',
+                        email: row[3]?.toString().trim().toLowerCase(),
+                        specialty: row[4]?.toString().trim()
+                    };
+                }).filter(item => item && item.code && item.name); // Filtrar linhas inválidas
+                
+                if (physiotherapists.length === 0) {
+                    throw new Error('Nenhum dado válido encontrado na planilha');
+                }
+                
+                // Atualizar cache
+                physiotherapistsCache = physiotherapists;
+                cacheTimestamp = now;
+                
+                console.log(`✅ ${physiotherapists.length} fisioterapeutas carregadas do Google Sheets`);
+                return physiotherapists;
+                
+            } catch (error) {
+                console.error('❌ Erro ao buscar dados do Google Sheets:', error.message);
+                
+                // Usar dados de fallback
+                console.log('🔄 Usando dados de fallback...');
+                physiotherapistsCache = fallbackPhysiotherapists;
+                cacheTimestamp = now;
+                
+                return fallbackPhysiotherapists;
+            }
+        }
+
+        // Função para validar configuração do Google Sheets
+        function validateGoogleSheetsConfig() {
+            const issues = [];
             
-            if (currentTrainer) {
-                showDashboard();
-                document.getElementById('nav-menu').classList.remove('hidden');
-                document.getElementById('login-btn').classList.add('hidden');
-                updateTrainerInfo();
-            } else {
-                showLogin();
+            if (!GOOGLE_SHEETS_CONFIG.apiKey || GOOGLE_SHEETS_CONFIG.apiKey === 'SUA_API_KEY_AQUI') {
+                issues.push('API Key não configurada');
             }
+            
+            if (!GOOGLE_SHEETS_CONFIG.spreadsheetId || GOOGLE_SHEETS_CONFIG.spreadsheetId === 'SEU_SPREADSHEET_ID_AQUI') {
+                issues.push('ID da planilha não configurado');
+            }
+            
+            return issues;
         }
 
-        // Create example data
-        function createExampleData() {
-            // Create example trainer if none exists
-            if (trainers.length === 0) {
-                const exampleTrainer = {
-                    id: 1,
-                    name: "Dra. Ana Pereira",
-                    email: "ana@fisiomater.com",
-                    password: "fisio123",
-                    createdAt: new Date().toISOString()
-                };
-                trainers.push(exampleTrainer);
-                localStorage.setItem('fitplan_trainers', JSON.stringify(trainers));
-            }
-
-            // Create example students if none exist
-            if (students.length === 0) {
-                const exampleStudents = [
-                    {
-                        id: 1,
-                        trainerId: 1,
-                        name: "Ana Silva",
-                        email: "ana@email.com",
-                        phone: "(11) 99999-1111",
-                        goal: "perda-peso",
-                        createdAt: new Date(Date.now() - 86400000).toISOString()
-                    },
-                    {
-                        id: 2,
-                        trainerId: 1,
-                        name: "Pedro Santos",
-                        email: "pedro@email.com",
-                        phone: "(11) 99999-2222",
-                        goal: "ganho-massa",
-                        createdAt: new Date(Date.now() - 172800000).toISOString()
-                    },
-                    {
-                        id: 3,
-                        trainerId: 1,
-                        name: "Maria Oliveira",
-                        email: "maria@email.com",
-                        phone: "(11) 99999-3333",
-                        goal: "condicionamento",
-                        createdAt: new Date(Date.now() - 259200000).toISOString()
-                    }
-                ];
-                students.push(...exampleStudents);
-                localStorage.setItem('fitplan_students', JSON.stringify(students));
-            }
-
-            // Create example plans if none exist
-            if (plans.length === 0) {
-                const examplePlans = [
-                    {
-                        id: 1,
-                        trainerId: 1,
-                        studentId: 1,
-                        name: "Treino Cardio para Ana",
-                        category: "cardio",
-                        difficulty: "iniciante",
-                        description: "Plano focado em queima de gordura e condicionamento cardiovascular.",
-                        exercises: [
-                            { exerciseId: 8, sets: 3, reps: 10 },
-                            { exerciseId: 7, sets: 3, reps: 30 }
-                        ],
-                        createdAt: new Date(Date.now() - 86400000).toISOString()
-                    },
-                    {
-                        id: 2,
-                        trainerId: 1,
-                        studentId: 2,
-                        name: "Treino de Força para Pedro",
-                        category: "forca",
-                        difficulty: "intermediario",
-                        description: "Plano para ganho de massa muscular com foco em exercícios compostos.",
-                        exercises: [
-                            { exerciseId: 1, sets: 4, reps: 8 },
-                            { exerciseId: 2, sets: 4, reps: 10 },
-                            { exerciseId: 4, sets: 3, reps: 6 }
-                        ],
-                        createdAt: new Date(Date.now() - 172800000).toISOString()
-                    },
-                    {
-                        id: 3,
-                        trainerId: 1,
-                        studentId: 3,
-                        name: "Treino Funcional para Maria",
-                        category: "funcional",
-                        difficulty: "intermediario",
-                        description: "Treino funcional para melhora do condicionamento físico geral.",
-                        exercises: [
-                            { exerciseId: 3, sets: 3, reps: 15 },
-                            { exerciseId: 8, sets: 4, reps: 8 }
-                        ],
-                        createdAt: new Date(Date.now() - 259200000).toISOString()
-                    },
-                    {
-                        id: 4,
-                        trainerId: 1,
-                        studentId: null,
-                        name: "Treino Geral de Ombros",
-                        category: "forca",
-                        difficulty: "intermediario",
-                        description: "Plano genérico para desenvolvimento dos deltoides.",
-                        exercises: [
-                            { exerciseId: 5, sets: 4, reps: 12 }
-                        ],
-                        createdAt: new Date(Date.now() - 345600000).toISOString()
-                    }
-                ];
-                plans.push(...examplePlans);
-                localStorage.setItem('fitplan_plans', JSON.stringify(plans));
-            }
-        }
-
-        // Authentication
-        function showLogin() {
-            hideAllPages();
-            document.getElementById('login-page').classList.remove('hidden');
-        }
-
-        function login(event) {
+        // Funções de login
+        async function loginPhysio(event) {
             event.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
+            const code = document.getElementById('physio-code').value.toUpperCase();
+            
+            // Mostrar loading
+            const submitButton = event.target.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = 'Verificando...';
+            submitButton.disabled = true;
+            
+            try {
+                // Buscar dados das fisioterapeutas
+                const physioList = await fetchPhysiotherapistsFromSheets();
+                const physio = physioList.find(p => p.code === code);
+                
+                if (physio) {
+                    currentUser = { 
+                        type: 'physio', 
+                        code: physio.code, 
+                        name: physio.name, 
+                        email: physio.email,
+                        specialty: physio.specialty,
+                        isMaster: physio.isMaster 
+                    };
+                    
+                    if (physio.isMaster) {
+                        document.getElementById('master-name').textContent = physio.name;
+                        document.getElementById('master-specialty').textContent = physio.specialty;
+                        document.getElementById('master-code-display').textContent = physio.code;
+                        showMasterDashboard();
+                    } else {
+                        document.getElementById('physio-name').textContent = physio.name;
+                        document.getElementById('physio-specialty').textContent = physio.specialty;
+                        document.getElementById('physio-code-display').textContent = physio.code;
+                        showPhysioDashboard();
+                    }
+                } else {
+                    alert('Código inválido! Verifique se o código está correto.');
+                }
+            } catch (error) {
+                console.error('Erro ao buscar dados:', error);
+                alert('Erro ao conectar com o sistema. Tente novamente.');
+            } finally {
+                // Restaurar botão
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+            }
+        }
 
-            const trainer = trainers.find(t => t.email === email && t.password === password);
-            if (trainer) {
-                currentTrainer = trainer;
-                localStorage.setItem('fitplan_current_trainer', JSON.stringify(currentTrainer));
-                document.getElementById('nav-menu').classList.remove('hidden');
-                document.getElementById('login-btn').classList.add('hidden');
-                showDashboard();
-                updateTrainerInfo();
+        function loginClient(event) {
+            event.preventDefault();
+            const code = document.getElementById('client-code').value;
+            
+            // Verificar se existe um plano para este código
+            const clientPlan = plans.find(plan => plan.clientCode === code);
+            if (clientPlan) {
+                currentUser = { type: 'client', code: code, name: clientPlan.clientName };
+                document.getElementById('client-name-display').textContent = clientPlan.clientName;
+                showClientDashboard();
             } else {
-                alert('Email ou senha incorretos!');
+                alert('Código de cliente não encontrado!');
             }
         }
 
         function logout() {
-            currentTrainer = null;
-            localStorage.removeItem('fitplan_current_trainer');
-            document.getElementById('nav-menu').classList.add('hidden');
-            document.getElementById('login-btn').classList.remove('hidden');
-            showLogin();
+            currentUser = null;
+            showPhysioLogin();
         }
 
-        // Page navigation
-        function hideAllPages() {
-            document.getElementById('login-page').classList.add('hidden');
-            document.getElementById('dashboard-page').classList.add('hidden');
-            document.getElementById('students-page').classList.add('hidden');
-            document.getElementById('plans-page').classList.add('hidden');
-            document.getElementById('create-plan-page').classList.add('hidden');
-        }
+        // Carregar dashboard fisioterapeuta
+        function loadPhysioDashboard() {
+            const pendingPlans = plans.filter(plan => plan.status === 'pendente');
+            const activePlans = plans.filter(plan => plan.status === 'ativo');
+            const completedPlans = plans.filter(plan => plan.status === 'concluido');
 
-        function showDashboard() {
-            hideAllPages();
-            document.getElementById('dashboard-page').classList.remove('hidden');
-            loadDashboardData();
-        }
+            document.getElementById('pending-count').textContent = pendingPlans.length;
+            document.getElementById('active-count').textContent = activePlans.length;
+            document.getElementById('completed-count').textContent = completedPlans.length;
 
-        function showStudents() {
-            hideAllPages();
-            document.getElementById('students-page').classList.remove('hidden');
-            loadStudents();
-        }
-
-        function showPlans() {
-            hideAllPages();
-            document.getElementById('plans-page').classList.remove('hidden');
-            loadPlans();
-        }
-
-        function showCreatePlan() {
-            hideAllPages();
-            document.getElementById('create-plan-page').classList.remove('hidden');
-            clearPlanForm();
-            loadStudentOptions();
-        }
-
-        // Update trainer info
-        function updateTrainerInfo() {
-            if (currentTrainer) {
-                document.getElementById('trainer-name').textContent = currentTrainer.name;
-                document.getElementById('trainer-email').textContent = currentTrainer.email;
-                document.getElementById('trainer-avatar').textContent = currentTrainer.name.charAt(0).toUpperCase();
-                
-                const trainerStudents = students.filter(s => s.trainerId === currentTrainer.id);
-                const trainerPlans = plans.filter(p => p.trainerId === currentTrainer.id);
-                const totalExercises = trainerPlans.reduce((sum, plan) => sum + plan.exercises.length, 0);
-                const activePlans = trainerPlans.filter(p => p.studentId !== null);
-                
-                document.getElementById('total-students').textContent = trainerStudents.length;
-                document.getElementById('total-plans').textContent = trainerPlans.length;
-                document.getElementById('total-exercises').textContent = totalExercises;
-                document.getElementById('active-plans').textContent = activePlans.length;
-            }
-        }
-
-        // Dashboard
-        function loadDashboardData() {
-            updateTrainerInfo();
-            loadRecentStudents();
-            loadRecentPlans();
-        }
-
-        function loadRecentStudents() {
-            const trainerStudents = students.filter(s => s.trainerId === currentTrainer.id)
-                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-                .slice(0, 3);
-            
-            const container = document.getElementById('recent-students');
-            
-            if (trainerStudents.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 text-center py-4">Nenhum aluno cadastrado ainda</p>';
-                return;
-            }
-
-            container.innerHTML = trainerStudents.map(student => `
-                <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                    <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-                        <span class="text-white font-medium text-sm">${student.name.charAt(0).toUpperCase()}</span>
-                    </div>
-                    <div class="flex-1">
-                        <h4 class="font-medium text-gray-800 text-sm">${student.name}</h4>
-                        <p class="text-xs text-gray-600">${student.goal.replace('-', ' ')}</p>
+            const plansList = document.getElementById('plans-list');
+            plansList.innerHTML = plans.map(plan => `
+                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-200">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="font-semibold text-gray-800">${plan.title}</h3>
+                            <p class="text-gray-600 text-sm">Cliente: ${plan.clientName}</p>
+                            <p class="text-gray-500 text-xs">Criado em: ${plan.createdAt}</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(plan.status)}">
+                            ${getStatusText(plan.status)}
+                        </span>
                     </div>
                 </div>
             `).join('');
         }
 
-        function loadRecentPlans() {
-            const trainerPlans = plans.filter(p => p.trainerId === currentTrainer.id)
-                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-                .slice(0, 3);
-            
-            const container = document.getElementById('recent-plans');
-            
-            if (trainerPlans.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 text-center py-4">Nenhum plano criado ainda</p>';
-                return;
-            }
-
-            container.innerHTML = trainerPlans.map(plan => {
-                const student = plan.studentId ? students.find(s => s.id === plan.studentId) : null;
-                return `
-                    <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                        <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                            <span class="text-white font-medium text-sm">📋</span>
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-medium text-gray-800 text-sm">${plan.name}</h4>
-                            <p class="text-xs text-gray-600">${student ? student.name : 'Plano genérico'}</p>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // Students management
-        function loadStudents() {
-            const trainerStudents = students.filter(s => s.trainerId === currentTrainer.id);
-            const container = document.getElementById('students-list');
-            
-            if (trainerStudents.length === 0) {
-                container.innerHTML = `
-                    <div class="col-span-full text-center py-12">
-                        <div class="text-gray-400 text-6xl mb-4">👥</div>
-                        <h3 class="text-lg font-medium text-gray-600 mb-2">Nenhum aluno cadastrado ainda</h3>
-                        <p class="text-gray-500 mb-4">Comece adicionando seu primeiro aluno!</p>
-                        <button onclick="showAddStudent()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">Adicionar Primeiro Aluno</button>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = trainerStudents.map(student => {
-                const studentPlans = plans.filter(p => p.studentId === student.id);
-                return `
-                    <div class="card-hover bg-white border border-gray-200 rounded-lg p-4 md:p-6">
-                        <div class="flex items-center space-x-4 mb-4">
-                            <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
-                                <span class="text-white font-bold">${student.name.charAt(0).toUpperCase()}</span>
-                            </div>
-                            <div class="flex-1">
-                                <h4 class="font-semibold text-gray-800">${student.name}</h4>
-                                <p class="text-sm text-gray-600">${student.email}</p>
-                            </div>
-                        </div>
-                        <div class="space-y-2 mb-4">
-                            <div class="flex justify-between text-sm">
-                                <span class="text-gray-600">Objetivo:</span>
-                                <span class="font-medium">${student.goal.replace('-', ' ')}</span>
-                            </div>
-                            <div class="flex justify-between text-sm">
-                                <span class="text-gray-600">Planos:</span>
-                                <span class="font-medium">${studentPlans.length}</span>
-                            </div>
-                            <div class="flex justify-between text-sm">
-                                <span class="text-gray-600">Desde:</span>
-                                <span class="font-medium">${new Date(student.createdAt).toLocaleDateString('pt-BR')}</span>
-                            </div>
-                        </div>
-                        <div class="flex space-x-2">
-                            <button onclick="editStudent(${student.id})" class="flex-1 bg-blue-50 text-blue-600 py-2 rounded-md hover:bg-blue-100 transition-colors text-sm">Editar</button>
-                            <button onclick="deleteStudent(${student.id})" class="flex-1 bg-red-50 text-red-600 py-2 rounded-md hover:bg-red-100 transition-colors text-sm">Excluir</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function showAddStudent() {
-            editingStudentId = null;
-            document.getElementById('student-modal-title').textContent = 'Adicionar Aluno';
-            document.getElementById('student-name').value = '';
-            document.getElementById('student-email').value = '';
-            document.getElementById('student-phone').value = '';
-            document.getElementById('student-goal').value = 'perda-peso';
-            document.getElementById('student-modal').classList.remove('hidden');
-        }
-
-        function editStudent(studentId) {
-            const student = students.find(s => s.id === studentId);
-            if (!student) return;
-            
-            editingStudentId = studentId;
-            document.getElementById('student-modal-title').textContent = 'Editar Aluno';
-            document.getElementById('student-name').value = student.name;
-            document.getElementById('student-email').value = student.email;
-            document.getElementById('student-phone').value = student.phone || '';
-            document.getElementById('student-goal').value = student.goal;
-            document.getElementById('student-modal').classList.remove('hidden');
-        }
-
-        function saveStudent(event) {
-            event.preventDefault();
-            
-            const studentData = {
-                name: document.getElementById('student-name').value,
-                email: document.getElementById('student-email').value,
-                phone: document.getElementById('student-phone').value,
-                goal: document.getElementById('student-goal').value
-            };
-
-            if (editingStudentId) {
-                // Edit existing student
-                const studentIndex = students.findIndex(s => s.id === editingStudentId);
-                students[studentIndex] = { ...students[studentIndex], ...studentData };
-            } else {
-                // Add new student
-                const newStudent = {
-                    id: Date.now(),
-                    trainerId: currentTrainer.id,
-                    ...studentData,
-                    createdAt: new Date().toISOString()
-                };
-                students.push(newStudent);
-            }
-
-            localStorage.setItem('fitplan_students', JSON.stringify(students));
-            closeStudentModal();
-            loadStudents();
-            updateTrainerInfo();
-            alert(editingStudentId ? 'Aluno atualizado com sucesso!' : 'Aluno adicionado com sucesso!');
-        }
-
-        function deleteStudent(studentId) {
-            if (confirm('Tem certeza que deseja excluir este aluno? Todos os planos associados também serão removidos.')) {
-                students = students.filter(s => s.id !== studentId);
-                plans = plans.filter(p => p.studentId !== studentId);
-                localStorage.setItem('fitplan_students', JSON.stringify(students));
-                localStorage.setItem('fitplan_plans', JSON.stringify(plans));
-                loadStudents();
-                updateTrainerInfo();
+        function getStatusColor(status) {
+            switch(status) {
+                case 'pendente': return 'bg-yellow-100 text-yellow-800';
+                case 'ativo': return 'bg-blue-100 text-blue-800';
+                case 'concluido': return 'bg-green-100 text-green-800';
+                default: return 'bg-gray-100 text-gray-800';
             }
         }
 
-        function closeStudentModal() {
-            document.getElementById('student-modal').classList.add('hidden');
-        }
-
-        // Plans management
-        function loadPlans() {
-            const trainerPlans = plans.filter(p => p.trainerId === currentTrainer.id);
-            const container = document.getElementById('plans-list');
-            
-            if (trainerPlans.length === 0) {
-                container.innerHTML = `
-                    <div class="col-span-full text-center py-12">
-                        <div class="text-gray-400 text-6xl mb-4">📋</div>
-                        <h3 class="text-lg font-medium text-gray-600 mb-2">Nenhum plano criado ainda</h3>
-                        <p class="text-gray-500 mb-4">Comece criando seu primeiro plano de treino!</p>
-                        <button onclick="showCreatePlan()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">Criar Primeiro Plano</button>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = trainerPlans.map(plan => {
-                const student = plan.studentId ? students.find(s => s.id === plan.studentId) : null;
-                return `
-                    <div class="card-hover bg-white border border-gray-200 rounded-lg p-4 md:p-6 cursor-pointer" onclick="viewPlan(${plan.id})">
-                        <div class="flex justify-between items-start mb-3">
-                            <h4 class="font-semibold text-gray-800 text-sm md:text-base">${plan.name}</h4>
-                            <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">${plan.category}</span>
-                        </div>
-                        <p class="text-gray-600 text-xs md:text-sm mb-3 line-clamp-2">${plan.description}</p>
-                        <div class="space-y-2 mb-4 text-xs md:text-sm text-gray-500">
-                            <div class="flex justify-between">
-                                <span>Aluno:</span>
-                                <span class="font-medium">${student ? student.name : 'Plano genérico'}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span>Exercícios:</span>
-                                <span class="font-medium">${plan.exercises.length}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span>Nível:</span>
-                                <span class="font-medium">${plan.difficulty}</span>
-                            </div>
-                        </div>
-                        <div class="flex space-x-2">
-                            <button onclick="event.stopPropagation(); editPlan(${plan.id})" class="flex-1 bg-blue-50 text-blue-600 py-2 rounded-md hover:bg-blue-100 transition-colors text-xs md:text-sm">Editar</button>
-                            <button onclick="event.stopPropagation(); deletePlan(${plan.id})" class="flex-1 bg-red-50 text-red-600 py-2 rounded-md hover:bg-red-100 transition-colors text-xs md:text-sm">Excluir</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function loadStudentOptions() {
-            const trainerStudents = students.filter(s => s.trainerId === currentTrainer.id);
-            const select = document.getElementById('plan-student');
-            
-            select.innerHTML = '<option value="">Selecione um aluno...</option>';
-            trainerStudents.forEach(student => {
-                select.innerHTML += `<option value="${student.id}">${student.name}</option>`;
-            });
-        }
-
-        function clearPlanForm() {
-            document.getElementById('plan-name').value = '';
-            document.getElementById('plan-category').value = 'forca';
-            document.getElementById('plan-student').value = '';
-            document.getElementById('plan-difficulty').value = 'iniciante';
-            document.getElementById('plan-description').value = '';
-            document.getElementById('selected-exercises').innerHTML = '';
-            selectedExercises = [];
-        }
-
-        function savePlan(event) {
-            event.preventDefault();
-            
-            if (selectedExercises.length === 0) {
-                alert('Adicione pelo menos um exercício ao plano!');
-                return;
-            }
-            
-            const planData = {
-                id: Date.now(),
-                trainerId: currentTrainer.id,
-                studentId: document.getElementById('plan-student').value || null,
-                name: document.getElementById('plan-name').value,
-                category: document.getElementById('plan-category').value,
-                difficulty: document.getElementById('plan-difficulty').value,
-                description: document.getElementById('plan-description').value,
-                exercises: selectedExercises,
-                createdAt: new Date().toISOString()
-            };
-
-            plans.push(planData);
-            localStorage.setItem('fitplan_plans', JSON.stringify(plans));
-            
-            alert('Plano salvo com sucesso!');
-            showPlans();
-            updateTrainerInfo();
-        }
-
-        function deletePlan(planId) {
-            if (confirm('Tem certeza que deseja excluir este plano?')) {
-                plans = plans.filter(p => p.id !== planId);
-                localStorage.setItem('fitplan_plans', JSON.stringify(plans));
-                loadPlans();
-                updateTrainerInfo();
+        function getStatusText(status) {
+            switch(status) {
+                case 'pendente': return 'Pendente';
+                case 'ativo': return 'Ativo';
+                case 'concluido': return 'Concluído';
+                default: return 'Desconhecido';
             }
         }
 
-        function viewPlan(planId) {
-            const plan = plans.find(p => p.id === planId);
-            if (!plan) return;
-
-            const student = plan.studentId ? students.find(s => s.id === plan.studentId) : null;
-
-            document.getElementById('plan-modal-title').textContent = plan.name;
-            document.getElementById('plan-modal-content').innerHTML = `
-                <div class="space-y-4 md:space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <h4 class="font-semibold text-gray-800 mb-2 text-sm md:text-base">Aluno</h4>
-                            <p class="text-gray-600 text-sm md:text-base">${student ? student.name : 'Plano genérico'}</p>
-                        </div>
-                        <div>
-                            <h4 class="font-semibold text-gray-800 mb-2 text-sm md:text-base">Nível</h4>
-                            <p class="text-gray-600 text-sm md:text-base">${plan.difficulty}</p>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="font-semibold text-gray-800 mb-2 text-sm md:text-base">Descrição</h4>
-                        <p class="text-gray-600 text-sm md:text-base">${plan.description}</p>
-                    </div>
-                    <div>
-                        <h4 class="font-semibold text-gray-800 mb-3 md:mb-4 text-sm md:text-base">Exercícios (${plan.exercises.length})</h4>
-                        <div class="space-y-3 md:space-y-4">
-                            ${plan.exercises.map(ex => {
-                                const exercise = exercises.find(e => e.id === ex.exerciseId);
-                                return `
-                                    <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 p-3 md:p-4 bg-gray-50 rounded-lg">
-                                        <img src="${exercise.image}" alt="${exercise.name}" class="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover">
-                                        <div class="flex-1 min-w-0">
-                                            <h5 class="font-medium text-gray-800 text-sm md:text-base">${exercise.name}</h5>
-                                            <p class="text-xs md:text-sm text-gray-600 line-clamp-2">${exercise.description}</p>
-                                            <div class="mt-2 flex flex-wrap gap-2 text-xs md:text-sm">
-                                                <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded">${ex.sets} séries</span>
-                                                <span class="bg-green-100 text-green-800 px-2 py-1 rounded">${ex.reps} repetições</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
-                            }).join('')}
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.getElementById('plan-modal').classList.remove('hidden');
+        // Carregar exercícios disponíveis
+        function loadAvailableExercises() {
+            // Esta função seria chamada quando necessário
         }
 
-        function closePlanModal() {
-            document.getElementById('plan-modal').classList.add('hidden');
-        }
-
-        // Exercise selection
-        function showExerciseSelector() {
-            loadExerciseList();
+        // Funções para modais de exercício
+        function createNewExerciseInPlan() {
+            selectedImages = [];
             document.getElementById('exercise-modal').classList.remove('hidden');
+            loadModalAvailableImages();
+        }
+
+        function addExistingExerciseToPlan() {
+            document.getElementById('select-exercise-modal').classList.remove('hidden');
+            loadExistingExercisesList();
         }
 
         function closeExerciseModal() {
             document.getElementById('exercise-modal').classList.add('hidden');
+            selectedImages = [];
+            document.getElementById('modal-exercise-name').value = '';
+            document.getElementById('modal-exercise-description').value = '';
+            document.getElementById('modal-exercise-sets').value = '';
+            document.getElementById('modal-exercise-reps').value = '';
         }
 
-        function loadExerciseList() {
-            const container = document.getElementById('exercise-list');
-            container.innerHTML = exercises.map(exercise => `
-                <div class="card-hover bg-white border border-gray-200 rounded-lg p-3 md:p-4 cursor-pointer hover:border-blue-300" onclick="selectExercise(${exercise.id})">
-                    <img src="${exercise.image}" alt="${exercise.name}" class="w-full h-24 md:h-32 object-cover rounded-lg mb-2 md:mb-3">
-                    <h4 class="font-semibold text-gray-800 mb-2 text-sm md:text-base">${exercise.name}</h4>
-                    <p class="text-xs md:text-sm text-gray-600 mb-2 md:mb-3 line-clamp-2">${exercise.description}</p>
-                    <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">${exercise.category}</span>
+        function closeSelectExerciseModal() {
+            document.getElementById('select-exercise-modal').classList.add('hidden');
+        }
+
+        function loadModalAvailableImages() {
+            const availableImages = document.getElementById('modal-available-images');
+            
+            availableImages.innerHTML = availableImageUrls.map((imageUrl, index) => `
+                <div class="relative cursor-pointer hover:scale-105 transition duration-200 ${selectedImages.includes(imageUrl) ? 'ring-2 ring-blue-500' : ''}" onclick="toggleModalImageSelection('${imageUrl}')">
+                    <img src="${imageUrl}" alt="Exercício ${index + 1}" class="w-20 h-20 object-cover rounded-lg" onerror="this.src=''; this.alt='Imagem não disponível'; this.style.display='none';">
+                    ${selectedImages.includes(imageUrl) ? '<div class="absolute top-1 right-1 bg-blue-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">✓</div>' : ''}
                 </div>
             `).join('');
         }
 
-        function selectExercise(exerciseId) {
-            const exercise = exercises.find(e => e.id === exerciseId);
-            if (!exercise) return;
-
-            if (selectedExercises.find(ex => ex.exerciseId === exerciseId)) {
-                alert('Este exercício já foi adicionado ao plano!');
-                return;
+        function toggleModalImageSelection(imageUrl) {
+            const index = selectedImages.indexOf(imageUrl);
+            if (index > -1) {
+                selectedImages.splice(index, 1);
+            } else {
+                selectedImages.push(imageUrl);
             }
+            loadModalAvailableImages();
+            updateModalSelectedImages();
+        }
 
-            const sets = prompt('Quantas séries?', '3');
-            const reps = prompt('Quantas repetições?', '12');
+        function updateModalSelectedImages() {
+            const selectedImagesDiv = document.getElementById('modal-selected-images');
+            selectedImagesDiv.innerHTML = selectedImages.map(imageUrl => `
+                <div class="relative inline-block">
+                    <img src="${imageUrl}" alt="Selecionada" class="w-16 h-16 object-cover rounded-lg" onerror="this.src=''; this.alt='Imagem não disponível'; this.style.display='none';">
+                    <button onclick="removeModalSelectedImage('${imageUrl}')" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600">×</button>
+                </div>
+            `).join('');
+        }
 
-            if (sets && reps) {
-                const exerciseData = {
-                    exerciseId: exerciseId,
-                    sets: parseInt(sets),
-                    reps: parseInt(reps)
-                };
-
-                selectedExercises.push(exerciseData);
-                updateSelectedExercisesList();
-                closeExerciseModal();
+        function removeModalSelectedImage(imageUrl) {
+            const index = selectedImages.indexOf(imageUrl);
+            if (index > -1) {
+                selectedImages.splice(index, 1);
+                loadModalAvailableImages();
+                updateModalSelectedImages();
             }
         }
 
-        function updateSelectedExercisesList() {
-            const container = document.getElementById('selected-exercises');
+        function addModalCustomImage() {
+            const urlInput = document.getElementById('modal-custom-image-url');
+            const imageUrl = urlInput.value.trim();
             
-            if (selectedExercises.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 text-center py-8">Nenhum exercício selecionado ainda</p>';
-                return;
+            if (imageUrl && isValidImageUrl(imageUrl)) {
+                if (!availableImageUrls.includes(imageUrl)) {
+                    availableImageUrls.push(imageUrl);
+                }
+                if (!selectedImages.includes(imageUrl)) {
+                    selectedImages.push(imageUrl);
+                }
+                urlInput.value = '';
+                loadModalAvailableImages();
+                updateModalSelectedImages();
+            } else {
+                alert('Por favor, insira uma URL válida de imagem.');
             }
+        }
 
-            container.innerHTML = selectedExercises.map((ex, index) => {
-                const exercise = exercises.find(e => e.id === ex.exerciseId);
-                return `
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 p-3 md:p-4 bg-gray-50 rounded-lg">
-                        <img src="${exercise.image}" alt="${exercise.name}" class="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover">
-                        <div class="flex-1 min-w-0">
-                            <h5 class="font-medium text-gray-800 text-sm md:text-base">${exercise.name}</h5>
-                            <p class="text-xs md:text-sm text-gray-600 line-clamp-2">${exercise.description}</p>
+        function saveExerciseInPlan(event) {
+            event.preventDefault();
+            
+            const exerciseData = {
+                id: Date.now(),
+                name: document.getElementById('modal-exercise-name').value,
+                description: document.getElementById('modal-exercise-description').value,
+                sets: parseInt(document.getElementById('modal-exercise-sets').value),
+                reps: parseInt(document.getElementById('modal-exercise-reps').value),
+                images: [...selectedImages]
+            };
+            
+            exercises.push(exerciseData);
+            addExerciseToPlanDisplay(exerciseData);
+            closeExerciseModal();
+        }
+
+        function loadExistingExercisesList() {
+            const exercisesList = document.getElementById('existing-exercises-list');
+            exercisesList.innerHTML = exercises.map(exercise => `
+                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-200 cursor-pointer" onclick="selectExistingExercise(${exercise.id})">
+                    <div class="flex items-start gap-4">
+                        <div class="flex gap-1 flex-wrap">
+                            ${exercise.images.slice(0, 2).map(img => `
+                                <img src="${img}" alt="Exercício" class="w-12 h-12 object-cover rounded" onerror="this.src=''; this.alt='Imagem não disponível'; this.style.display='none';">
+                            `).join('')}
                         </div>
-                        <div class="flex items-center justify-between w-full sm:w-auto space-x-3 sm:space-x-4">
-                            <div class="text-center">
-                                <div class="text-xs md:text-sm text-gray-600 mb-1">Séries</div>
-                                <input type="number" value="${ex.sets}" min="1" max="10" class="w-12 md:w-16 px-2 py-1 border rounded text-center text-sm" onchange="updateExercise(${index}, 'sets', this.value)">
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800 mb-1">${exercise.name}</h4>
+                            <p class="text-gray-600 text-sm mb-2">${exercise.description}</p>
+                            <div class="flex gap-4 text-xs text-gray-500">
+                                <span><strong>Séries:</strong> ${exercise.sets}</span>
+                                <span><strong>Repetições:</strong> ${exercise.reps}</span>
                             </div>
-                            <div class="text-center">
-                                <div class="text-xs md:text-sm text-gray-600 mb-1">Reps</div>
-                                <input type="number" value="${ex.reps}" min="1" max="50" class="w-12 md:w-16 px-2 py-1 border rounded text-center text-sm" onchange="updateExercise(${index}, 'reps', this.value)">
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectExistingExercise(exerciseId) {
+            const exercise = exercises.find(ex => ex.id === exerciseId);
+            if (exercise) {
+                addExerciseToPlanDisplay(exercise);
+                closeSelectExerciseModal();
+            }
+        }
+
+        function addExerciseToPlanDisplay(exercise) {
+            const planExercises = document.getElementById('plan-exercises');
+            const exerciseId = Date.now();
+            
+            const exerciseHtml = `
+                <div class="border border-gray-200 rounded-lg p-4" data-exercise-id="${exerciseId}" data-original-exercise-id="${exercise.id}">
+                    <div class="flex items-start gap-4 mb-4">
+                        <div class="flex gap-2 flex-wrap">
+                            ${exercise.images.slice(0, 3).map(img => `
+                                <img src="${img}" alt="Exercício" class="w-16 h-16 object-cover rounded-lg" onerror="this.src=''; this.alt='Imagem não disponível'; this.style.display='none';">
+                            `).join('')}
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800 mb-1">${exercise.name}</h4>
+                            <p class="text-gray-600 text-sm mb-2">${exercise.description}</p>
+                            <div class="flex gap-4 text-xs text-gray-500 mb-3">
+                                <span><strong>Séries:</strong> ${exercise.sets}</span>
+                                <span><strong>Repetições:</strong> ${exercise.reps}</span>
                             </div>
-                            <button onclick="removeExercise(${index})" class="text-red-600 hover:text-red-800 p-1 md:p-2">
-                                <svg class="w-4 h-4 md:w-5 md:h-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                </svg>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2">Comentários Específicos</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" placeholder="Instruções específicas para este cliente...">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="removeExerciseFromPlan(${exerciseId})" class="text-red-600 hover:text-red-800 text-sm">
+                        Remover Exercício
+                    </button>
+                </div>
+            `;
+            
+            planExercises.insertAdjacentHTML('beforeend', exerciseHtml);
+        }
+
+        function filterExercises() {
+            const searchTerm = document.getElementById('exercise-search').value.toLowerCase();
+            const filteredExercises = exercises.filter(exercise => 
+                exercise.name.toLowerCase().includes(searchTerm) || 
+                exercise.description.toLowerCase().includes(searchTerm)
+            );
+            
+            const exercisesList = document.getElementById('existing-exercises-list');
+            exercisesList.innerHTML = filteredExercises.map(exercise => `
+                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-200 cursor-pointer" onclick="selectExistingExercise(${exercise.id})">
+                    <div class="flex items-start gap-4">
+                        <div class="flex gap-1 flex-wrap">
+                            ${exercise.images.slice(0, 2).map(img => `
+                                <img src="${img}" alt="Exercício" class="w-12 h-12 object-cover rounded" onerror="this.src=''; this.alt='Imagem não disponível'; this.style.display='none';">
+                            `).join('')}
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800 mb-1">${exercise.name}</h4>
+                            <p class="text-gray-600 text-sm mb-2">${exercise.description}</p>
+                            <div class="flex gap-4 text-xs text-gray-500">
+                                <span><strong>Séries:</strong> ${exercise.sets}</span>
+                                <span><strong>Repetições:</strong> ${exercise.reps}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function removeExerciseFromPlan(exerciseId) {
+            const exerciseElement = document.querySelector(`[data-exercise-id="${exerciseId}"]`);
+            if (exerciseElement) {
+                exerciseElement.remove();
+            }
+        }
+
+        // Salvar plano
+        function savePlan(event) {
+            event.preventDefault();
+            
+            // Coletar exercícios selecionados
+            const exerciseElements = document.querySelectorAll('#plan-exercises [data-original-exercise-id]');
+            const selectedExercises = Array.from(exerciseElements).map(element => {
+                const originalId = parseInt(element.getAttribute('data-original-exercise-id'));
+                const comments = element.querySelector('input[type="text"]').value;
+                return {
+                    exerciseId: originalId,
+                    comments: comments
+                };
+            });
+            
+            const planData = {
+                id: Date.now(),
+                title: document.getElementById('plan-title').value,
+                clientName: document.getElementById('client-name').value,
+                clientCode: document.getElementById('plan-client-code').value,
+                comments: document.getElementById('plan-comments').value,
+                status: 'pendente',
+                exercises: selectedExercises.map(ex => ex.exerciseId),
+                exerciseComments: selectedExercises,
+                createdAt: new Date().toISOString().split('T')[0],
+                physioName: currentUser.name
+            };
+            
+            plans.push(planData);
+            
+            // Limpar formulário
+            document.getElementById('plan-exercises').innerHTML = '';
+            document.getElementById('plan-title').value = '';
+            document.getElementById('client-name').value = '';
+            document.getElementById('plan-client-code').value = '';
+            document.getElementById('plan-comments').value = '';
+            
+            alert('Plano criado com sucesso! Aguardando aprovação.');
+            showPhysioDashboard();
+        }
+
+        // Carregar imagens disponíveis
+        function loadAvailableImages() {
+            const availableImages = document.getElementById('available-images');
+            
+            availableImages.innerHTML = availableImageUrls.map((imageUrl, index) => `
+                <div class="relative cursor-pointer hover:scale-105 transition duration-200 ${selectedImages.includes(imageUrl) ? 'ring-2 ring-blue-500' : ''}" onclick="toggleImageSelection('${imageUrl}')">
+                    <img src="${imageUrl}" alt="Exercício ${index + 1}" class="w-20 h-20 object-cover rounded-lg" onerror="this.src=''; this.alt='Imagem não disponível'; this.style.display='none';">
+                    ${selectedImages.includes(imageUrl) ? '<div class="absolute top-1 right-1 bg-blue-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">✓</div>' : ''}
+                </div>
+            `).join('');
+        }
+
+        function toggleImageSelection(imageUrl) {
+            const index = selectedImages.indexOf(imageUrl);
+            if (index > -1) {
+                selectedImages.splice(index, 1);
+            } else {
+                selectedImages.push(imageUrl);
+            }
+            loadAvailableImages();
+            updateSelectedImages();
+        }
+
+        function updateSelectedImages() {
+            const selectedImagesDiv = document.getElementById('selected-images');
+            selectedImagesDiv.innerHTML = selectedImages.map(imageUrl => `
+                <div class="relative inline-block">
+                    <img src="${imageUrl}" alt="Selecionada" class="w-16 h-16 object-cover rounded-lg" onerror="this.src=''; this.alt='Imagem não disponível'; this.style.display='none';">
+                    <button onclick="removeSelectedImage('${imageUrl}')" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600">×</button>
+                </div>
+            `).join('');
+        }
+
+        function removeSelectedImage(imageUrl) {
+            const index = selectedImages.indexOf(imageUrl);
+            if (index > -1) {
+                selectedImages.splice(index, 1);
+                loadAvailableImages();
+                updateSelectedImages();
+            }
+        }
+
+        // Salvar exercício
+        function saveExercise(event) {
+            event.preventDefault();
+            
+            const exerciseData = {
+                id: Date.now(),
+                name: document.getElementById('exercise-name').value,
+                description: document.getElementById('exercise-description').value,
+                sets: parseInt(document.getElementById('exercise-sets').value),
+                reps: parseInt(document.getElementById('exercise-reps').value),
+                images: [...selectedImages]
+            };
+            
+            exercises.push(exerciseData);
+            selectedImages = [];
+            alert('Exercício criado com sucesso!');
+            showPhysioDashboard();
+        }
+
+        // Carregar planos do cliente
+        function loadClientPlans() {
+            const clientPlans = plans.filter(plan => plan.clientCode === currentUser.code);
+            const clientPlansList = document.getElementById('client-plans-list');
+            
+            clientPlansList.innerHTML = clientPlans.map(plan => `
+                <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition duration-200 cursor-pointer" onclick="showPlanDetails(${plan.id})">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800">${plan.title}</h3>
+                        <span class="px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(plan.status)}">
+                            ${getStatusText(plan.status)}
+                        </span>
+                    </div>
+                    <p class="text-gray-600 mb-2">${plan.comments}</p>
+                    <p class="text-gray-500 text-sm">Criado em: ${plan.createdAt}</p>
+                </div>
+            `).join('');
+        }
+
+        // Carregar dashboard master
+        function loadMasterDashboard() {
+            const pendingPlans = plans.filter(plan => plan.status === 'pendente');
+            const reviewPlans = plans.filter(plan => plan.status === 'revisao');
+            const activePlans = plans.filter(plan => plan.status === 'ativo');
+            const approvedPlans = plans.filter(plan => plan.status === 'ativo' || plan.status === 'concluido');
+
+            document.getElementById('master-pending-count').textContent = pendingPlans.length;
+            document.getElementById('master-review-count').textContent = reviewPlans.length;
+            document.getElementById('master-active-count').textContent = activePlans.length;
+            document.getElementById('master-approved-count').textContent = approvedPlans.length;
+
+            // Carregar planos pendentes
+            const pendingList = document.getElementById('pending-approval-list');
+            pendingList.innerHTML = pendingPlans.map(plan => `
+                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-200">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-800">${plan.title}</h3>
+                            <p class="text-gray-600 text-sm">Cliente: ${plan.clientName} (${plan.clientCode})</p>
+                            <p class="text-gray-600 text-sm">Fisioterapeuta: ${plan.physioName}</p>
+                            <p class="text-gray-500 text-xs">Criado em: ${plan.createdAt}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="showPlanApproval(${plan.id})" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition duration-200">
+                                Revisar
+                            </button>
+                            <button onclick="showEditPlan(${plan.id})" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg text-sm transition duration-200">
+                                Editar
                             </button>
                         </div>
                     </div>
-                `;
-            }).join('');
+                </div>
+            `).join('');
+
+            // Carregar todos os planos
+            const allPlansList = document.getElementById('all-plans-list');
+            allPlansList.innerHTML = plans.map(plan => `
+                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-200">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-800">${plan.title}</h3>
+                            <p class="text-gray-600 text-sm">Cliente: ${plan.clientName}</p>
+                            <p class="text-gray-600 text-sm">Fisioterapeuta: ${plan.physioName}</p>
+                            <p class="text-gray-500 text-xs">Criado em: ${plan.createdAt}</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(plan.status)}">
+                                ${getStatusText(plan.status)}
+                            </span>
+                            <button onclick="showEditPlan(${plan.id})" class="bg-orange-600 hover:bg-orange-700 text-white px-3 py-1 rounded text-xs transition duration-200">
+                                Editar
+                            </button>
+                            <button onclick="deletePlan(${plan.id})" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs transition duration-200">
+                                Excluir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        function updateExercise(index, field, value) {
-            selectedExercises[index][field] = parseInt(value);
-        }
+        // Carregar aprovação de plano
+        function loadPlanApproval(planId) {
+            const plan = plans.find(p => p.id === planId);
+            if (!plan) return;
 
-        function removeExercise(index) {
-            selectedExercises.splice(index, 1);
-            updateSelectedExercisesList();
-        }
+            currentPlanForApproval = plan;
 
-        // Mobile menu functions
-        function toggleMobileMenu() {
-            const mobileMenu = document.getElementById('mobile-menu');
-            mobileMenu.classList.toggle('hidden');
-        }
+            document.getElementById('approval-plan-title').textContent = plan.title;
+            document.getElementById('approval-client-name').textContent = plan.clientName;
+            document.getElementById('approval-client-code').textContent = plan.clientCode;
+            document.getElementById('approval-physio-name').textContent = plan.physioName;
+            document.getElementById('approval-created-date').textContent = plan.createdAt;
+            document.getElementById('approval-general-comments').textContent = plan.comments;
+            document.getElementById('master-notes').value = plan.masterNotes || '';
 
-        function closeMobileMenu() {
-            document.getElementById('mobile-menu').classList.add('hidden');
-        }
-
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', function(event) {
-            const mobileMenu = document.getElementById('mobile-menu');
-            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const approvalExercisesList = document.getElementById('approval-exercises-list');
+            const planExercises = exercises.filter(ex => plan.exercises.includes(ex.id));
             
-            if (!mobileMenu.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
-                mobileMenu.classList.add('hidden');
-            }
-        });
+            approvalExercisesList.innerHTML = planExercises.map(exercise => `
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <div class="flex items-start gap-4">
+                        <div class="flex gap-2 flex-wrap">
+                            ${exercise.images.map(img => `
+                                <img src="${img}" alt="Exercício" class="w-16 h-16 object-cover rounded-lg" onerror="this.src=''; this.alt='Imagem não disponível'; this.style.display='none';">
+                            `).join('')}
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800 mb-1">${exercise.name}</h4>
+                            <p class="text-gray-600 text-sm mb-2">${exercise.description}</p>
+                            <div class="flex gap-4 text-xs text-gray-500">
+                                <span><strong>Séries:</strong> ${exercise.sets}</span>
+                                <span><strong>Repetições:</strong> ${exercise.reps}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
 
-        // Initialize the app
-        initApp();
+        // Funções de aprovação
+        function approvePlan() {
+            if (!currentPlanForApproval) return;
+
+            const masterNotes = document.getElementById('master-notes').value;
+            const planIndex = plans.findIndex(p => p.id === currentPlanForApproval.id);
+            
+            if (planIndex !== -1) {
+                plans[planIndex].status = 'ativo';
+                plans[planIndex].masterNotes = masterNotes;
+                plans[planIndex].approvedAt = new Date().toISOString().split('T')[0];
+            }
+
+            alert('Plano aprovado com sucesso!');
+            showMasterDashboard();
+        }
+
+        function rejectPlan() {
+            if (!currentPlanForApproval) return;
+
+            const masterNotes = document.getElementById('master-notes').value;
+            if (!masterNotes.trim()) {
+                alert('Por favor, adicione uma observação explicando o motivo da rejeição.');
+                return;
+            }
+
+            const planIndex = plans.findIndex(p => p.id === currentPlanForApproval.id);
+            
+            if (planIndex !== -1) {
+                plans[planIndex].status = 'rejeitado';
+                plans[planIndex].masterNotes = masterNotes;
+                plans[planIndex].rejectedAt = new Date().toISOString().split('T')[0];
+            }
+
+            alert('Plano rejeitado. A fisioterapeuta será notificada.');
+            showMasterDashboard();
+        }
+
+        function requestRevision() {
+            if (!currentPlanForApproval) return;
+
+            const masterNotes = document.getElementById('master-notes').value;
+            if (!masterNotes.trim()) {
+                alert('Por favor, adicione observações sobre as revisões necessárias.');
+                return;
+            }
+
+            const planIndex = plans.findIndex(p => p.id === currentPlanForApproval.id);
+            
+            if (planIndex !== -1) {
+                plans[planIndex].status = 'revisao';
+                plans[planIndex].masterNotes = masterNotes;
+                plans[planIndex].revisionRequestedAt = new Date().toISOString().split('T')[0];
+            }
+
+            alert('Revisão solicitada. A fisioterapeuta receberá suas observações.');
+            showMasterDashboard();
+        }
+
+        // Carregar detalhes do plano
+        function loadPlanDetails(planId) {
+            const plan = plans.find(p => p.id === planId);
+            if (!plan) return;
+            
+            document.getElementById('plan-details-title').textContent = plan.title;
+            document.getElementById('plan-general-comments').textContent = plan.comments;
+            
+            const planExercisesDetails = document.getElementById('plan-exercises-details');
+            const planExercises = exercises.filter(ex => plan.exercises.includes(ex.id));
+            
+            planExercisesDetails.innerHTML = planExercises.map(exercise => `
+                <div class="border border-gray-200 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="flex gap-2 flex-wrap">
+                            ${exercise.images.map(img => `
+                                <img src="${img}" alt="Exercício" class="w-20 h-20 object-cover rounded-lg" onerror="this.src=''; this.alt='Imagem não disponível'; this.style.display='none';">
+                            `).join('')}
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">${exercise.name}</h3>
+                            <p class="text-gray-600 mb-3">${exercise.description}</p>
+                            <div class="flex gap-4 text-sm text-gray-500">
+                                <span><strong>Séries:</strong> ${exercise.sets}</span>
+                                <span><strong>Repetições:</strong> ${exercise.reps}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Carregar gerenciamento de exercícios
+        function loadExerciseManagement() {
+            const exercisesList = document.getElementById('exercises-management-list');
+            exercisesList.innerHTML = exercises.map(exercise => `
+                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-200">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-800">${exercise.name}</h3>
+                            <p class="text-gray-600 text-sm">${exercise.description}</p>
+                            <div class="flex gap-4 text-xs text-gray-500 mt-2">
+                                <span><strong>Séries:</strong> ${exercise.sets}</span>
+                                <span><strong>Repetições:</strong> ${exercise.reps}</span>
+                            </div>
+                            <div class="flex gap-1 mt-2 flex-wrap">
+                                ${exercise.images.map(img => `
+                                    <img src="${img}" alt="Exercício" class="w-12 h-12 object-cover rounded" onerror="this.src=''; this.alt='Imagem não disponível'; this.style.display='none';">
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="showEditExercise(${exercise.id})" class="bg-orange-600 hover:bg-orange-700 text-white px-3 py-1 rounded text-xs transition duration-200">
+                                Editar
+                            </button>
+                            <button onclick="deleteExercise(${exercise.id})" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs transition duration-200">
+                                Excluir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Carregar edição de exercício
+        function loadEditExercise(exerciseId) {
+            const exercise = exercises.find(ex => ex.id === exerciseId);
+            if (!exercise) return;
+
+            document.getElementById('edit-exercise-id').value = exercise.id;
+            document.getElementById('edit-exercise-name').value = exercise.name;
+            document.getElementById('edit-exercise-description').value = exercise.description;
+            document.getElementById('edit-exercise-sets').value = exercise.sets;
+            document.getElementById('edit-exercise-reps').value = exercise.reps;
+
+            selectedImages = [...exercise.images];
+            loadEditAvailableImages();
+            updateEditSelectedImages();
+        }
+
+        function loadEditAvailableImages() {
+            const availableImages = document.getElementById('edit-available-images');
+            
+            availableImages.innerHTML = availableImageUrls.map((imageUrl, index) => `
+                <div class="relative cursor-pointer hover:scale-105 transition duration-200 ${selectedImages.includes(imageUrl) ? 'ring-2 ring-blue-500' : ''}" onclick="toggleEditImageSelection('${imageUrl}')">
+                    <img src="${imageUrl}" alt="Exercício ${index + 1}" class="w-20 h-20 object-cover rounded-lg" onerror="this.src=''; this.alt='Imagem não disponível'; this.style.display='none';">
+                    ${selectedImages.includes(imageUrl) ? '<div class="absolute top-1 right-1 bg-blue-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">✓</div>' : ''}
+                </div>
+            `).join('');
+        }
+
+        function toggleEditImageSelection(imageUrl) {
+            const index = selectedImages.indexOf(imageUrl);
+            if (index > -1) {
+                selectedImages.splice(index, 1);
+            } else {
+                selectedImages.push(imageUrl);
+            }
+            loadEditAvailableImages();
+            updateEditSelectedImages();
+        }
+
+        function updateEditSelectedImages() {
+            const selectedImagesDiv = document.getElementById('edit-selected-images');
+            selectedImagesDiv.innerHTML = selectedImages.map(imageUrl => `
+                <div class="relative inline-block">
+                    <img src="${imageUrl}" alt="Selecionada" class="w-16 h-16 object-cover rounded-lg" onerror="this.src=''; this.alt='Imagem não disponível'; this.style.display='none';">
+                    <button onclick="removeEditSelectedImage('${imageUrl}')" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600">×</button>
+                </div>
+            `).join('');
+        }
+
+        function removeEditSelectedImage(imageUrl) {
+            const index = selectedImages.indexOf(imageUrl);
+            if (index > -1) {
+                selectedImages.splice(index, 1);
+                loadEditAvailableImages();
+                updateEditSelectedImages();
+            }
+        }
+
+        // Funções para adicionar URLs personalizadas
+        function addCustomImage() {
+            const urlInput = document.getElementById('custom-image-url');
+            const imageUrl = urlInput.value.trim();
+            
+            if (imageUrl && isValidImageUrl(imageUrl)) {
+                if (!availableImageUrls.includes(imageUrl)) {
+                    availableImageUrls.push(imageUrl);
+                }
+                if (!selectedImages.includes(imageUrl)) {
+                    selectedImages.push(imageUrl);
+                }
+                urlInput.value = '';
+                loadAvailableImages();
+                updateSelectedImages();
+            } else {
+                alert('Por favor, insira uma URL válida de imagem.');
+            }
+        }
+
+        function addEditCustomImage() {
+            const urlInput = document.getElementById('edit-custom-image-url');
+            const imageUrl = urlInput.value.trim();
+            
+            if (imageUrl && isValidImageUrl(imageUrl)) {
+                if (!availableImageUrls.includes(imageUrl)) {
+                    availableImageUrls.push(imageUrl);
+                }
+                if (!selectedImages.includes(imageUrl)) {
+                    selectedImages.push(imageUrl);
+                }
+                urlInput.value = '';
+                loadEditAvailableImages();
+                updateEditSelectedImages();
+            } else {
+                alert('Por favor, insira uma URL válida de imagem.');
+            }
+        }
+
+        function isValidImageUrl(url) {
+            try {
+                new URL(url);
+                return url.startsWith('https://') || url.startsWith('http://');
+            } catch {
+                return false;
+            }
+        }
+
+        // Atualizar exercício
+        function updateExercise(event) {
+            event.preventDefault();
+            
+            const exerciseId = parseInt(document.getElementById('edit-exercise-id').value);
+            const exerciseIndex = exercises.findIndex(ex => ex.id === exerciseId);
+            
+            if (exerciseIndex !== -1) {
+                exercises[exerciseIndex] = {
+                    ...exercises[exerciseIndex],
+                    name: document.getElementById('edit-exercise-name').value,
+                    description: document.getElementById('edit-exercise-description').value,
+                    sets: parseInt(document.getElementById('edit-exercise-sets').value),
+                    reps: parseInt(document.getElementById('edit-exercise-reps').value),
+                    images: [...selectedImages]
+                };
+            }
+
+            selectedImages = [];
+            alert('Exercício atualizado com sucesso!');
+            showExerciseManagement();
+        }
+
+        // Excluir exercício
+        function deleteExercise(exerciseId) {
+            if (confirm('Tem certeza que deseja excluir este exercício? Esta ação não pode ser desfeita.')) {
+                const exerciseIndex = exercises.findIndex(ex => ex.id === exerciseId);
+                if (exerciseIndex !== -1) {
+                    exercises.splice(exerciseIndex, 1);
+                    alert('Exercício excluído com sucesso!');
+                    loadExerciseManagement();
+                }
+            }
+        }
+
+        // Carregar edição de plano
+        function loadEditPlan(planId) {
+            const plan = plans.find(p => p.id === planId);
+            if (!plan) return;
+
+            document.getElementById('edit-plan-id').value = plan.id;
+            document.getElementById('edit-client-name').value = plan.clientName;
+            document.getElementById('edit-plan-client-code').value = plan.clientCode;
+            document.getElementById('edit-plan-title').value = plan.title;
+            document.getElementById('edit-plan-status').value = plan.status;
+            document.getElementById('edit-plan-comments').value = plan.comments;
+            document.getElementById('edit-plan-master-notes').value = plan.masterNotes || '';
+
+            loadEditPlanExercises(plan.exercises);
+        }
+
+        function loadEditPlanExercises(planExercises) {
+            const editPlanExercisesDiv = document.getElementById('edit-plan-exercises');
+            editPlanExercisesDiv.innerHTML = '';
+
+            planExercises.forEach(exerciseId => {
+                const exercise = exercises.find(ex => ex.id === exerciseId);
+                if (exercise) {
+                    addExerciseToEditPlanWithData(exercise);
+                }
+            });
+        }
+
+        function addExerciseToEditPlan() {
+            const editPlanExercises = document.getElementById('edit-plan-exercises');
+            const exerciseId = Date.now();
+            
+            const exerciseHtml = `
+                <div class="border border-gray-200 rounded-lg p-4" data-exercise-id="${exerciseId}">
+                    <div class="grid md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Exercício</label>
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                <option value="">Selecione um exercício</option>
+                                ${exercises.map(ex => `<option value="${ex.id}">${ex.name}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Comentários</label>
+                            <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Instruções específicas...">
+                        </div>
+                    </div>
+                    <button type="button" onclick="removeExerciseFromEditPlan(${exerciseId})" class="text-red-600 hover:text-red-800 text-sm">
+                        Remover Exercício
+                    </button>
+                </div>
+            `;
+            
+            editPlanExercises.insertAdjacentHTML('beforeend', exerciseHtml);
+        }
+
+        function addExerciseToEditPlanWithData(exercise) {
+            const editPlanExercises = document.getElementById('edit-plan-exercises');
+            const exerciseId = Date.now();
+            
+            const exerciseHtml = `
+                <div class="border border-gray-200 rounded-lg p-4" data-exercise-id="${exerciseId}">
+                    <div class="grid md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Exercício</label>
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                <option value="">Selecione um exercício</option>
+                                ${exercises.map(ex => `<option value="${ex.id}" ${ex.id === exercise.id ? 'selected' : ''}>${ex.name}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Comentários</label>
+                            <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Instruções específicas...">
+                        </div>
+                    </div>
+                    <button type="button" onclick="removeExerciseFromEditPlan(${exerciseId})" class="text-red-600 hover:text-red-800 text-sm">
+                        Remover Exercício
+                    </button>
+                </div>
+            `;
+            
+            editPlanExercises.insertAdjacentHTML('beforeend', exerciseHtml);
+        }
+
+        function removeExerciseFromEditPlan(exerciseId) {
+            const exerciseElement = document.querySelector(`[data-exercise-id="${exerciseId}"]`);
+            if (exerciseElement) {
+                exerciseElement.remove();
+            }
+        }
+
+        // Atualizar plano
+        function updatePlan(event) {
+            event.preventDefault();
+            
+            const planId = parseInt(document.getElementById('edit-plan-id').value);
+            const planIndex = plans.findIndex(p => p.id === planId);
+            
+            if (planIndex !== -1) {
+                // Coletar exercícios selecionados
+                const exerciseSelects = document.querySelectorAll('#edit-plan-exercises select');
+                const selectedExercises = Array.from(exerciseSelects)
+                    .map(select => parseInt(select.value))
+                    .filter(value => !isNaN(value));
+
+                plans[planIndex] = {
+                    ...plans[planIndex],
+                    clientName: document.getElementById('edit-client-name').value,
+                    clientCode: document.getElementById('edit-plan-client-code').value,
+                    title: document.getElementById('edit-plan-title').value,
+                    status: document.getElementById('edit-plan-status').value,
+                    comments: document.getElementById('edit-plan-comments').value,
+                    masterNotes: document.getElementById('edit-plan-master-notes').value,
+                    exercises: selectedExercises,
+                    updatedAt: new Date().toISOString().split('T')[0]
+                };
+            }
+
+            alert('Plano atualizado com sucesso!');
+            showMasterDashboard();
+        }
+
+        // Excluir plano
+        function deletePlan(planId) {
+            if (confirm('Tem certeza que deseja excluir este plano? Esta ação não pode ser desfeita.')) {
+                const planIndex = plans.findIndex(p => p.id === planId);
+                if (planIndex !== -1) {
+                    plans.splice(planIndex, 1);
+                    alert('Plano excluído com sucesso!');
+                    loadMasterDashboard();
+                }
+            }
+        }
+
+        // Funções do modal de configuração
+        function showConfigModal() {
+            // Carregar configurações atuais
+            document.getElementById('config-api-key').value = GOOGLE_SHEETS_CONFIG.apiKey === 'SUA_API_KEY_AQUI' ? '' : GOOGLE_SHEETS_CONFIG.apiKey;
+            document.getElementById('config-spreadsheet-id').value = GOOGLE_SHEETS_CONFIG.spreadsheetId === 'SEU_SPREADSHEET_ID_AQUI' ? '' : GOOGLE_SHEETS_CONFIG.spreadsheetId;
+            document.getElementById('config-range').value = GOOGLE_SHEETS_CONFIG.range;
+            
+            document.getElementById('config-modal').classList.remove('hidden');
+            document.getElementById('test-results').classList.add('hidden');
+        }
+
+        function closeConfigModal() {
+            document.getElementById('config-modal').classList.add('hidden');
+        }
+
+        function saveGoogleSheetsConfig(event) {
+            event.preventDefault();
+            
+            const apiKey = document.getElementById('config-api-key').value.trim();
+            const spreadsheetId = document.getElementById('config-spreadsheet-id').value.trim();
+            const range = document.getElementById('config-range').value.trim();
+            
+            // Atualizar configuração
+            GOOGLE_SHEETS_CONFIG.apiKey = apiKey;
+            GOOGLE_SHEETS_CONFIG.spreadsheetId = spreadsheetId;
+            GOOGLE_SHEETS_CONFIG.range = range;
+            
+            // Limpar cache para forçar nova busca
+            physiotherapistsCache = null;
+            cacheTimestamp = null;
+            
+            // Salvar no localStorage
+            localStorage.setItem('googleSheetsConfig', JSON.stringify(GOOGLE_SHEETS_CONFIG));
+            
+            // Testar conexão automaticamente
+            testConnection();
+        }
+
+        async function testConnection() {
+            const testOutput = document.getElementById('test-output');
+            const testResults = document.getElementById('test-results');
+            
+            testResults.classList.remove('hidden');
+            testOutput.innerHTML = '🔄 Testando conexão com Google Sheets...\n';
+            
+            try {
+                const physiotherapists = await fetchPhysiotherapistsFromSheets();
+                
+                testOutput.innerHTML += `✅ Conexão bem-sucedida!\n`;
+                testOutput.innerHTML += `📊 ${physiotherapists.length} fisioterapeutas encontradas:\n\n`;
+                
+                physiotherapists.forEach((physio, index) => {
+                    testOutput.innerHTML += `${index + 1}. ${physio.code} - ${physio.name}\n`;
+                    testOutput.innerHTML += `   📧 ${physio.email}\n`;
+                    testOutput.innerHTML += `   🏥 ${physio.specialty}\n`;
+                    testOutput.innerHTML += `   👑 ${physio.isMaster ? 'Master' : 'Fisioterapeuta'}\n\n`;
+                });
+                
+                // Atualizar status na tela de login
+                updateConfigStatus();
+                
+            } catch (error) {
+                testOutput.innerHTML += `❌ Erro na conexão:\n${error.message}\n\n`;
+                testOutput.innerHTML += `🔄 Usando dados de fallback...\n`;
+            }
+        }
+
+        function updateConfigStatus() {
+            const configDetails = document.getElementById('config-details');
+            const issues = validateGoogleSheetsConfig();
+            
+            if (issues.length === 0) {
+                configDetails.innerHTML = `
+                    <div class="text-green-700">
+                        ✅ Google Sheets configurado corretamente<br>
+                        📊 Planilha: ${GOOGLE_SHEETS_CONFIG.spreadsheetId.substring(0, 20)}...<br>
+                        📋 Range: ${GOOGLE_SHEETS_CONFIG.range}
+                    </div>
+                `;
+                document.getElementById('config-status').className = 'mt-4 p-4 bg-green-50 border border-green-200 rounded-lg';
+            } else {
+                configDetails.innerHTML = `
+                    <div class="text-yellow-700">
+                        ⚠️ Configuração incompleta:<br>
+                        ${issues.map(issue => `• ${issue}`).join('<br>')}
+                    </div>
+                `;
+                document.getElementById('config-status').className = 'mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg';
+            }
+        }
+
+        function loadConfigFromStorage() {
+            try {
+                const savedConfig = localStorage.getItem('googleSheetsConfig');
+                if (savedConfig) {
+                    const config = JSON.parse(savedConfig);
+                    GOOGLE_SHEETS_CONFIG.apiKey = config.apiKey || GOOGLE_SHEETS_CONFIG.apiKey;
+                    GOOGLE_SHEETS_CONFIG.spreadsheetId = config.spreadsheetId || GOOGLE_SHEETS_CONFIG.spreadsheetId;
+                    GOOGLE_SHEETS_CONFIG.range = config.range || GOOGLE_SHEETS_CONFIG.range;
+                }
+            } catch (error) {
+                console.warn('Erro ao carregar configuração salva:', error);
+            }
+        }
+
+        // Função para download do arquivo HTML
+        function downloadHTML() {
+            // Obter o HTML completo da página
+            const htmlContent = document.documentElement.outerHTML;
+            
+            // Criar um blob com o conteúdo HTML
+            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+            
+            // Criar um link temporário para download
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'FisioPlanos-Sistema-Completo.html';
+            
+            // Adicionar o link ao DOM temporariamente e clicar nele
+            document.body.appendChild(link);
+            link.click();
+            
+            // Remover o link do DOM
+            document.body.removeChild(link);
+            
+            // Liberar o objeto URL
+            URL.revokeObjectURL(link.href);
+            
+            // Mostrar mensagem de sucesso
+            alert('📥 Sistema baixado com sucesso!\n\n✅ O arquivo "FisioPlanos-Sistema-Completo.html" foi salvo.\n\n💡 Você pode abrir este arquivo em qualquer navegador para usar o sistema offline.');
+        }
+
+        // Inicializar aplicação
+        document.addEventListener('DOMContentLoaded', function() {
+            loadConfigFromStorage();
+            updateConfigStatus();
+            showPhysioLogin();
+        });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98089ee7c3f094e9',t:'MTc1ODExMjI4OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'982d106833bdb17c',t:'MTc1ODQ5NDQyNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
