@@ -72,9 +72,7 @@
             <main class="flex-grow flex flex-col justify-center items-center px-6">
                 <div class="w-full max-w-sm mx-auto flex flex-col items-center">
                     <div class="mb-6">
-                        <div class="w-28 h-28 rounded-full bg-primary flex items-center justify-center text-white text-4xl font-bold">
-                            VF
-                        </div>
+                        <img alt="VivusFisio Planos Logo" class="w-28 h-28 rounded-full" src="images/vivuslogo.png" onerror="this.src=''; this.alt='Logo não encontrado'; this.style.display='none';"/>
                     </div>
                     <h1 class="text-3xl font-bold text-text-dark dark:text-text-light tracking-tighter mb-2">Vivusfisio Plano</h1>
                     <p class="text-sm text-text-secondary-light dark:text-text-light/70 mb-6">Código de Acesso</p>
@@ -482,12 +480,9 @@
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
-            // Check if user is already logged in
-            const savedUser = localStorage.getItem('currentUser');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                showMainApp();
-            }
+            // Always start with login page - remove auto-login
+            localStorage.removeItem('currentUser');
+            currentUser = null;
 
             // Setup login form
             document.getElementById('loginForm').addEventListener('submit', handleLogin);
@@ -943,5 +938,5 @@
             document.getElementById('accessCode').focus();
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'983b11bb45586926',t:'MTc1ODY0MTI3OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'983b1618d09db59b',t:'MTc1ODY0MTQ1OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
