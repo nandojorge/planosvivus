@@ -1,256 +1,637 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>VivusFisio Plan - Login</title>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            "primary": "#4A9D82",
-            "background-light": "#F0F5F3",
-            "background-dark": "#1A2E27",
-            "text-light": "#F0F5F3",
-            "text-dark": "#101D18",
-          },
-          fontFamily: {
-            "display": ["Manrope"]
-          },
-          borderRadius: {
-            "DEFAULT": "0.375rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          },
-        },
-      },
-    }
-  </script>
-<style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
-  </head>
-<body class="bg-background-light dark:bg-background-dark font-display">
-<div class="flex flex-col min-h-screen">
-<main class="flex-grow flex flex-col justify-center items-center px-6">
-<div class="text-center mb-16">
-<!-- Logo da Vivus da pasta local -->
-<div class="inline-block mb-4">
-  <img src="./images/vivuslog.png" alt="Vivus Logo" class="w-16 h-16 mx-auto object-contain" onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='flex';">
-  
-  <!-- Logo de fallback caso a imagem não carregue -->
-  <div id="fallbackLogo" class="w-16 h-16 mx-auto bg-primary rounded-full flex items-center justify-center" style="display: none;">
-    <svg class="w-10 h-10 text-white" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-      <g fill="currentColor">
-        <path d="M15 30 L30 70 L45 30" stroke="currentColor" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M35 30 L50 70 L65 30" stroke="currentColor" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        <g transform="translate(75, 45)">
-          <rect x="-2" y="-12" width="4" height="24" rx="2" fill="currentColor"/>
-          <rect x="-12" y="-2" width="24" height="4" rx="2" fill="currentColor"/>
-        </g>
-        <circle cx="90" cy="65" r="3" fill="currentColor"/>
-      </g>
-    </svg>
-  </div>
-</div>
-<h1 class="text-4xl font-extrabold text-text-dark dark:text-text-light tracking-normal">VivusFisio Plan</h1>
-</div>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestão de Fisioterapia - Estrutura e UI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .tab-button.active { background-color: #3b82f6; color: white; }
+        .ui-mockup {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            background: #f9fafb;
+            min-height: 400px;
+        }
+        .user-flow {
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 py-4 sm:py-6">
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">🏥 Sistema de Gestão de Fisioterapia</h1>
+            <p class="text-gray-600 mt-2 text-sm sm:text-base">Interface de Usuário e Fluxos de Trabalho</p>
+        </div>
+    </header>
 
-<form id="loginForm" class="w-full max-w-sm mx-auto space-y-6">
-<div class="text-center mb-8">
-<h2 class="text-2xl font-bold text-text-dark dark:text-text-light mb-1 tracking-normal">Acesse sua conta</h2>
-<p class="text-text-dark/60 dark:text-text-light/60">Insira seu código único de acesso.</p>
-</div>
-<div class="flex flex-col">
-<label class="sr-only" for="access-code">Código único de acesso</label>
-<input class="form-input w-full bg-background-light dark:bg-background-dark border-2 border-text-dark/20 dark:border-text-light/20 rounded-lg h-14 px-4 text-center text-xl tracking-wide font-bold text-text-dark dark:text-text-light placeholder:text-text-dark/40 dark:placeholder:text-text-light/40 focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors duration-300" id="access-code" maxlength="20" placeholder="● ● ● ● ● ●" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false"/>
-</div>
+    <!-- Navigation Tabs -->
+    <nav class="bg-white border-b">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex space-x-1 overflow-x-auto">
+                <button onclick="showTab('master')" class="tab-button active px-3 sm:px-6 py-3 text-xs sm:text-sm font-medium rounded-t-lg whitespace-nowrap">
+                    👑 <span class="hidden sm:inline">Master UI</span><span class="sm:hidden">Master</span>
+                </button>
+                <button onclick="showTab('fisio')" class="tab-button px-3 sm:px-6 py-3 text-xs sm:text-sm font-medium rounded-t-lg whitespace-nowrap">
+                    🩺 <span class="hidden sm:inline">Fisioterapeuta UI</span><span class="sm:hidden">Fisio</span>
+                </button>
+                <button onclick="showTab('patient')" class="tab-button px-3 sm:px-6 py-3 text-xs sm:text-sm font-medium rounded-t-lg whitespace-nowrap">
+                    🧑‍🦽 <span class="hidden sm:inline">Paciente UI</span><span class="sm:hidden">Paciente</span>
+                </button>
+                <button onclick="showTab('flows')" class="tab-button px-3 sm:px-6 py-3 text-xs sm:text-sm font-medium rounded-t-lg whitespace-nowrap">
+                    🔄 <span class="hidden sm:inline">Fluxos de Trabalho</span><span class="sm:hidden">Fluxos</span>
+                </button>
+            </div>
+        </div>
+    </nav>
 
-<!-- Messages Area -->
-<div id="messageArea" class="hidden">
-  <div id="errorMessage" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg mb-4 hidden">
-    <div class="flex items-start">
-      <svg class="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-      </svg>
-      <span id="errorText" class="text-sm"></span>
-    </div>
-  </div>
+    <main class="max-w-7xl mx-auto px-4 py-4 sm:py-8">
 
-  <div id="successMessage" class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-300 px-4 py-3 rounded-lg mb-4 hidden">
-    <div class="flex items-start">
-      <svg class="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-      </svg>
-      <span id="successText" class="text-sm"></span>
-    </div>
-  </div>
-</div>
+        <!-- Master UI Tab -->
+        <div id="master" class="tab-content active">
+            <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">👑 Interface do Master</h2>
+            
+            <div class="grid gap-4 sm:gap-6 lg:gap-8 lg:grid-cols-2">
+                <!-- Master Dashboard -->
+                <div class="ui-mockup p-4 sm:p-6">
+                    <h3 class="text-base sm:text-lg font-bold mb-4 text-blue-600">📊 Dashboard Master</h3>
+                    
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-3 gap-2 sm:gap-4 mb-4 sm:mb-6">
+                        <div class="bg-blue-100 p-2 sm:p-3 rounded text-center">
+                            <div class="text-lg sm:text-2xl font-bold text-blue-600">12</div>
+                            <div class="text-xs text-blue-800">Planos Pendentes</div>
+                        </div>
+                        <div class="bg-green-100 p-2 sm:p-3 rounded text-center">
+                            <div class="text-lg sm:text-2xl font-bold text-green-600">45</div>
+                            <div class="text-xs text-green-800">Fisioterapeutas</div>
+                        </div>
+                        <div class="bg-purple-100 p-2 sm:p-3 rounded text-center">
+                            <div class="text-lg sm:text-2xl font-bold text-purple-600">128</div>
+                            <div class="text-xs text-purple-800">Pacientes</div>
+                        </div>
+                    </div>
 
-<!-- User Info Display -->
-<div id="userInfo" class="bg-primary/10 dark:bg-primary/20 border border-primary/20 dark:border-primary/30 px-4 py-3 rounded-lg mb-4 hidden">
-  <h3 class="font-bold text-primary mb-2">Bem-vindo(a)!</h3>
-  <div class="space-y-1 text-sm text-text-dark dark:text-text-light">
-    <p class="break-words"><strong>Nome:</strong> <span id="userName"></span></p>
-    <p class="break-words"><strong>Email:</strong> <span id="userEmail"></span></p>
-    <p class="break-words"><strong>Especialidade:</strong> <span id="userEspecialidade"></span></p>
-    <p><strong>Tipo:</strong> <span id="userMaster"></span></p>
-  </div>
-</div>
+                    <!-- Quick Actions -->
+                    <div class="space-y-2 sm:space-y-3">
+                        <button class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 text-xs sm:text-sm">
+                            ➕ Gerar Código de Acesso
+                        </button>
+                        <button class="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 text-xs sm:text-sm">
+                            📋 Criar Novo Plano
+                        </button>
+                        <button class="w-full bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700 text-xs sm:text-sm">
+                            🏷️ Gerenciar Categorias
+                        </button>
+                    </div>
 
-<button type="submit" id="loginBtn" class="w-full h-14 bg-primary text-white font-bold text-lg rounded-lg shadow-lg hover:bg-opacity-90 transition-opacity flex items-center justify-center">
-  <span id="btnText">Entrar</span>
-  <div id="btnSpinner" class="ml-2 hidden">
-    <div class="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-  </div>
-</button>
-</form>
-</main>
-<footer class="py-6 px-6 text-center">
-</footer>
-</div>
+                    <!-- Pending Plans List -->
+                    <div class="mt-4 sm:mt-6">
+                        <h4 class="font-semibold mb-3 text-sm sm:text-base">⏳ Planos Aguardando Aprovação</h4>
+                        <div class="space-y-2">
+                            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-2 sm:p-3 text-xs sm:text-sm">
+                                <div class="font-medium">Plano para João Silva</div>
+                                <div class="text-gray-600">Por: Dra. Maria Santos • 2 dias atrás</div>
+                            </div>
+                            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-2 sm:p-3 text-xs sm:text-sm">
+                                <div class="font-medium">Reabilitação Ombro</div>
+                                <div class="text-gray-600">Por: Dr. Carlos Lima • 1 dia atrás</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-<script>
-    const API_BASE = 'https://api.steinhq.com/v1/storages/68d29050affba40a62ffb0f6';
-    
-    // Elements
-    const loginForm = document.getElementById('loginForm');
-    const codigoInput = document.getElementById('access-code');
-    const loginBtn = document.getElementById('loginBtn');
-    const btnText = document.getElementById('btnText');
-    const btnSpinner = document.getElementById('btnSpinner');
-    const messageArea = document.getElementById('messageArea');
-    const errorMessage = document.getElementById('errorMessage');
-    const successMessage = document.getElementById('successMessage');
-    const errorText = document.getElementById('errorText');
-    const successText = document.getElementById('successText');
-    const userInfo = document.getElementById('userInfo');
+                <!-- Code Generation Interface -->
+                <div class="ui-mockup p-4 sm:p-6">
+                    <h3 class="text-base sm:text-lg font-bold mb-4 text-green-600">🔑 Gerador de Códigos</h3>
+                    
+                    <form class="space-y-3 sm:space-y-4">
+                        <div>
+                            <label class="block text-xs sm:text-sm font-medium mb-2">Tipo de Usuário</label>
+                            <select class="w-full border rounded px-3 py-2 text-sm">
+                                <option>Fisioterapeuta</option>
+                                <option>Paciente</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-xs sm:text-sm font-medium mb-2">Nome Completo</label>
+                            <input type="text" class="w-full border rounded px-3 py-2 text-sm" placeholder="Digite o nome...">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-xs sm:text-sm font-medium mb-2">Email (opcional)</label>
+                            <input type="email" class="w-full border rounded px-3 py-2 text-sm" placeholder="email@exemplo.com">
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 text-sm">
+                            🎯 Gerar Código Único
+                        </button>
+                    </form>
 
-    // Auto-uppercase input
-    codigoInput.addEventListener('input', function(e) {
-        e.target.value = e.target.value.toUpperCase();
-    });
+                    <!-- Generated Code Display -->
+                    <div class="mt-4 sm:mt-6 p-3 sm:p-4 bg-gray-100 rounded">
+                        <h4 class="font-semibold mb-2 text-sm">Código Gerado:</h4>
+                        <div class="bg-white p-2 sm:p-3 rounded border font-mono text-sm sm:text-lg text-center">
+                            FT-2024-A7B9X2
+                        </div>
+                        <button class="w-full mt-2 bg-blue-600 text-white py-1 px-3 rounded text-xs sm:text-sm">
+                            📋 Copiar Código
+                        </button>
+                    </div>
+                </div>
 
-    // Form submission
-    loginForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const codigo = codigoInput.value.trim();
-        
-        if (!codigo) {
-            showError('Por favor, digite seu código de acesso');
-            return;
+                <!-- Plan Approval Interface -->
+                <div class="ui-mockup p-4 sm:p-6 lg:col-span-2">
+                    <h3 class="text-base sm:text-lg font-bold mb-4 text-orange-600">✅ Aprovação de Plano</h3>
+                    
+                    <div class="bg-white border rounded p-3 sm:p-4">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 space-y-2 sm:space-y-0">
+                            <div>
+                                <h4 class="font-bold text-sm sm:text-base">Plano de Reabilitação - João Silva</h4>
+                                <p class="text-xs sm:text-sm text-gray-600">Criado por: Dra. Maria Santos • 15/01/2024</p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="bg-red-600 text-white px-2 sm:px-3 py-1 rounded text-xs sm:text-sm">❌ Rejeitar</button>
+                                <button class="bg-green-600 text-white px-2 sm:px-3 py-1 rounded text-xs sm:text-sm">✅ Aprovar</button>
+                            </div>
+                        </div>
+
+                        <!-- Exercise List -->
+                        <div class="space-y-2 sm:space-y-3">
+                            <div class="border rounded p-2 sm:p-3">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <h5 class="font-medium text-sm">Alongamento de Ombro</h5>
+                                        <p class="text-xs text-gray-600">3 séries • 15 repetições</p>
+                                    </div>
+                                    <button class="text-blue-600 text-xs sm:text-sm">✏️ Editar</button>
+                                </div>
+                            </div>
+                            <div class="border rounded p-2 sm:p-3">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <h5 class="font-medium text-sm">Fortalecimento Deltóide</h5>
+                                        <p class="text-xs text-gray-600">2 séries • 12 repetições</p>
+                                    </div>
+                                    <button class="text-blue-600 text-xs sm:text-sm">✏️ Editar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fisioterapeuta UI Tab -->
+        <div id="fisio" class="tab-content">
+            <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">🩺 Interface do Fisioterapeuta</h2>
+            
+            <div class="grid gap-4 sm:gap-6 lg:gap-8 lg:grid-cols-2">
+                <!-- Fisio Dashboard -->
+                <div class="ui-mockup p-4 sm:p-6">
+                    <h3 class="text-base sm:text-lg font-bold mb-4 text-blue-600">📊 Dashboard Fisioterapeuta</h3>
+                    
+                    <!-- Quick Stats -->
+                    <div class="grid grid-cols-2 gap-2 sm:gap-4 mb-4 sm:mb-6">
+                        <div class="bg-blue-100 p-2 sm:p-3 rounded text-center">
+                            <div class="text-lg sm:text-xl font-bold text-blue-600">8</div>
+                            <div class="text-xs text-blue-800">Planos Pendentes</div>
+                        </div>
+                        <div class="bg-green-100 p-2 sm:p-3 rounded text-center">
+                            <div class="text-lg sm:text-xl font-bold text-green-600">23</div>
+                            <div class="text-xs text-green-800">Planos Aprovados</div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Sessions -->
+                    <div class="mb-4 sm:mb-6">
+                        <h4 class="font-semibold mb-3 text-sm sm:text-base">📅 Sessões Recentes</h4>
+                        <div class="space-y-2">
+                            <div class="bg-gray-50 p-2 sm:p-3 rounded text-xs sm:text-sm">
+                                <div class="font-medium">João Silva</div>
+                                <div class="text-gray-600">15/01/2024 • 60 min</div>
+                            </div>
+                            <div class="bg-gray-50 p-2 sm:p-3 rounded text-xs sm:text-sm">
+                                <div class="font-medium">Maria Oliveira</div>
+                                <div class="text-gray-600">14/01/2024 • 45 min</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="space-y-2 sm:space-y-3">
+                        <button class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 text-xs sm:text-sm">
+                            ➕ Criar Novo Plano
+                        </button>
+                        <button class="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 text-xs sm:text-sm">
+                            💪 Gerenciar Exercícios
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Plan Creation Interface -->
+                <div class="ui-mockup p-4 sm:p-6">
+                    <h3 class="text-base sm:text-lg font-bold mb-4 text-purple-600">📋 Criar Plano</h3>
+                    
+                    <form class="space-y-3 sm:space-y-4">
+                        <div>
+                            <label class="block text-xs sm:text-sm font-medium mb-2">Nome do Plano</label>
+                            <input type="text" class="w-full border rounded px-3 py-2 text-sm" placeholder="Ex: Reabilitação Ombro">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-xs sm:text-sm font-medium mb-2">Paciente</label>
+                            <select class="w-full border rounded px-3 py-2 text-sm">
+                                <option>Selecione um paciente...</option>
+                                <option>João Silva</option>
+                                <option>Maria Oliveira</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-xs sm:text-sm font-medium mb-2">Descrição</label>
+                            <textarea class="w-full border rounded px-3 py-2 h-16 sm:h-20 text-sm" placeholder="Descreva o objetivo do plano..."></textarea>
+                        </div>
+
+                        <!-- Exercise Selection -->
+                        <div>
+                            <label class="block text-xs sm:text-sm font-medium mb-2">Exercícios</label>
+                            <div class="border rounded p-2 sm:p-3 bg-gray-50">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-xs sm:text-sm font-medium">Meus Exercícios</span>
+                                    <button type="button" class="text-blue-600 text-xs sm:text-sm">+ Adicionar</button>
+                                </div>
+                                
+                                <!-- Category Filter -->
+                                <select class="w-full border rounded px-2 py-1 text-xs sm:text-sm mb-3">
+                                    <option>Todas as categorias</option>
+                                    <option>Exercícios de Ombro</option>
+                                    <option>Alongamento de Perna</option>
+                                    <option>Fortalecimento Abdominal</option>
+                                </select>
+
+                                <!-- Exercise List -->
+                                <div class="space-y-2 max-h-24 sm:max-h-32 overflow-y-auto">
+                                    <div class="flex items-center justify-between p-2 bg-white rounded text-xs sm:text-sm">
+                                        <span>Alongamento de Ombro</span>
+                                        <button class="text-green-600">+ Add</button>
+                                    </div>
+                                    <div class="flex items-center justify-between p-2 bg-white rounded text-xs sm:text-sm">
+                                        <span>Fortalecimento Deltóide</span>
+                                        <button class="text-green-600">+ Add</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700 text-sm">
+                            📤 Enviar para Aprovação
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Exercise Management -->
+                <div class="ui-mockup p-4 sm:p-6 lg:col-span-2">
+                    <h3 class="text-base sm:text-lg font-bold mb-4 text-green-600">💪 Biblioteca de Exercícios</h3>
+                    
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 space-y-2 sm:space-y-0">
+                        <input type="text" placeholder="Buscar exercícios..." class="border rounded px-3 py-2 w-full sm:w-64 text-sm">
+                        <button class="bg-green-600 text-white px-3 sm:px-4 py-2 rounded hover:bg-green-700 text-xs sm:text-sm">
+                            ➕ Novo Exercício
+                        </button>
+                    </div>
+
+                    <!-- Exercise Grid -->
+                    <div class="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        <div class="border rounded p-3 sm:p-4 bg-white">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-medium text-sm">Alongamento de Ombro</h4>
+                                <button class="text-blue-600 text-xs sm:text-sm">✏️</button>
+                            </div>
+                            <p class="text-xs sm:text-sm text-gray-600 mb-2">Exercício para mobilidade do ombro...</p>
+                            <div class="text-xs text-gray-500 mb-2">
+                                <span class="bg-blue-100 px-2 py-1 rounded">Ombro</span>
+                                <span class="bg-green-100 px-2 py-1 rounded ml-1">Alongamento</span>
+                            </div>
+                            <div class="text-xs sm:text-sm">
+                                <strong>3 séries • 15 repetições</strong>
+                            </div>
+                        </div>
+
+                        <div class="border rounded p-3 sm:p-4 bg-white">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-medium text-sm">Fortalecimento Deltóide</h4>
+                                <button class="text-blue-600 text-xs sm:text-sm">✏️</button>
+                            </div>
+                            <p class="text-xs sm:text-sm text-gray-600 mb-2">Exercício para fortalecimento...</p>
+                            <div class="text-xs text-gray-500 mb-2">
+                                <span class="bg-red-100 px-2 py-1 rounded">Fortalecimento</span>
+                                <span class="bg-blue-100 px-2 py-1 rounded ml-1">Ombro</span>
+                            </div>
+                            <div class="text-xs sm:text-sm">
+                                <strong>2 séries • 12 repetições</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Patient UI Tab -->
+        <div id="patient" class="tab-content">
+            <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">🧑‍🦽 Interface do Paciente</h2>
+            
+            <div class="grid gap-4 sm:gap-6 lg:gap-8 lg:grid-cols-2">
+                <!-- Patient Dashboard -->
+                <div class="ui-mockup p-4 sm:p-6">
+                    <h3 class="text-base sm:text-lg font-bold mb-4 text-green-600">📊 Meus Planos</h3>
+                    
+                    <!-- Welcome Message -->
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-3 sm:p-4 mb-4 sm:mb-6">
+                        <h4 class="font-medium text-blue-800 text-sm sm:text-base">Olá, João Silva! 👋</h4>
+                        <p class="text-xs sm:text-sm text-blue-700">Você tem 2 planos ativos para sua recuperação.</p>
+                    </div>
+
+                    <!-- Active Plans -->
+                    <div class="space-y-3 sm:space-y-4">
+                        <div class="border rounded p-3 sm:p-4 bg-white hover:shadow-md transition-shadow cursor-pointer">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-medium text-sm sm:text-base">Reabilitação de Ombro</h4>
+                                <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Ativo</span>
+                            </div>
+                            <p class="text-xs sm:text-sm text-gray-600 mb-2">Plano focado na recuperação da mobilidade do ombro direito</p>
+                            <div class="text-xs text-gray-500">
+                                <div>Criado por: Dra. Maria Santos</div>
+                                <div>Aprovado em: 10/01/2024</div>
+                                <div><strong>8 exercícios</strong></div>
+                            </div>
+                        </div>
+
+                        <div class="border rounded p-3 sm:p-4 bg-white hover:shadow-md transition-shadow cursor-pointer">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-medium text-sm sm:text-base">Fortalecimento Lombar</h4>
+                                <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Ativo</span>
+                            </div>
+                            <p class="text-xs sm:text-sm text-gray-600 mb-2">Exercícios para fortalecimento da região lombar</p>
+                            <div class="text-xs text-gray-500">
+                                <div>Criado por: Dr. Carlos Lima</div>
+                                <div>Aprovado em: 08/01/2024</div>
+                                <div><strong>6 exercícios</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Plan Detail View -->
+                <div class="ui-mockup p-4 sm:p-6">
+                    <h3 class="text-base sm:text-lg font-bold mb-4 text-purple-600">📋 Detalhes do Plano</h3>
+                    
+                    <!-- Plan Header -->
+                    <div class="border-b pb-3 sm:pb-4 mb-3 sm:mb-4">
+                        <h4 class="text-lg sm:text-xl font-bold">Reabilitação de Ombro</h4>
+                        <p class="text-gray-600 text-xs sm:text-sm mt-1">Plano focado na recuperação da mobilidade do ombro direito após lesão</p>
+                        <div class="mt-2 text-xs text-gray-500">
+                            <div>👩‍⚕️ Dra. Maria Santos</div>
+                            <div>📅 Aprovado em 10/01/2024</div>
+                        </div>
+                    </div>
+
+                    <!-- Exercise List -->
+                    <div class="space-y-3 sm:space-y-4">
+                        <div class="border rounded p-3 sm:p-4">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 space-y-1 sm:space-y-0">
+                                <h5 class="font-medium text-sm sm:text-base">1. Alongamento de Ombro</h5>
+                                <span class="text-xs sm:text-sm text-gray-500">3 séries • 15 rep</span>
+                            </div>
+                            <p class="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3">
+                                Posicione o braço direito cruzado sobre o peito. Com a mão esquerda, puxe suavemente o cotovelo direito em direção ao corpo.
+                            </p>
+                            
+                            <!-- Image Placeholder -->
+                            <div class="bg-gray-100 rounded p-3 sm:p-4 text-center text-gray-500 text-xs sm:text-sm">
+                                🖼️ Imagem demonstrativa do exercício
+                            </div>
+                        </div>
+
+                        <div class="border rounded p-3 sm:p-4">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 space-y-1 sm:space-y-0">
+                                <h5 class="font-medium text-sm sm:text-base">2. Rotação Externa</h5>
+                                <span class="text-xs sm:text-sm text-gray-500">2 séries • 10 rep</span>
+                            </div>
+                            <p class="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3">
+                                Com o cotovelo flexionado a 90°, realize movimentos de rotação externa lentamente.
+                            </p>
+                            
+                            <!-- Image Placeholder -->
+                            <div class="bg-gray-100 rounded p-3 sm:p-4 text-center text-gray-500 text-xs sm:text-sm">
+                                🖼️ Imagem demonstrativa do exercício
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Note -->
+                    <div class="mt-4 sm:mt-6 p-3 sm:p-4 bg-yellow-50 border-l-4 border-yellow-400">
+                        <h6 class="font-medium text-yellow-800 text-sm">💡 Dica Importante</h6>
+                        <p class="text-xs sm:text-sm text-yellow-700">Execute os exercícios lentamente e pare se sentir dor. Em caso de dúvidas, consulte sua fisioterapeuta.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Workflows Tab -->
+        <div id="flows" class="tab-content">
+            <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">🔄 Fluxos de Trabalho</h2>
+            
+            <div class="space-y-6 sm:space-y-8">
+                <!-- User Creation Flow -->
+                <div class="user-flow">
+                    <h3 class="text-lg sm:text-xl font-bold mb-3 sm:mb-4">👥 Fluxo de Criação de Usuários</h3>
+                    <div class="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-4 text-xs sm:text-sm">
+                        <div class="bg-white bg-opacity-20 p-2 sm:p-3 rounded">
+                            <div class="font-bold">1. Master</div>
+                            <div>Acessa gerador de códigos</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 p-2 sm:p-3 rounded">
+                            <div class="font-bold">2. Seleção</div>
+                            <div>Escolhe tipo: Fisio ou Paciente</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 p-2 sm:p-3 rounded">
+                            <div class="font-bold">3. Geração</div>
+                            <div>Sistema gera código único</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 p-2 sm:p-3 rounded">
+                            <div class="font-bold">4. Entrega</div>
+                            <div>Código é fornecido ao usuário</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Plan Creation Flow -->
+                <div class="user-flow">
+                    <h3 class="text-lg sm:text-xl font-bold mb-3 sm:mb-4">📋 Fluxo de Criação de Planos</h3>
+                    <div class="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-5 text-xs sm:text-sm">
+                        <div class="bg-white bg-opacity-20 p-2 sm:p-3 rounded">
+                            <div class="font-bold">1. Fisioterapeuta</div>
+                            <div>Cria plano com exercícios</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 p-2 sm:p-3 rounded">
+                            <div class="font-bold">2. Submissão</div>
+                            <div>Envia para aprovação</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 p-2 sm:p-3 rounded">
+                            <div class="font-bold">3. Master</div>
+                            <div>Revisa e pode editar</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 p-2 sm:p-3 rounded">
+                            <div class="font-bold">4. Aprovação</div>
+                            <div>Master aprova ou rejeita</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 p-2 sm:p-3 rounded">
+                            <div class="font-bold">5. Ativação</div>
+                            <div>Master ativa para paciente</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercise Management Flow -->
+                <div class="user-flow">
+                    <h3 class="text-lg sm:text-xl font-bold mb-3 sm:mb-4">💪 Fluxo de Gerenciamento de Exercícios</h3>
+                    <div class="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-4 text-xs sm:text-sm">
+                        <div class="bg-white bg-opacity-20 p-2 sm:p-3 rounded">
+                            <div class="font-bold">1. Criação</div>
+                            <div>Fisio cria exercício com descrição, séries, repetições</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 p-2 sm:p-3 rounded">
+                            <div class="font-bold">2. Categorização</div>
+                            <div>Associa a uma ou mais categorias</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 p-2 sm:p-3 rounded">
+                            <div class="font-bold">3. Imagens</div>
+                            <div>Adiciona URLs de imagens (opcional)</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 p-2 sm:p-3 rounded">
+                            <div class="font-bold">4. Biblioteca</div>
+                            <div>Exercício fica disponível na biblioteca pessoal</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Patient Access Flow -->
+                <div class="user-flow">
+                    <h3 class="text-lg sm:text-xl font-bold mb-3 sm:mb-4">🧑‍🦽 Fluxo de Acesso do Paciente</h3>
+                    <div class="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-4 text-xs sm:text-sm">
+                        <div class="bg-white bg-opacity-20 p-2 sm:p-3 rounded">
+                            <div class="font-bold">1. Login</div>
+                            <div>Paciente usa código único</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 p-2 sm:p-3 rounded">
+                            <div class="font-bold">2. Dashboard</div>
+                            <div>Visualiza planos ativos</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 p-2 sm:p-3 rounded">
+                            <div class="font-bold">3. Seleção</div>
+                            <div>Escolhe plano para visualizar</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 p-2 sm:p-3 rounded">
+                            <div class="font-bold">4. Execução</div>
+                            <div>Segue exercícios com imagens e instruções</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Business Rules -->
+                <div class="bg-gray-100 p-4 sm:p-6 rounded-lg">
+                    <h3 class="text-lg sm:text-xl font-bold mb-3 sm:mb-4">📜 Regras de Negócio Importantes</h3>
+                    <div class="grid gap-4 sm:gap-6 md:grid-cols-2">
+                        <div>
+                            <h4 class="font-bold text-blue-600 mb-2 text-sm sm:text-base">🔒 Controle de Acesso</h4>
+                            <ul class="text-xs sm:text-sm space-y-1">
+                                <li>• Apenas Master gera códigos de acesso</li>
+                                <li>• Fisioterapeutas só veem seus próprios exercícios</li>
+                                <li>• Pacientes só veem planos ativos</li>
+                                <li>• Master tem acesso total a tudo</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-green-600 mb-2 text-sm sm:text-base">✅ Aprovação e Ativação</h4>
+                            <ul class="text-xs sm:text-sm space-y-1">
+                                <li>• Planos de Fisios precisam de aprovação</li>
+                                <li>• Planos do Master são auto-aprovados</li>
+                                <li>• Apenas Master pode ativar planos para pacientes</li>
+                                <li>• Após aprovação, Fisio perde edição</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-purple-600 mb-2 text-sm sm:text-base">💪 Exercícios</h4>
+                            <ul class="text-xs sm:text-sm space-y-1">
+                                <li>• Cada Fisio tem biblioteca pessoal</li>
+                                <li>• Master acessa exercícios de todos</li>
+                                <li>• Categorização obrigatória</li>
+                                <li>• Imagens são opcionais (URLs)</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-orange-600 mb-2 text-sm sm:text-base">🔄 Estados do Sistema</h4>
+                            <ul class="text-xs sm:text-sm space-y-1">
+                                <li>• Planos: draft → pending → approved/rejected</li>
+                                <li>• Ativação independente da aprovação</li>
+                                <li>• Usuários podem ser desativados</li>
+                                <li>• Sessões registram histórico</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => button.classList.remove('active'));
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
         }
 
-        await performLogin(codigo);
-    });
+        // Add some interactivity to forms
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate form submissions
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    alert('Formulário enviado com sucesso! (Simulação)');
+                });
+            });
 
-    async function performLogin(codigo) {
-        // Show loading state
-        setLoadingState(true);
-        hideMessages();
-
-        try {
-            // Fetch data from Google Sheets via Stein API
-            const response = await fetch(`${API_BASE}/fisioterapeutas`);
-            
-            if (!response.ok) {
-                throw new Error('Erro ao conectar com o servidor');
-            }
-
-            const fisioterapeutas = await response.json();
-            
-            // Find user by code
-            const user = fisioterapeutas.find(f => f.codigo && f.codigo.toString().toUpperCase() === codigo.toUpperCase());
-            
-            if (!user) {
-                showError('Código de acesso inválido');
-                setLoadingState(false);
-                return;
-            }
-
-            // Success - show user info
-            showSuccess(`Login realizado com sucesso!`);
-            displayUserInfo(user);
-            
-            // Store user data in localStorage for the session
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            
-            // Simulate redirect after 2 seconds
-            setTimeout(() => {
-                showSuccess('Redirecionando para o sistema...');
-                // Here you would typically redirect to the main application
-                // window.location.href = '/dashboard';
-            }, 2000);
-
-        } catch (error) {
-            console.error('Login error:', error);
-            showError('Erro ao realizar login. Tente novamente.');
-        } finally {
-            setLoadingState(false);
-        }
-    }
-
-    function setLoadingState(loading) {
-        if (loading) {
-            btnText.textContent = 'Verificando...';
-            btnSpinner.classList.remove('hidden');
-            loginBtn.disabled = true;
-            codigoInput.disabled = true;
-        } else {
-            btnText.textContent = 'Entrar';
-            btnSpinner.classList.add('hidden');
-            loginBtn.disabled = false;
-            codigoInput.disabled = false;
-        }
-    }
-
-    function showError(message) {
-        errorText.textContent = message;
-        errorMessage.classList.remove('hidden');
-        successMessage.classList.add('hidden');
-        messageArea.classList.remove('hidden');
-    }
-
-    function showSuccess(message) {
-        successText.textContent = message;
-        successMessage.classList.remove('hidden');
-        errorMessage.classList.add('hidden');
-        messageArea.classList.remove('hidden');
-    }
-
-    function hideMessages() {
-        messageArea.classList.add('hidden');
-        errorMessage.classList.add('hidden');
-        successMessage.classList.add('hidden');
-    }
-
-    function displayUserInfo(user) {
-        document.getElementById('userName').textContent = user.nome || 'N/A';
-        document.getElementById('userEmail').textContent = user.email || 'N/A';
-        document.getElementById('userEspecialidade').textContent = user.especialidade || 'N/A';
-        document.getElementById('userMaster').textContent = user.master === 'TRUE' || user.master === true ? 'Administrador' : 'Usuário';
-        
-        userInfo.classList.remove('hidden');
-    }
-
-    // Check if user is already logged in
-    window.addEventListener('load', function() {
-        const currentUser = localStorage.getItem('currentUser');
-        if (currentUser) {
-            const user = JSON.parse(currentUser);
-            displayUserInfo(user);
-            showSuccess('Você já está logado no sistema');
-        }
-    });
-</script>
-
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'983a7bd6a306bd0e',t:'MTc1ODYzNTEzOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>
+            // Simulate button clicks
+            const buttons = document.querySelectorAll('button[type="button"]');
+            buttons.forEach(button => {
+                if (button.textContent.includes('Copiar')) {
+                    button.addEventListener('click', function() {
+                        alert('Código copiado para a área de transferência!');
+                    });
+                }
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'983abba483eae3c3',t:'MTc1ODYzNzc1My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
