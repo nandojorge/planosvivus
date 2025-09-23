@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VivusFisio Plan - Sistema de Gestão</title>
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -120,22 +120,30 @@
     <div id="mainApp" class="page">
         <!-- Header -->
         <header class="flex items-center justify-between p-4">
-            <button onclick="toggleSideMenu()" class="flex items-center justify-center text-primary dark:text-white">
-                <svg class="h-6 w-6" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-                    <line x1="4" x2="20" y1="12" y2="12"></line>
-                    <line x1="4" x2="20" y1="6" y2="6"></line>
-                    <line x1="4" x2="20" y1="18" y2="18"></line>
+            <!-- User Profile in Header Left -->
+            <div class="flex items-center space-x-2 text-primary dark:text-white">
+                <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold" id="headerUserInitials">
+                    VF
+                </div>
+                <div class="text-left">
+                    <div class="text-sm font-medium" id="headerUserName">Usuário</div>
+                    <div class="text-xs text-secondary dark:text-gray-400" id="headerUserType">Tipo</div>
+                </div>
+            </div>
+            
+            <!-- Menu Button -->
+            <button onclick="toggleSideMenu()" class="text-primary dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg p-2 transition-colors">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
             </button>
-
-            <div class="w-6"></div> <!-- Spacer for centering -->
         </header>
 
         <!-- Side Menu Overlay -->
         <div id="sideMenuOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden" onclick="closeSideMenu()"></div>
         
         <!-- Side Menu -->
-        <div id="sideMenu" class="fixed top-0 left-0 h-full w-80 bg-card-light dark:bg-card-dark shadow-xl z-50 transform -translate-x-full transition-transform duration-300">
+        <div id="sideMenu" class="fixed top-0 right-0 h-full w-80 bg-card-light dark:bg-card-dark shadow-xl z-50 transform translate-x-full transition-transform duration-300">
             <div class="p-4 border-b border-gray-200 dark:border-gray-700">
                 <div class="flex items-center justify-between">
                     <h2 class="text-lg font-bold text-primary dark:text-white">Menu</h2>
@@ -213,23 +221,6 @@
 
             <!-- Master UI Tab -->
             <div id="master" class="tab-content space-y-8">
-                <!-- User Profile Header -->
-                <section class="flex flex-col items-center text-center gap-4 py-6">
-                    <div class="w-24 h-24 rounded-full border-4 border-white dark:border-card-dark shadow-lg overflow-hidden">
-                        <img 
-                            src="images/vivuslogo.png" 
-                            alt="Foto do usuário Master" 
-                            class="w-full h-full object-cover"
-                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                        >
-                        <div class="w-full h-full bg-primary flex items-center justify-center text-white text-2xl font-bold" style="display: none;" id="userInitials">M</div>
-                    </div>
-                    <div>
-                        <h2 class="text-2xl font-bold text-primary dark:text-white" id="masterUserName">Admin Master</h2>
-                        <p class="text-secondary dark:text-gray-400">Master</p>
-
-                    </div>
-                </section>
 
                 <!-- Planos em aprovação -->
                 <section>
@@ -883,14 +874,7 @@
             // Update side menu user info
             updateSideMenuUserInfo();
             
-            // Update master profile info
-            if (currentUser.master === 'true' || currentUser.especialidade === 'master') {
-                document.getElementById('masterUserName').textContent = currentUser.nome;
-                
-                // Set user initials
-                const initials = currentUser.nome.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-                document.getElementById('userInitials').textContent = initials;
-            }
+
             
             // Update patient welcome message
             if (currentUser.especialidade === 'paciente') {
@@ -905,13 +889,18 @@
         function updateSideMenuUserInfo() {
             if (!currentUser) return;
             
-            // Update user name and type
+            // Update user name and type in side menu
             document.getElementById('sideMenuUserName').textContent = currentUser.nome;
             document.getElementById('sideMenuUserType').textContent = currentUser.especialidade.charAt(0).toUpperCase() + currentUser.especialidade.slice(1);
             
-            // Update user initials
+            // Update user initials in side menu
             const initials = currentUser.nome.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
             document.getElementById('sideMenuUserInitials').textContent = initials;
+            
+            // Update header user info
+            document.getElementById('headerUserName').textContent = currentUser.nome;
+            document.getElementById('headerUserType').textContent = currentUser.especialidade.charAt(0).toUpperCase() + currentUser.especialidade.slice(1);
+            document.getElementById('headerUserInitials').textContent = initials;
             
             // Show/hide user management menu item for master users
             const userManagementMenuItem = document.getElementById('userManagementMenuItem');
@@ -927,9 +916,9 @@
             const sideMenu = document.getElementById('sideMenu');
             const overlay = document.getElementById('sideMenuOverlay');
             
-            if (sideMenu.classList.contains('-translate-x-full')) {
+            if (sideMenu.classList.contains('translate-x-full')) {
                 // Open menu
-                sideMenu.classList.remove('-translate-x-full');
+                sideMenu.classList.remove('translate-x-full');
                 overlay.classList.remove('hidden');
                 document.body.style.overflow = 'hidden';
             } else {
@@ -943,7 +932,7 @@
             const sideMenu = document.getElementById('sideMenu');
             const overlay = document.getElementById('sideMenuOverlay');
             
-            sideMenu.classList.add('-translate-x-full');
+            sideMenu.classList.add('translate-x-full');
             overlay.classList.add('hidden');
             document.body.style.overflow = '';
         }
@@ -1282,5 +1271,5 @@
             document.getElementById('accessCode').focus();
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'983b8b4ab4458c92',t:'MTc1ODY0NjI1OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'983b965921d98c92',t:'MTc1ODY0NjcxMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
