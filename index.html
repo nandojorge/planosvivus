@@ -1,534 +1,259 @@
 <!DOCTYPE html>
-<html lang="pt">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FisioPlanos - Gestão de Planos de Fisioterapia</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .fade-in {
-            animation: fadeIn 0.3s ease-in;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .exercise-image {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
-    <div id="app" class="container mx-auto px-4 py-8 max-w-6xl">
-        <!-- Login Fisioterapeuta -->
-        <div id="physio-login" class="fade-in">
-            <div class="max-w-md mx-auto bg-white rounded-xl shadow-lg p-8">
-                <div class="text-center mb-8">
-                    <h1 class="text-3xl font-bold text-gray-800 mb-2">FisioPlanos</h1>
-                    <p class="text-gray-600">Acesso Fisioterapeuta</p>
-                </div>
-                <form onsubmit="loginPhysio(event)">
-                    <div class="mb-6">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Código de Acesso</label>
-                        <input type="password" id="physio-code" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Digite seu código" required>
-                    </div>
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200">
-                        Entrar
-                    </button>
-                </form>
-                <div class="text-center mt-6">
-                    <button onclick="showClientLogin()" class="text-blue-600 hover:text-blue-800 text-sm">
-                        Acesso Cliente
-                    </button>
-                </div>
-            </div>
-        </div>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VivusFisio Plan - Login</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#4A9D82",
+            "background-light": "#F0F5F3",
+            "background-dark": "#1A2E27",
+            "text-light": "#F0F5F3",
+            "text-dark": "#101D18",
+          },
+          fontFamily: {
+            "display": ["Manrope"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.375rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="flex flex-col min-h-screen">
+<main class="flex-grow flex flex-col justify-center items-center px-6">
+<div class="text-center mb-16">
+<!-- Logo da Vivus da pasta local -->
+<div class="inline-block mb-4">
+  <img src="./images/vivuslog.png" alt="Vivus Logo" class="w-16 h-16 mx-auto object-contain" onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='flex';">
+  
+  <!-- Logo de fallback caso a imagem não carregue -->
+  <div id="fallbackLogo" class="w-16 h-16 mx-auto bg-primary rounded-full flex items-center justify-center" style="display: none;">
+    <svg class="w-10 h-10 text-white" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+      <g fill="currentColor">
+        <path d="M15 30 L30 70 L45 30" stroke="currentColor" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M35 30 L50 70 L65 30" stroke="currentColor" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <g transform="translate(75, 45)">
+          <rect x="-2" y="-12" width="4" height="24" rx="2" fill="currentColor"/>
+          <rect x="-12" y="-2" width="24" height="4" rx="2" fill="currentColor"/>
+        </g>
+        <circle cx="90" cy="65" r="3" fill="currentColor"/>
+      </g>
+    </svg>
+  </div>
+</div>
+<h1 class="text-4xl font-extrabold text-text-dark dark:text-text-light">VivusFisio Plan</h1>
+</div>
 
-        <!-- Login Cliente -->
-        <div id="client-login" class="fade-in hidden">
-            <div class="max-w-md mx-auto bg-white rounded-xl shadow-lg p-8">
-                <div class="text-center mb-8">
-                    <h1 class="text-3xl font-bold text-gray-800 mb-2">FisioPlanos</h1>
-                    <p class="text-gray-600">Acesso Cliente</p>
-                </div>
-                <form onsubmit="loginClient(event)">
-                    <div class="mb-6">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Código do Cliente</label>
-                        <input type="text" id="client-code" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Digite seu código" required>
-                    </div>
-                    <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200">
-                        Entrar
-                    </button>
-                </form>
-                <div class="text-center mt-6">
-                    <button onclick="showPhysioLogin()" class="text-green-600 hover:text-green-800 text-sm">
-                        Acesso Fisioterapeuta
-                    </button>
-                </div>
-            </div>
-        </div>
+<form id="loginForm" class="w-full max-w-sm mx-auto space-y-6">
+<div class="text-center mb-8">
+<h2 class="text-2xl font-bold text-text-dark dark:text-text-light mb-1">Acesse sua conta</h2>
+<p class="text-text-dark/60 dark:text-text-light/60">Insira seu código único de acesso.</p>
+</div>
+<div class="flex flex-col">
+<label class="sr-only" for="access-code">Código único de acesso</label>
+<input class="form-input w-full bg-background-light dark:bg-background-dark border-2 border-text-dark/20 dark:border-text-light/20 rounded-lg h-14 px-4 text-center text-xl tracking-[0.3em] font-bold text-text-dark dark:text-text-light placeholder:text-text-dark/40 dark:placeholder:text-text-light/40 focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors duration-300" id="access-code" maxlength="20" placeholder="● ● ● ● ● ●" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false"/>
+</div>
 
-        <!-- Dashboard Fisioterapeuta -->
-        <div id="physio-dashboard" class="fade-in hidden">
-            <div class="flex justify-between items-center mb-8">
-                <div>
-                    <h1 class="text-3xl font-bold text-gray-800">Dashboard Fisioterapeuta</h1>
-                    <p class="text-gray-600">Bem-vinda, <span id="physio-name">Dra. Silva</span></p>
-                    <p class="text-gray-500 text-sm">Especialidade: <span id="physio-specialty">Ortopedia</span> | Código: <span id="physio-code-display">FISIO123</span></p>
-                </div>
-                <div class="flex gap-4">
-                    <button onclick="showCreatePlan()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition duration-200">
-                        Novo Plano
-                    </button>
-                    <button onclick="showExerciseCreation()" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg transition duration-200">
-                        Criar Exercício
-                    </button>
-                    <button onclick="logout()" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition duration-200">
-                        Sair
-                    </button>
-                </div>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-lg">
-                    <h3 class="text-lg font-semibold text-yellow-800 mb-2">Pendentes Aprovação</h3>
-                    <p class="text-3xl font-bold text-yellow-600" id="pending-count">3</p>
-                </div>
-                <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-lg">
-                    <h3 class="text-lg font-semibold text-blue-800 mb-2">Planos Ativos</h3>
-                    <p class="text-3xl font-bold text-blue-600" id="active-count">8</p>
-                </div>
-                <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded-lg">
-                    <h3 class="text-lg font-semibold text-green-800 mb-2">Planos Concluídos</h3>
-                    <p class="text-3xl font-bold text-green-600" id="completed-count">15</p>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <h2 class="text-xl font-bold text-gray-800 mb-4">Planos Recentes</h2>
-                <div id="plans-list" class="space-y-4">
-                    <!-- Planos serão carregados aqui -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Criação de Plano -->
-        <div id="create-plan" class="fade-in hidden">
-            <div class="flex justify-between items-center mb-8">
-                <h1 class="text-3xl font-bold text-gray-800">Criar Novo Plano</h1>
-                <button onclick="showPhysioDashboard()" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition duration-200">
-                    Voltar
-                </button>
-            </div>
-
-            <div class="bg-white rounded-xl shadow-lg p-8">
-                <form onsubmit="savePlan(event)">
-                    <div class="grid md:grid-cols-2 gap-6 mb-6">
-                        <div>
-                            <label class="block text-gray-700 text-sm font-bold mb-2">Nome do Cliente</label>
-                            <input type="text" id="client-name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 text-sm font-bold mb-2">Código do Cliente</label>
-                            <input type="text" id="plan-client-code" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                        </div>
-                    </div>
-
-                    <div class="mb-6">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Título do Plano</label>
-                        <input type="text" id="plan-title" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    </div>
-
-                    <div class="mb-6">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Comentários Gerais</label>
-                        <textarea id="plan-comments" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Instruções gerais para o cliente..."></textarea>
-                    </div>
-
-                    <div class="flex gap-4">
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg transition duration-200">
-                            Salvar Plano
-                        </button>
-                        <button type="button" onclick="showPhysioDashboard()" class="bg-gray-600 hover:bg-gray-700 text-white px-8 py-3 rounded-lg transition duration-200">
-                            Cancelar
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Dashboard Cliente -->
-        <div id="client-dashboard" class="fade-in hidden">
-            <div class="flex justify-between items-center mb-8">
-                <div>
-                    <h1 class="text-3xl font-bold text-gray-800">Meus Planos</h1>
-                    <p class="text-gray-600">Bem-vindo, <span id="client-name-display">João Silva</span></p>
-                </div>
-                <button onclick="logout()" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition duration-200">
-                    Sair
-                </button>
-            </div>
-
-            <div class="grid gap-6" id="client-plans-list">
-                <!-- Planos do cliente serão carregados aqui -->
-            </div>
-        </div>
-
-        <!-- Dashboard Master -->
-        <div id="master-dashboard" class="fade-in hidden">
-            <div class="flex justify-between items-center mb-8">
-                <div>
-                    <h1 class="text-3xl font-bold text-gray-800">Dashboard Master</h1>
-                    <p class="text-gray-600">Bem-vindo, <span id="master-name">Dr. Master</span></p>
-                    <p class="text-gray-500 text-sm">Função: <span id="master-specialty">Supervisão Geral</span> | Código: <span id="master-code-display">MASTER001</span></p>
-                </div>
-                <div class="flex gap-4">
-                    <button onclick="showCreatePlan()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition duration-200">
-                        Novo Plano
-                    </button>
-                    <button onclick="logout()" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition duration-200">
-                        Sair
-                    </button>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <h2 class="text-xl font-bold text-gray-800 mb-4">Todos os Planos</h2>
-                <div id="all-plans-list" class="space-y-4">
-                    <!-- Todos os planos serão carregados aqui -->
-                </div>
-            </div>
-        </div>
+<!-- Messages Area -->
+<div id="messageArea" class="hidden">
+  <div id="errorMessage" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg mb-4 hidden">
+    <div class="flex items-start">
+      <svg class="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+      </svg>
+      <span id="errorText" class="text-sm"></span>
     </div>
+  </div>
 
-    <script>
-        // Configuração do Google Sheets
-        const GOOGLE_SHEETS_CONFIG = {
-            apiKey: 'AIzaSyA6xP1Mlwb_zRhCQS9YBTeSVyPxxNvEZCI',
-            spreadsheetId: '1xfp6aYnbNpw46qPFgeC3UdSPd2Td74iBgVV2xKT4Nis',
-            range: 'Fisioterapeutas!A:E'
-        };
+  <div id="successMessage" class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-300 px-4 py-3 rounded-lg mb-4 hidden">
+    <div class="flex items-start">
+      <svg class="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+      </svg>
+      <span id="successText" class="text-sm"></span>
+    </div>
+  </div>
+</div>
 
-        // Estado da aplicação
-        let currentUser = null;
-        let currentView = 'physio-login';
-        let exercises = [];
-        let plans = [];
+<!-- User Info Display -->
+<div id="userInfo" class="bg-primary/10 dark:bg-primary/20 border border-primary/20 dark:border-primary/30 px-4 py-3 rounded-lg mb-4 hidden">
+  <h3 class="font-bold text-primary mb-2">Bem-vindo(a)!</h3>
+  <div class="space-y-1 text-sm text-text-dark dark:text-text-light">
+    <p class="break-words"><strong>Nome:</strong> <span id="userName"></span></p>
+    <p class="break-words"><strong>Email:</strong> <span id="userEmail"></span></p>
+    <p class="break-words"><strong>Especialidade:</strong> <span id="userEspecialidade"></span></p>
+    <p><strong>Tipo:</strong> <span id="userMaster"></span></p>
+  </div>
+</div>
 
-        // Cache para dados das fisioterapeutas
-        let physiotherapistsCache = null;
-        let cacheTimestamp = null;
-        const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
+<button type="submit" id="loginBtn" class="w-full h-14 bg-primary text-white font-bold text-lg rounded-lg shadow-lg hover:bg-opacity-90 transition-opacity flex items-center justify-center">
+  <span id="btnText">Entrar</span>
+  <div id="btnSpinner" class="ml-2 hidden">
+    <div class="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+  </div>
+</button>
+</form>
+</main>
+<footer class="py-6 px-6 text-center">
+<a class="text-sm text-text-dark/60 dark:text-text-light/60 hover:text-primary dark:hover:text-primary transition-colors" href="#">
+        Precisa de ajuda?
+      </a>
+</footer>
+</div>
 
-        // Dados de exemplo
-        const sampleExercises = [
-            { id: 1, name: 'Flexão de Braço', description: 'Exercício para fortalecimento dos braços', sets: 3, reps: 10, images: ['https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=200&fit=crop'] },
-            { id: 2, name: 'Agachamento', description: 'Exercício para fortalecimento das pernas', sets: 3, reps: 15, images: ['https://images.unsplash.com/photo-1566241440091-ec10de8db2e1?w=300&h=200&fit=crop'] },
-            { id: 3, name: 'Prancha', description: 'Exercício para core', sets: 3, reps: 30, images: ['https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=300&h=200&fit=crop'] }
-        ];
+<script>
+    const API_BASE = 'https://api.steinhq.com/v1/storages/68d29050affba40a62ffb0f6';
+    
+    // Elements
+    const loginForm = document.getElementById('loginForm');
+    const codigoInput = document.getElementById('access-code');
+    const loginBtn = document.getElementById('loginBtn');
+    const btnText = document.getElementById('btnText');
+    const btnSpinner = document.getElementById('btnSpinner');
+    const messageArea = document.getElementById('messageArea');
+    const errorMessage = document.getElementById('errorMessage');
+    const successMessage = document.getElementById('successMessage');
+    const errorText = document.getElementById('errorText');
+    const successText = document.getElementById('successText');
+    const userInfo = document.getElementById('userInfo');
 
-        const samplePlans = [
-            { 
-                id: 1, 
-                title: 'Reabilitação Ombro', 
-                clientName: 'João Silva', 
-                clientCode: 'JS001', 
-                status: 'ativo', 
-                comments: 'Plano focado na recuperação do ombro direito após lesão.',
-                exercises: [1, 2],
-                createdAt: '2024-01-15',
-                physioName: 'Dra. Silva'
-            },
-            { 
-                id: 2, 
-                title: 'Fortalecimento Lombar', 
-                clientName: 'Maria Santos', 
-                clientCode: 'MS002', 
-                status: 'pendente', 
-                comments: 'Exercícios para alívio de dores lombares.',
-                exercises: [2, 3],
-                createdAt: '2024-01-16',
-                physioName: 'Dra. Silva'
+    // Auto-uppercase input
+    codigoInput.addEventListener('input', function(e) {
+        e.target.value = e.target.value.toUpperCase();
+    });
+
+    // Form submission
+    loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const codigo = codigoInput.value.trim();
+        
+        if (!codigo) {
+            showError('Por favor, digite seu código de acesso');
+            return;
+        }
+
+        await performLogin(codigo);
+    });
+
+    async function performLogin(codigo) {
+        // Show loading state
+        setLoadingState(true);
+        hideMessages();
+
+        try {
+            // Fetch data from Google Sheets via Stein API
+            const response = await fetch(`${API_BASE}/fisioterapeutas`);
+            
+            if (!response.ok) {
+                throw new Error('Erro ao conectar com o servidor');
             }
-        ];
 
-        // Lista de fisioterapeutas de fallback
-        const fallbackPhysiotherapists = [
-            { code: 'FISIO123', name: 'Dra. Ana Silva', isMaster: false, email: 'ana.silva@clinica.com', specialty: 'Ortopedia' },
-            { code: 'FISIO456', name: 'Dr. Carlos Santos', isMaster: false, email: 'carlos.santos@clinica.com', specialty: 'Neurologia' },
-            { code: 'FISIO789', name: 'Dra. Maria Oliveira', isMaster: false, email: 'maria.oliveira@clinica.com', specialty: 'Respiratória' },
-            { code: 'MASTER001', name: 'Dr. João Master', isMaster: true, email: 'joao.master@clinica.com', specialty: 'Supervisão Geral' },
-            { code: 'MASTER002', name: 'Dra. Paula Master', isMaster: true, email: 'paula.master@clinica.com', specialty: 'Coordenação Clínica' }
-        ];
-
-        // Inicialização
-        exercises = [...sampleExercises];
-        plans = [...samplePlans];
-
-        // Função para buscar dados do Google Sheets
-        async function fetchPhysiotherapistsFromSheets() {
-            const now = Date.now();
-            if (physiotherapistsCache && cacheTimestamp && (now - cacheTimestamp) < CACHE_DURATION) {
-                return physiotherapistsCache;
+            const fisioterapeutas = await response.json();
+            
+            // Find user by code
+            const user = fisioterapeutas.find(f => f.codigo && f.codigo.toString().toUpperCase() === codigo.toUpperCase());
+            
+            if (!user) {
+                showError('Código de acesso inválido');
+                setLoadingState(false);
+                return;
             }
 
-            try {
-                const url = `https://sheets.googleapis.com/v4/spreadsheets/${GOOGLE_SHEETS_CONFIG.spreadsheetId}/values/${GOOGLE_SHEETS_CONFIG.range}?key=${GOOGLE_SHEETS_CONFIG.apiKey}`;
-                
-                const response = await fetch(url);
-                
-                if (!response.ok) {
-                    throw new Error(`Erro na API: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                if (!data.values || data.values.length < 2) {
-                    throw new Error('Planilha vazia ou sem dados válidos');
-                }
-                
-                const physiotherapists = data.values.slice(1).map(row => ({
-                    code: row[0]?.toString().trim().toUpperCase(),
-                    name: row[1]?.toString().trim(),
-                    isMaster: row[2]?.toString().trim().toUpperCase() === 'TRUE',
-                    email: row[3]?.toString().trim().toLowerCase(),
-                    specialty: row[4]?.toString().trim()
-                })).filter(item => item.code && item.name);
-                
-                physiotherapistsCache = physiotherapists;
-                cacheTimestamp = now;
-                
-                return physiotherapists;
-                
-            } catch (error) {
-                console.error('Erro ao buscar dados do Google Sheets:', error);
-                physiotherapistsCache = fallbackPhysiotherapists;
-                cacheTimestamp = now;
-                return fallbackPhysiotherapists;
-            }
-        }
-
-        // Funções de navegação
-        function showView(viewId) {
-            document.querySelectorAll('#app > div').forEach(div => div.classList.add('hidden'));
-            document.getElementById(viewId).classList.remove('hidden');
-            currentView = viewId;
-        }
-
-        function showPhysioLogin() {
-            showView('physio-login');
-        }
-
-        function showClientLogin() {
-            showView('client-login');
-        }
-
-        function showPhysioDashboard() {
-            showView('physio-dashboard');
-            loadPhysioDashboard();
-        }
-
-        function showClientDashboard() {
-            showView('client-dashboard');
-            loadClientPlans();
-        }
-
-        function showCreatePlan() {
-            showView('create-plan');
-        }
-
-        function showMasterDashboard() {
-            showView('master-dashboard');
-            loadMasterDashboard();
-        }
-
-        // Funções de login
-        async function loginPhysio(event) {
-            event.preventDefault();
-            const code = document.getElementById('physio-code').value.toUpperCase();
+            // Success - show user info
+            showSuccess(`Login realizado com sucesso!`);
+            displayUserInfo(user);
             
-            const submitButton = event.target.querySelector('button[type="submit"]');
-            const originalText = submitButton.textContent;
-            submitButton.textContent = 'Verificando...';
-            submitButton.disabled = true;
+            // Store user data in localStorage for the session
+            localStorage.setItem('currentUser', JSON.stringify(user));
             
-            try {
-                const physioList = await fetchPhysiotherapistsFromSheets();
-                const physio = physioList.find(p => p.code === code);
-                
-                if (physio) {
-                    currentUser = { 
-                        type: 'physio', 
-                        code: physio.code, 
-                        name: physio.name, 
-                        email: physio.email,
-                        specialty: physio.specialty,
-                        isMaster: physio.isMaster 
-                    };
-                    
-                    if (physio.isMaster) {
-                        document.getElementById('master-name').textContent = physio.name;
-                        document.getElementById('master-specialty').textContent = physio.specialty;
-                        document.getElementById('master-code-display').textContent = physio.code;
-                        showMasterDashboard();
-                    } else {
-                        document.getElementById('physio-name').textContent = physio.name;
-                        document.getElementById('physio-specialty').textContent = physio.specialty;
-                        document.getElementById('physio-code-display').textContent = physio.code;
-                        showPhysioDashboard();
-                    }
-                } else {
-                    alert('Código inválido! Verifique se o código está correto.');
-                }
-            } catch (error) {
-                console.error('Erro ao buscar dados:', error);
-                alert('Erro ao conectar com o sistema. Tente novamente.');
-            } finally {
-                submitButton.textContent = originalText;
-                submitButton.disabled = false;
-            }
+            // Simulate redirect after 2 seconds
+            setTimeout(() => {
+                showSuccess('Redirecionando para o sistema...');
+                // Here you would typically redirect to the main application
+                // window.location.href = '/dashboard';
+            }, 2000);
+
+        } catch (error) {
+            console.error('Login error:', error);
+            showError('Erro ao realizar login. Tente novamente.');
+        } finally {
+            setLoadingState(false);
         }
+    }
 
-        function loginClient(event) {
-            event.preventDefault();
-            const code = document.getElementById('client-code').value;
-            
-            const clientPlan = plans.find(plan => plan.clientCode === code);
-            if (clientPlan) {
-                currentUser = { type: 'client', code: code, name: clientPlan.clientName };
-                document.getElementById('client-name-display').textContent = clientPlan.clientName;
-                showClientDashboard();
-            } else {
-                alert('Código de cliente não encontrado!');
-            }
+    function setLoadingState(loading) {
+        if (loading) {
+            btnText.textContent = 'Verificando...';
+            btnSpinner.classList.remove('hidden');
+            loginBtn.disabled = true;
+            codigoInput.disabled = true;
+        } else {
+            btnText.textContent = 'Entrar';
+            btnSpinner.classList.add('hidden');
+            loginBtn.disabled = false;
+            codigoInput.disabled = false;
         }
+    }
 
-        function logout() {
-            currentUser = null;
-            showPhysioLogin();
+    function showError(message) {
+        errorText.textContent = message;
+        errorMessage.classList.remove('hidden');
+        successMessage.classList.add('hidden');
+        messageArea.classList.remove('hidden');
+    }
+
+    function showSuccess(message) {
+        successText.textContent = message;
+        successMessage.classList.remove('hidden');
+        errorMessage.classList.add('hidden');
+        messageArea.classList.remove('hidden');
+    }
+
+    function hideMessages() {
+        messageArea.classList.add('hidden');
+        errorMessage.classList.add('hidden');
+        successMessage.classList.add('hidden');
+    }
+
+    function displayUserInfo(user) {
+        document.getElementById('userName').textContent = user.nome || 'N/A';
+        document.getElementById('userEmail').textContent = user.email || 'N/A';
+        document.getElementById('userEspecialidade').textContent = user.especialidade || 'N/A';
+        document.getElementById('userMaster').textContent = user.master === 'TRUE' || user.master === true ? 'Administrador' : 'Usuário';
+        
+        userInfo.classList.remove('hidden');
+    }
+
+    // Check if user is already logged in
+    window.addEventListener('load', function() {
+        const currentUser = localStorage.getItem('currentUser');
+        if (currentUser) {
+            const user = JSON.parse(currentUser);
+            displayUserInfo(user);
+            showSuccess('Você já está logado no sistema');
         }
+    });
+</script>
 
-        // Carregar dashboards
-        function loadPhysioDashboard() {
-            const pendingPlans = plans.filter(plan => plan.status === 'pendente');
-            const activePlans = plans.filter(plan => plan.status === 'ativo');
-            const completedPlans = plans.filter(plan => plan.status === 'concluido');
-
-            document.getElementById('pending-count').textContent = pendingPlans.length;
-            document.getElementById('active-count').textContent = activePlans.length;
-            document.getElementById('completed-count').textContent = completedPlans.length;
-
-            const plansList = document.getElementById('plans-list');
-            plansList.innerHTML = plans.map(plan => `
-                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-200">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h3 class="font-semibold text-gray-800">${plan.title}</h3>
-                            <p class="text-gray-600 text-sm">Cliente: ${plan.clientName}</p>
-                            <p class="text-gray-500 text-xs">Criado em: ${plan.createdAt}</p>
-                        </div>
-                        <span class="px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(plan.status)}">
-                            ${getStatusText(plan.status)}
-                        </span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function loadMasterDashboard() {
-            const allPlansList = document.getElementById('all-plans-list');
-            allPlansList.innerHTML = plans.map(plan => `
-                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-200">
-                    <div class="flex justify-between items-start">
-                        <div class="flex-1">
-                            <h3 class="font-semibold text-gray-800">${plan.title}</h3>
-                            <p class="text-gray-600 text-sm">Cliente: ${plan.clientName}</p>
-                            <p class="text-gray-600 text-sm">Fisioterapeuta: ${plan.physioName}</p>
-                            <p class="text-gray-500 text-xs">Criado em: ${plan.createdAt}</p>
-                        </div>
-                        <span class="px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(plan.status)}">
-                            ${getStatusText(plan.status)}
-                        </span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function loadClientPlans() {
-            const clientPlans = plans.filter(plan => plan.clientCode === currentUser.code);
-            const clientPlansList = document.getElementById('client-plans-list');
-            
-            clientPlansList.innerHTML = clientPlans.map(plan => `
-                <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition duration-200">
-                    <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-xl font-semibold text-gray-800">${plan.title}</h3>
-                        <span class="px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(plan.status)}">
-                            ${getStatusText(plan.status)}
-                        </span>
-                    </div>
-                    <p class="text-gray-600 mb-2">${plan.comments}</p>
-                    <p class="text-gray-500 text-sm">Criado em: ${plan.createdAt}</p>
-                </div>
-            `).join('');
-        }
-
-        function getStatusColor(status) {
-            switch(status) {
-                case 'pendente': return 'bg-yellow-100 text-yellow-800';
-                case 'ativo': return 'bg-blue-100 text-blue-800';
-                case 'concluido': return 'bg-green-100 text-green-800';
-                default: return 'bg-gray-100 text-gray-800';
-            }
-        }
-
-        function getStatusText(status) {
-            switch(status) {
-                case 'pendente': return 'Pendente';
-                case 'ativo': return 'Ativo';
-                case 'concluido': return 'Concluído';
-                default: return 'Desconhecido';
-            }
-        }
-
-        // Salvar plano
-        function savePlan(event) {
-            event.preventDefault();
-            
-            const planData = {
-                id: Date.now(),
-                title: document.getElementById('plan-title').value,
-                clientName: document.getElementById('client-name').value,
-                clientCode: document.getElementById('plan-client-code').value,
-                comments: document.getElementById('plan-comments').value,
-                status: 'pendente',
-                exercises: [],
-                createdAt: new Date().toISOString().split('T')[0],
-                physioName: currentUser.name
-            };
-            
-            plans.push(planData);
-            
-            // Limpar formulário
-            document.getElementById('plan-title').value = '';
-            document.getElementById('client-name').value = '';
-            document.getElementById('plan-client-code').value = '';
-            document.getElementById('plan-comments').value = '';
-            
-            alert('Plano criado com sucesso! Aguardando aprovação.');
-            showPhysioDashboard();
-        }
-
-        // Inicialização
-        document.addEventListener('DOMContentLoaded', function() {
-            showPhysioLogin();
-        });
-    </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'982d4937a03b94fb',t:'MTc1ODQ5Njc1MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
-</html>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'983a74ff75ebbd0e',t:'MTc1ODYzNDg1OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>
