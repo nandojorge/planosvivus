@@ -3,58 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gestão de Fisioterapia</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>VivusFisio Plan - Sistema de Gestão</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#4A9D82",
+                "background-light": "#F0F5F3",
+                "background-dark": "#1A2E27",
+                "text-light": "#F0F5F3",
+                "text-dark": "#374151",
+                "text-secondary-light": "#9CA3AF",
+              },
+              fontFamily: {
+                "display": ["Roboto", "sans-serif"]
+              },
+              borderRadius: {
+                "DEFAULT": "0.375rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+              },
+            },
+          },
+        }
+    </script>
     <style>
+        body {
+          min-height: max(884px, 100dvh);
+          font-family: 'Roboto', sans-serif;
+        }
+        .page { display: none; }
+        .page.active { display: block; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .tab-button.active { background-color: #3b82f6; color: white; }
+        .tab-button.active { background-color: #4A9D82; color: white; }
         .card {
             background: white;
             border-radius: 12px;
             border: 1px solid #e5e7eb;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-        .flow-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 12px;
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4A9D82;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
-<body class="bg-gray-100 font-sans">
-    <!-- Header -->
-    <header class="bg-white border-b border-gray-200">
-        <div class="px-4 py-4">
-            <h1 class="text-xl font-bold text-gray-900">🏥 Fisioterapia</h1>
-            <p class="text-gray-600 text-sm mt-1">Sistema de Gestão</p>
-        </div>
-    </header>
+<body class="bg-background-light dark:bg-background-dark font-display">
+    <!-- LOGIN PAGE -->
+    <div id="loginPage" class="page active">
+        <div class="flex flex-col min-h-screen">
+            <main class="flex-grow flex flex-col justify-center items-center px-6">
+                <div class="w-full max-w-sm mx-auto flex flex-col items-center">
+                    <div class="mb-6">
+                        <img alt="VivusFisio Planos Logo" class="w-28 h-28 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTdpcSLZK4Cl27w7W4MsSjvLlqgFq5iBNo72IfCx9DV6MINrlM0ZP24JSFQPWb1qHVX0WYc_hkXVXso1B2ND_uL40WsZtUD2J-nXjrwpt69P2SSBlJ55dbxsCQHq-ILsqOfggzc69ESGwgDzmFXjv_QFTOixoIDTfmNJJz0NKNxkjM-0QYQ8bSfsmDSrf6wuJzDESKO7bP0_cy4bzUHjR0bWZW6RCll8-pyvbi8txHEPB02r__ltVeNAp6gCvq7UNCRmWmeRyAQXw"/>
+                    </div>
+                    <h1 class="text-3xl font-bold text-text-dark dark:text-text-light tracking-tighter mb-2">VivusFisio Planos</h1>
+                    <p class="text-sm text-text-secondary-light dark:text-text-light/70 mb-6">Código de Acesso</p>
+                    
+                    <form id="loginForm" class="w-full space-y-4">
+                        <div class="flex flex-col">
+                            <label class="sr-only" for="accessCode">Código único de acesso</label>
+                            <input 
+                                class="form-input w-full bg-background-light dark:bg-background-dark border-2 border-text-dark/20 dark:border-text-light/20 rounded-lg h-14 px-4 text-center text-xl tracking-[0.3em] font-bold text-text-dark dark:text-text-light placeholder:text-text-dark/40 dark:placeholder:text-text-light/40 focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors duration-300" 
+                                id="accessCode" 
+                                maxlength="12" 
+                                placeholder="●●●●●●●●●●●●" 
+                                type="text"
+                                required
+                            />
+                        </div>
+                        <button 
+                            type="submit" 
+                            id="loginButton"
+                            class="w-full h-14 bg-primary text-white font-bold text-lg rounded-lg shadow-lg hover:bg-opacity-90 transition-opacity"
+                        >
+                            <span id="loginText">Entrar</span>
+                            <span id="loginLoading" class="loading" style="display: none;"></span>
+                        </button>
+                    </form>
 
-    <!-- Navigation Tabs -->
-    <nav class="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div class="px-4">
-            <div class="flex space-x-1 overflow-x-auto">
-                <button onclick="showTab('master')" class="tab-button active px-4 py-3 text-sm font-medium whitespace-nowrap">
-                    👑 Master
-                </button>
-                <button onclick="showTab('fisio')" class="tab-button px-4 py-3 text-sm font-medium whitespace-nowrap">
-                    🩺 Fisio
-                </button>
-                <button onclick="showTab('patient')" class="tab-button px-4 py-3 text-sm font-medium whitespace-nowrap">
-                    🧑‍🦽 Paciente
-                </button>
-                <button onclick="showTab('flows')" class="tab-button px-4 py-3 text-sm font-medium whitespace-nowrap">
-                    🔄 Fluxos
+                    <div id="loginError" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm w-full" style="display: none;">
+                        <strong>Erro:</strong> <span id="errorMessage"></span>
+                    </div>
+
+                    <div class="mt-6 text-center">
+                        <p class="text-xs text-text-secondary-light dark:text-text-light/70">
+                            Não tem código? Entre em contato com o administrador.
+                        </p>
+                    </div>
+                </div>
+            </main>
+            <footer class="py-6 px-6 text-center">
+            </footer>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div id="mainApp" class="page">
+        <!-- Header -->
+        <header class="bg-white dark:bg-background-dark border-b border-gray-200 dark:border-text-light/20">
+            <div class="px-4 py-4 flex justify-between items-center">
+                <div>
+                    <h1 class="text-xl font-bold text-text-dark dark:text-text-light">🏥 VivusFisio Planos</h1>
+                    <p class="text-text-secondary-light dark:text-text-light/70 text-sm mt-1" id="userWelcome">Sistema de Gestão</p>
+                </div>
+                <button onclick="logout()" class="text-red-600 text-sm hover:text-red-700">
+                    🚪 Sair
                 </button>
             </div>
-        </div>
-    </nav>
+        </header>
 
-    <main class="px-4 py-6 max-w-4xl mx-auto">
+        <!-- Navigation Tabs -->
+        <nav id="navigationTabs" class="bg-white dark:bg-background-dark border-b border-gray-200 dark:border-text-light/20 sticky top-0 z-10">
+            <div class="px-4">
+                <div class="flex space-x-1 overflow-x-auto" id="tabContainer">
+                    <!-- Tabs will be dynamically added based on user type -->
+                </div>
+            </div>
+        </nav>
 
-        <!-- Master UI Tab -->
-        <div id="master" class="tab-content active space-y-6">
+        <main class="px-4 py-6 max-w-4xl mx-auto bg-background-light dark:bg-background-dark min-h-screen">
+
+            <!-- Master UI Tab -->
+            <div id="master" class="tab-content space-y-6">
             <!-- Stats -->
             <div class="grid grid-cols-3 gap-3">
                 <div class="card p-4 text-center">
@@ -84,24 +172,62 @@
                 </div>
             </div>
 
-            <!-- Code Generator -->
-            <div class="card p-4">
+            <!-- Code Generator (Master Only) -->
+            <div class="card p-4" id="codeGeneratorSection">
                 <h3 class="font-semibold mb-4">🔑 Gerador de Códigos</h3>
-                <form class="space-y-4">
-                    <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
-                        <option>Fisioterapeuta</option>
-                        <option>Paciente</option>
+                <form id="codeGeneratorForm" class="space-y-4">
+                    <select id="userType" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" required>
+                        <option value="">Selecione o tipo</option>
+                        <option value="master">Master</option>
+                        <option value="fisioterapeuta">Fisioterapeuta</option>
+                        <option value="paciente">Paciente</option>
                     </select>
-                    <input type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" placeholder="Nome completo">
-                    <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg text-sm font-medium">
-                        Gerar Código
+                    <input 
+                        type="text" 
+                        id="userName" 
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" 
+                        placeholder="Nome completo"
+                        required
+                    >
+                    <input 
+                        type="email" 
+                        id="userEmail" 
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" 
+                        placeholder="Email (opcional)"
+                    >
+                    <button 
+                        type="submit" 
+                        id="generateButton"
+                        class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-blue-700"
+                    >
+                        <span id="generateText">Gerar Código</span>
+                        <span id="generateLoading" class="loading" style="display: none;"></span>
                     </button>
                 </form>
                 
-                <div class="mt-4 p-3 bg-gray-50 rounded-lg">
+                <div id="generatedCodeSection" class="mt-4 p-3 bg-gray-50 rounded-lg" style="display: none;">
                     <div class="text-xs text-gray-600 mb-1">Código gerado:</div>
-                    <div class="font-mono text-lg text-center bg-white p-2 rounded border">FT-2024-A7B9X2</div>
-                    <button class="w-full mt-2 text-blue-600 text-sm">📋 Copiar</button>
+                    <div id="generatedCode" class="font-mono text-lg text-center bg-white p-2 rounded border"></div>
+                    <button onclick="copyCode()" class="w-full mt-2 text-blue-600 text-sm hover:text-blue-700">📋 Copiar</button>
+                </div>
+
+                <div id="generateError" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm" style="display: none;">
+                    <strong>Erro:</strong> <span id="generateErrorMessage"></span>
+                </div>
+            </div>
+
+            <!-- User Management (Master Only) -->
+            <div class="card p-4" id="userManagementSection">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-semibold">👥 Usuários Cadastrados</h3>
+                    <button onclick="loadUsers()" class="text-blue-600 text-sm hover:text-blue-700">🔄 Atualizar</button>
+                </div>
+                
+                <div id="usersList" class="space-y-2">
+                    <div class="text-center text-gray-500 py-4">
+                        <div class="loading mx-auto mb-2"></div>
+                        <div class="text-sm">Carregando usuários...</div>
+                    </div>
                 </div>
             </div>
 
@@ -232,7 +358,7 @@
         <div id="patient" class="tab-content space-y-6">
             <!-- Welcome -->
             <div class="card p-4 bg-blue-50 border-blue-200">
-                <h3 class="font-semibold text-blue-800">Olá, João Silva! 👋</h3>
+                <h3 class="font-semibold text-blue-800" id="patientWelcome">Olá! 👋</h3>
                 <p class="text-sm text-blue-700 mt-1">Você tem 2 planos ativos para sua recuperação.</p>
             </div>
 
@@ -313,130 +439,236 @@
             </div>
         </div>
 
-        <!-- Workflows Tab -->
-        <div id="flows" class="tab-content space-y-6">
-            <!-- User Creation Flow -->
-            <div class="flow-card p-4">
-                <h3 class="font-bold mb-4">👥 Criação de Usuários</h3>
-                <div class="grid grid-cols-2 gap-3 text-sm">
-                    <div class="bg-white bg-opacity-20 p-3 rounded">
-                        <div class="font-bold">1. Master</div>
-                        <div class="text-xs">Gera código único</div>
-                    </div>
-                    <div class="bg-white bg-opacity-20 p-3 rounded">
-                        <div class="font-bold">2. Seleção</div>
-                        <div class="text-xs">Fisio ou Paciente</div>
-                    </div>
-                    <div class="bg-white bg-opacity-20 p-3 rounded">
-                        <div class="font-bold">3. Geração</div>
-                        <div class="text-xs">Sistema cria código</div>
-                    </div>
-                    <div class="bg-white bg-opacity-20 p-3 rounded">
-                        <div class="font-bold">4. Entrega</div>
-                        <div class="text-xs">Código para usuário</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Plan Creation Flow -->
-            <div class="flow-card p-4">
-                <h3 class="font-bold mb-4">📋 Criação de Planos</h3>
-                <div class="space-y-3 text-sm">
-                    <div class="bg-white bg-opacity-20 p-3 rounded">
-                        <div class="font-bold">1. Fisioterapeuta → 2. Submissão</div>
-                        <div class="text-xs">Cria plano e envia para aprovação</div>
-                    </div>
-                    <div class="bg-white bg-opacity-20 p-3 rounded">
-                        <div class="font-bold">3. Master → 4. Aprovação</div>
-                        <div class="text-xs">Revisa, edita e aprova/rejeita</div>
-                    </div>
-                    <div class="bg-white bg-opacity-20 p-3 rounded">
-                        <div class="font-bold">5. Ativação</div>
-                        <div class="text-xs">Master ativa para paciente</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Exercise Management -->
-            <div class="flow-card p-4">
-                <h3 class="font-bold mb-4">💪 Gerenciamento de Exercícios</h3>
-                <div class="grid grid-cols-2 gap-3 text-sm">
-                    <div class="bg-white bg-opacity-20 p-3 rounded">
-                        <div class="font-bold">1. Criação</div>
-                        <div class="text-xs">Fisio cria exercício</div>
-                    </div>
-                    <div class="bg-white bg-opacity-20 p-3 rounded">
-                        <div class="font-bold">2. Categorização</div>
-                        <div class="text-xs">Associa categorias</div>
-                    </div>
-                    <div class="bg-white bg-opacity-20 p-3 rounded">
-                        <div class="font-bold">3. Imagens</div>
-                        <div class="text-xs">Adiciona URLs (opcional)</div>
-                    </div>
-                    <div class="bg-white bg-opacity-20 p-3 rounded">
-                        <div class="font-bold">4. Biblioteca</div>
-                        <div class="text-xs">Fica na biblioteca pessoal</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Patient Access -->
-            <div class="flow-card p-4">
-                <h3 class="font-bold mb-4">🧑‍🦽 Acesso do Paciente</h3>
-                <div class="grid grid-cols-2 gap-3 text-sm">
-                    <div class="bg-white bg-opacity-20 p-3 rounded">
-                        <div class="font-bold">1. Login</div>
-                        <div class="text-xs">Usa código único</div>
-                    </div>
-                    <div class="bg-white bg-opacity-20 p-3 rounded">
-                        <div class="font-bold">2. Dashboard</div>
-                        <div class="text-xs">Vê planos ativos</div>
-                    </div>
-                    <div class="bg-white bg-opacity-20 p-3 rounded">
-                        <div class="font-bold">3. Seleção</div>
-                        <div class="text-xs">Escolhe plano</div>
-                    </div>
-                    <div class="bg-white bg-opacity-20 p-3 rounded">
-                        <div class="font-bold">4. Execução</div>
-                        <div class="text-xs">Segue exercícios</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Business Rules -->
-            <div class="card p-4">
-                <h3 class="font-bold mb-4">📜 Regras Importantes</h3>
-                <div class="space-y-4">
-                    <div>
-                        <h4 class="font-semibold text-blue-600 mb-2">🔒 Controle de Acesso</h4>
-                        <ul class="text-sm space-y-1 text-gray-700">
-                            <li>• Apenas Master gera códigos</li>
-                            <li>• Fisios veem só seus exercícios</li>
-                            <li>• Pacientes veem só planos ativos</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="font-semibold text-green-600 mb-2">✅ Aprovação</h4>
-                        <ul class="text-sm space-y-1 text-gray-700">
-                            <li>• Planos de Fisios precisam aprovação</li>
-                            <li>• Master pode ativar planos</li>
-                            <li>• Após aprovação, Fisio perde edição</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="font-semibold text-purple-600 mb-2">💪 Exercícios</h4>
-                        <ul class="text-sm space-y-1 text-gray-700">
-                            <li>• Biblioteca pessoal por Fisio</li>
-                            <li>• Categorização obrigatória</li>
-                            <li>• Imagens opcionais (URLs)</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+        </main>
+    </div>
 
     <script>
+        // API Configuration
+        const API_BASE = 'https://api.steinhq.com/v1/storages/68d29050affba40a62ffb0f6';
+        
+        // Current user data
+        let currentUser = null;
+        
+        // Offline mode for testing
+        let offlineMode = false;
+        let offlineUsers = [
+            {
+                codigo: 'FT-MASTER01',
+                nome: 'Admin Master',
+                master: 'true',
+                email: 'admin@fisio.com',
+                especialidade: 'master',
+                ativos: 'true'
+            },
+            {
+                codigo: 'FT-FISIO001',
+                nome: 'Dr. João Silva',
+                master: 'false',
+                email: 'joao@fisio.com',
+                especialidade: 'fisioterapeuta',
+                ativos: 'true'
+            },
+            {
+                codigo: 'FT-PAC0001',
+                nome: 'Maria Santos',
+                master: 'false',
+                email: 'maria@email.com',
+                especialidade: 'paciente',
+                ativos: 'true'
+            }
+        ];
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is already logged in
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showMainApp();
+            }
+
+            // Setup login form
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            
+            // Setup code generator form
+            document.getElementById('codeGeneratorForm').addEventListener('submit', handleCodeGeneration);
+
+            // Auto-uppercase access code input
+            document.getElementById('accessCode').addEventListener('input', function(e) {
+                e.target.value = e.target.value.toUpperCase();
+            });
+        });
+
+        // Handle login
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const accessCode = document.getElementById('accessCode').value.trim().toUpperCase();
+            const loginButton = document.getElementById('loginButton');
+            const loginText = document.getElementById('loginText');
+            const loginLoading = document.getElementById('loginLoading');
+            const loginError = document.getElementById('loginError');
+            
+            // Show loading state
+            loginText.style.display = 'none';
+            loginLoading.style.display = 'inline-block';
+            loginButton.disabled = true;
+            loginError.style.display = 'none';
+
+            try {
+                let users = [];
+                
+                if (!offlineMode) {
+                    try {
+                        // Try to fetch from API first
+                        const response = await fetch(`${API_BASE}/utilizadores`, {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        
+                        if (!response.ok) {
+                            throw new Error('API Error');
+                        }
+                        
+                        users = await response.json();
+                    } catch (apiError) {
+                        console.warn('API failed, switching to offline mode:', apiError);
+                        offlineMode = true;
+                        users = offlineUsers;
+                        
+                        // Show offline mode notification
+                        const offlineNotice = document.createElement('div');
+                        offlineNotice.className = 'mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-700 text-sm';
+                        offlineNotice.innerHTML = '<strong>Modo Offline:</strong> Usando dados de demonstração. Conecte-se à internet para acessar dados reais.';
+                        document.getElementById('loginError').parentNode.insertBefore(offlineNotice, document.getElementById('loginError').nextSibling);
+                    }
+                } else {
+                    users = offlineUsers;
+                }
+                
+                // Find user by access code
+                const user = users.find(u => u.codigo === accessCode);
+
+                if (!user) {
+                    throw new Error('Código de acesso não encontrado');
+                }
+                
+                if (user.ativos !== 'true') {
+                    throw new Error('Usuário inativo. Entre em contato com o administrador');
+                }
+
+                // Save user data
+                currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                
+                // Show main app
+                showMainApp();
+
+            } catch (error) {
+                console.error('Login error:', error);
+                document.getElementById('errorMessage').textContent = error.message;
+                loginError.style.display = 'block';
+            } finally {
+                // Reset loading state
+                loginText.style.display = 'inline';
+                loginLoading.style.display = 'none';
+                loginButton.disabled = false;
+            }
+        }
+
+        // Show main application
+        function showMainApp() {
+            document.getElementById('loginPage').classList.remove('active');
+            document.getElementById('mainApp').classList.add('active');
+            
+            // Update welcome message
+            document.getElementById('userWelcome').textContent = `Bem-vindo, ${currentUser.nome}`;
+            
+            console.log('🔍 DEBUG - showMainApp called');
+            console.log('📋 Current user data:', currentUser);
+            console.log('🎯 User specialty:', currentUser.especialidade);
+            console.log('👑 Is master:', currentUser.master);
+            
+            // Setup navigation based on user type
+            setupNavigation();
+            
+            // Control access to master-only sections
+            const isMaster = (currentUser.master === 'true' || currentUser.especialidade === 'master');
+            console.log('🔐 Is user master?', isMaster);
+            
+            const codeGeneratorSection = document.getElementById('codeGeneratorSection');
+            const userManagementSection = document.getElementById('userManagementSection');
+            
+            if (isMaster) {
+                console.log('✅ Showing master sections');
+                loadUsers();
+                // Show master-only sections
+                if (codeGeneratorSection) codeGeneratorSection.style.display = 'block';
+                if (userManagementSection) userManagementSection.style.display = 'block';
+            } else {
+                console.log('❌ Hiding master sections for non-master user');
+                // Hide master-only sections for non-master users
+                if (codeGeneratorSection) codeGeneratorSection.style.display = 'none';
+                if (userManagementSection) userManagementSection.style.display = 'none';
+            }
+            
+            // Update patient welcome message
+            if (currentUser.especialidade === 'paciente') {
+                const patientWelcome = document.getElementById('patientWelcome');
+                if (patientWelcome) {
+                    patientWelcome.textContent = `Olá, ${currentUser.nome}! 👋`;
+                }
+            }
+        }
+
+        // Setup navigation tabs based on user type
+        function setupNavigation() {
+            const tabContainer = document.getElementById('tabContainer');
+            tabContainer.innerHTML = '';
+
+            console.log('Current user:', currentUser); // Debug log
+            console.log('User specialty:', currentUser.especialidade); // Debug log
+            console.log('Is master:', currentUser.master); // Debug log
+
+            // Check user type and show appropriate tab
+            if (currentUser.master === 'true' || currentUser.especialidade === 'master') {
+                // Master user - show only master tab
+                tabContainer.innerHTML = `
+                    <button onclick="showTab('master')" class="tab-button active px-4 py-3 text-sm font-medium whitespace-nowrap">
+                        👑 Master
+                    </button>
+                `;
+                showTab('master');
+            } else if (currentUser.especialidade === 'fisioterapeuta') {
+                // Fisioterapeuta - show only fisio tab
+                tabContainer.innerHTML = `
+                    <button onclick="showTab('fisio')" class="tab-button active px-4 py-3 text-sm font-medium whitespace-nowrap">
+                        🩺 Fisioterapeuta
+                    </button>
+                `;
+                showTab('fisio');
+            } else if (currentUser.especialidade === 'paciente') {
+                // Paciente - show only patient tab
+                tabContainer.innerHTML = `
+                    <button onclick="showTab('patient')" class="tab-button active px-4 py-3 text-sm font-medium whitespace-nowrap">
+                        🧑‍🦽 Paciente
+                    </button>
+                `;
+                showTab('patient');
+            } else {
+                // Fallback - show error message
+                tabContainer.innerHTML = `
+                    <div class="px-4 py-3 text-sm text-red-600">
+                        Erro: Tipo de usuário não reconhecido (${currentUser.especialidade})
+                    </div>
+                `;
+            }
+        }
+
+        // Show tab content
         function showTab(tabName) {
             // Hide all tab contents
             const contents = document.querySelectorAll('.tab-content');
@@ -453,27 +685,253 @@
             event.target.classList.add('active');
         }
 
-        // Add some interactivity to forms
-        document.addEventListener('DOMContentLoaded', function() {
-            // Simulate form submissions
-            const forms = document.querySelectorAll('form');
-            forms.forEach(form => {
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    alert('Formulário enviado com sucesso! (Simulação)');
-                });
-            });
+        // Handle code generation (Master only)
+        async function handleCodeGeneration(e) {
+            e.preventDefault();
+            
+            if (currentUser.master !== 'true') {
+                alert('Apenas usuários Master podem gerar códigos');
+                return;
+            }
 
-            // Simulate button clicks
-            const buttons = document.querySelectorAll('button[type="button"]');
-            buttons.forEach(button => {
-                if (button.textContent.includes('Copiar')) {
-                    button.addEventListener('click', function() {
-                        alert('Código copiado para a área de transferência!');
-                    });
+            const userType = document.getElementById('userType').value;
+            const userName = document.getElementById('userName').value.trim();
+            const userEmail = document.getElementById('userEmail').value.trim();
+            
+            const generateButton = document.getElementById('generateButton');
+            const generateText = document.getElementById('generateText');
+            const generateLoading = document.getElementById('generateLoading');
+            const generateError = document.getElementById('generateError');
+            
+            // Show loading state
+            generateText.style.display = 'none';
+            generateLoading.style.display = 'inline-block';
+            generateButton.disabled = true;
+            generateError.style.display = 'none';
+
+            try {
+                // Generate unique code
+                const code = generateUniqueCode();
+                
+                // Prepare user data
+                const userData = {
+                    codigo: code,
+                    nome: userName,
+                    master: userType === 'master' ? 'true' : 'false',
+                    email: userEmail || '',
+                    especialidade: userType,
+                    ativos: 'true'
+                };
+
+                if (offlineMode) {
+                    // Add to offline users array
+                    offlineUsers.push(userData);
+                    
+                    // Show success message for offline mode
+                    alert('Usuário criado no modo offline! Código: ' + code);
+                } else {
+                    try {
+                        // Save to API
+                        const response = await fetch(`${API_BASE}/utilizadores`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify([userData])
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Erro ao salvar usuário');
+                        }
+                    } catch (apiError) {
+                        console.warn('API failed during user creation, adding to offline mode');
+                        offlineMode = true;
+                        offlineUsers.push(userData);
+                    }
                 }
+
+                // Show generated code
+                document.getElementById('generatedCode').textContent = code;
+                document.getElementById('generatedCodeSection').style.display = 'block';
+                
+                // Reset form
+                document.getElementById('codeGeneratorForm').reset();
+                
+                // Reload users list
+                loadUsers();
+
+            } catch (error) {
+                console.error('Code generation error:', error);
+                document.getElementById('generateErrorMessage').textContent = error.message;
+                generateError.style.display = 'block';
+            } finally {
+                // Reset loading state
+                generateText.style.display = 'inline';
+                generateLoading.style.display = 'none';
+                generateButton.disabled = false;
+            }
+        }
+
+        // Generate unique code
+        function generateUniqueCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = 'FT-';
+            for (let i = 0; i < 8; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return code;
+        }
+
+        // Load users list (Master only)
+        async function loadUsers() {
+            if (currentUser.master !== 'true') return;
+
+            const usersList = document.getElementById('usersList');
+            
+            try {
+                let users = [];
+                
+                if (offlineMode) {
+                    users = offlineUsers;
+                } else {
+                    try {
+                        const response = await fetch(`${API_BASE}/utilizadores`);
+                        users = await response.json();
+                    } catch (apiError) {
+                        console.warn('API failed while loading users, using offline data');
+                        offlineMode = true;
+                        users = offlineUsers;
+                    }
+                }
+
+                if (users.length === 0) {
+                    usersList.innerHTML = `
+                        <div class="text-center text-gray-500 py-4">
+                            <div class="text-sm">Nenhum usuário cadastrado</div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                usersList.innerHTML = users.map(user => `
+                    <div class="border border-gray-200 rounded-lg p-3 flex justify-between items-center">
+                        <div>
+                            <div class="font-medium text-sm">${user.nome}</div>
+                            <div class="text-xs text-gray-600">
+                                ${user.codigo} • ${user.especialidade}
+                                ${user.email ? ` • ${user.email}` : ''}
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="px-2 py-1 rounded text-xs ${
+                                user.ativos === 'true' 
+                                    ? 'bg-green-100 text-green-800' 
+                                    : 'bg-red-100 text-red-800'
+                            }">
+                                ${user.ativos === 'true' ? 'Ativo' : 'Inativo'}
+                            </span>
+                            ${user.master === 'true' ? '<span class="text-yellow-600 text-xs">👑</span>' : ''}
+                            <button onclick="toggleUserStatus('${user.codigo}')" class="text-blue-600 text-xs hover:text-blue-700">
+                                ${user.ativos === 'true' ? '🔒 Desativar' : '🔓 Ativar'}
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('Error loading users:', error);
+                usersList.innerHTML = `
+                    <div class="text-center text-red-500 py-4">
+                        <div class="text-sm">Erro ao carregar usuários</div>
+                    </div>
+                `;
+            }
+        }
+
+        // Toggle user status (Master only)
+        async function toggleUserStatus(codigo) {
+            if (currentUser.master !== 'true') return;
+
+            try {
+                if (offlineMode) {
+                    // Update in offline array
+                    const userIndex = offlineUsers.findIndex(u => u.codigo === codigo);
+                    if (userIndex !== -1) {
+                        offlineUsers[userIndex].ativos = offlineUsers[userIndex].ativos === 'true' ? 'false' : 'true';
+                        loadUsers();
+                    }
+                    return;
+                }
+
+                // Get all users and find the one to update
+                const response = await fetch(`${API_BASE}/utilizadores`);
+                const users = await response.json();
+                
+                const userIndex = users.findIndex(u => u.codigo === codigo);
+                if (userIndex === -1) return;
+                
+                const user = users[userIndex];
+                const newStatus = user.ativos === 'true' ? 'false' : 'true';
+                
+                // Update user status using row number (index + 1)
+                const updateResponse = await fetch(`${API_BASE}/utilizadores/${userIndex + 1}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        codigo: user.codigo,
+                        nome: user.nome,
+                        master: user.master,
+                        email: user.email,
+                        especialidade: user.especialidade,
+                        ativos: newStatus
+                    })
+                });
+                
+                if (!updateResponse.ok) {
+                    throw new Error('Erro ao atualizar usuário');
+                }
+                
+                // Reload users list
+                loadUsers();
+                
+            } catch (error) {
+                console.error('Error toggling user status:', error);
+                alert('Erro ao alterar status do usuário');
+            }
+        }
+
+        // Copy generated code to clipboard
+        function copyCode() {
+            const code = document.getElementById('generatedCode').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('Código copiado para a área de transferência!');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = code;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('Código copiado para a área de transferência!');
             });
-        });
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('currentUser');
+            currentUser = null;
+            
+            // Reset to login page
+            document.getElementById('mainApp').classList.remove('active');
+            document.getElementById('loginPage').classList.add('active');
+            
+            // Reset forms
+            document.getElementById('loginForm').reset();
+            document.getElementById('accessCode').focus();
+        }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'983ac589a3cfcef8',t:'MTc1ODYzODE1OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'983af864529a6926',t:'MTc1ODY0MDI0MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
