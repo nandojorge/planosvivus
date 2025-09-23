@@ -72,16 +72,16 @@
             <main class="flex-grow flex flex-col justify-center items-center px-6">
                 <div class="w-full max-w-sm mx-auto flex flex-col items-center">
                     <div class="mb-6">
-                        <img alt="VivusFisio Planos Logo" class="w-28 h-28 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTdpcSLZK4Cl27w7W4MsSjvLlqgFq5iBNo72IfCx9DV6MINrlM0ZP24JSFQPWb1qHVX0WYc_hkXVXso1B2ND_uL40WsZtUD2J-nXjrwpt69P2SSBlJ55dbxsCQHq-ILsqOfggzc69ESGwgDzmFXjv_QFTOixoIDTfmNJJz0NKNxkjM-0QYQ8bSfsmDSrf6wuJzDESKO7bP0_cy4bzUHjR0bWZW6RCll8-pyvbi8txHEPB02r__ltVeNAp6gCvq7UNCRmWmeRyAQXw"/>
+                        <img alt="VivusFisio Planos Logo" class="w-28 h-28 rounded-full" src="images/vivuslog.jpg" onerror="this.src=''; this.alt='Logo não encontrado'; this.style.display='none';"/>
                     </div>
-                    <h1 class="text-3xl font-bold text-text-dark dark:text-text-light tracking-tighter mb-2">VivusFisio Planos</h1>
+                    <h1 class="text-3xl font-bold text-text-dark dark:text-text-light tracking-tighter mb-2">Vivusfisio Plano</h1>
                     <p class="text-sm text-text-secondary-light dark:text-text-light/70 mb-6">Código de Acesso</p>
                     
                     <form id="loginForm" class="w-full space-y-4">
                         <div class="flex flex-col">
                             <label class="sr-only" for="accessCode">Código único de acesso</label>
                             <input 
-                                class="form-input w-full bg-background-light dark:bg-background-dark border-2 border-text-dark/20 dark:border-text-light/20 rounded-lg h-14 px-4 text-center text-xl tracking-[0.3em] font-bold text-text-dark dark:text-text-light placeholder:text-text-dark/40 dark:placeholder:text-text-light/40 focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors duration-300" 
+                                class="form-input w-full bg-background-light dark:bg-background-dark border-2 border-text-dark/20 dark:border-text-light/20 rounded-lg h-14 px-4 text-center text-xl tracking-[0.1em] font-bold text-text-dark dark:text-text-light placeholder:text-text-dark/40 dark:placeholder:text-text-light/40 focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors duration-300" 
                                 id="accessCode" 
                                 maxlength="12" 
                                 placeholder="●●●●●●●●●●●●" 
@@ -121,7 +121,7 @@
         <header class="bg-white dark:bg-background-dark border-b border-gray-200 dark:border-text-light/20">
             <div class="px-4 py-4 flex justify-between items-center">
                 <div>
-                    <h1 class="text-xl font-bold text-text-dark dark:text-text-light">🏥 VivusFisio Planos</h1>
+                    <h1 class="text-xl font-bold text-text-dark dark:text-text-light">🏥 Vivusfisio Plano</h1>
                     <p class="text-text-secondary-light dark:text-text-light/70 text-sm mt-1" id="userWelcome">Sistema de Gestão</p>
                 </div>
                 <button onclick="logout()" class="text-red-600 text-sm hover:text-red-700">
@@ -681,8 +681,16 @@
             // Show selected tab content
             document.getElementById(tabName).classList.add('active');
             
-            // Add active class to clicked button
-            event.target.classList.add('active');
+            // Add active class to clicked button (only if event exists)
+            if (typeof event !== 'undefined' && event.target) {
+                event.target.classList.add('active');
+            } else {
+                // Fallback: find and activate the correct button
+                const activeButton = document.querySelector(`button[onclick="showTab('${tabName}')"]`);
+                if (activeButton) {
+                    activeButton.classList.add('active');
+                }
+            }
         }
 
         // Handle code generation (Master only)
@@ -933,5 +941,5 @@
             document.getElementById('accessCode').focus();
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'983af864529a6926',t:'MTc1ODY0MDI0MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'983afe8e424c6926',t:'MTc1ODY0MDQ5NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
