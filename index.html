@@ -36,6 +36,7 @@
     </script>
     <style>
         body {
+          box-sizing: border-box;
           min-height: max(884px, 100dvh);
           font-family: 'Inter', sans-serif;
         }
@@ -110,6 +111,9 @@
                         <p class="text-xs text-secondary dark:text-gray-400">
                             Não tem código? Entre em contato com o administrador.
                         </p>
+                        <p class="text-xs text-gray-400 mt-2">
+                            Versão 1.3.0 - Filtros e Permissões
+                        </p>
                     </div>
                 </div>
             </main>
@@ -141,7 +145,7 @@
 
         <!-- Side Menu Overlay -->
         <div id="sideMenuOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden" onclick="closeSideMenu()"></div>
-        
+
         <!-- Side Menu -->
         <div id="sideMenu" class="fixed top-0 right-0 h-full w-80 bg-card-light dark:bg-card-dark shadow-xl z-50 transform translate-x-full transition-transform duration-300">
             <div class="p-4 border-b border-gray-200 dark:border-gray-700">
@@ -205,6 +209,14 @@
                         <span>Sair</span>
                     </button>
                 </div>
+
+                <!-- Version Info in Menu -->
+                <div class="mt-8 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <div class="text-center">
+                        <p class="text-xs text-gray-400">VivusFisio Plan</p>
+                        <p class="text-xs text-gray-500">v1.3.0 - Filtros e Permissões</p>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -220,12 +232,17 @@
         <main class="p-4 space-y-8 pb-24 bg-background-light dark:bg-background-dark min-h-screen">
 
             <!-- Master UI Tab -->
-            <div id="master" class="tab-content space-y-8">
+            <div id="master" class="tab-content active space-y-8">
 
                 <!-- Planos em aprovação -->
                 <section>
-                    <h3 class="text-xl font-bold text-primary dark:text-white mb-4">Planos em aprovação</h3>
-                    <div class="space-y-3">
+                    <button onclick="toggleSection('pendingPlans')" class="w-full flex items-center justify-between text-left mb-4 hover:bg-gray-50 dark:hover:bg-gray-800 p-2 rounded-lg transition-colors">
+                        <h3 class="text-xl font-bold text-primary dark:text-white">Planos em aprovação <span class="text-sm font-normal text-gray-500 dark:text-gray-400">(2)</span></h3>
+                        <svg id="pendingPlansIcon" class="w-5 h-5 text-primary dark:text-white transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div id="pendingPlans" class="space-y-3" style="display: block;">
                         <div class="flex items-center gap-4 rounded-lg bg-card-light dark:bg-card-dark p-3 shadow-sm border border-gray-200 dark:border-gray-700">
                             <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -256,1020 +273,745 @@
 
                 <!-- Planos Abertos -->
                 <section>
-                    <h3 class="text-xl font-bold text-primary dark:text-white mb-4">Planos Abertos</h3>
-                    <div class="space-y-3">
-                        <div class="flex items-center gap-4 rounded-lg bg-card-light dark:bg-card-dark p-3 shadow-sm border border-gray-200 dark:border-gray-700">
-                            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M9.5 21H14.5C18.6421 21 21 18.6421 21 14.5V9.5C21 5.35786 18.6421 3 14.5 3H9.5C5.35786 3 3 5.35786 3 9.5V14.5C3 18.6421 5.35786 21 9.5 21Z" stroke-linecap="round" stroke-linejoin="round"></path>
-                                    <path d="M7 12L10 15L17 8" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-primary dark:text-white">Plano de Fortalecimento Lombar</p>
-                                <p class="text-sm text-secondary dark:text-gray-400">Paciente: Ana Costa</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-center gap-4 rounded-lg bg-card-light dark:bg-card-dark p-3 shadow-sm border border-gray-200 dark:border-gray-700">
-                            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M9.5 21H14.5C18.6421 21 21 18.6421 21 14.5V9.5C21 5.35786 18.6421 3 14.5 3H9.5C5.35786 3 3 5.35786 3 9.5V14.5C3 18.6421 5.35786 21 9.5 21Z" stroke-linecap="round" stroke-linejoin="round"></path>
-                                    <path d="M7 12L10 15L17 8" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-primary dark:text-white">Plano de Reabilitação de Joelho</p>
-                                <p class="text-sm text-secondary dark:text-gray-400">Paciente: Maria Oliveira</p>
-                            </div>
+                    <button onclick="toggleSection('activePlans')" class="w-full flex items-center justify-between text-left mb-4 hover:bg-gray-50 dark:hover:bg-gray-800 p-2 rounded-lg transition-colors">
+                        <h3 class="text-xl font-bold text-primary dark:text-white">Planos Abertos <span id="activePlansCount" class="text-sm font-normal text-gray-500 dark:text-gray-400">(0)</span></h3>
+                        <svg id="activePlansIcon" class="w-5 h-5 text-primary dark:text-white transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div id="activePlans" class="space-y-3" style="display: block;">
+                        <div class="text-center text-gray-500 py-4">
+                            <div class="loading mx-auto mb-2"></div>
+                            <div class="text-sm">Carregando planos...</div>
                         </div>
                     </div>
                 </section>
 
                 <!-- Sessões Realizadas -->
                 <section>
-                    <h3 class="text-xl font-bold text-primary dark:text-white mb-4">Sessões Realizadas</h3>
-                    <div class="space-y-3">
-                        <div class="flex items-center gap-4 rounded-lg bg-card-light dark:bg-card-dark p-3 shadow-sm border border-gray-200 dark:border-gray-700">
-                            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-yellow-100 dark:bg-yellow-900/50 text-yellow-600 dark:text-yellow-400">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12.0001 9.5V12.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                    <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C13.4876 3 14.8937 3.42452 16.1215 4.17438" stroke-linecap="round" stroke-linejoin="round"></path>
-                                    <path d="M19 5L21 3M21 5L19 3" stroke-linecap="round" stroke-linejoin="round"></path>
-                                    <path d="M12.0001 15.5H12.0101" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-primary dark:text-white">Sessão de Fortalecimento</p>
-                                <p class="text-sm text-secondary dark:text-gray-400">Paciente: João Santos</p>
-                            </div>
+                    <button onclick="toggleSection('completedSessions')" class="w-full flex items-center justify-between text-left mb-4 hover:bg-gray-50 dark:hover:bg-gray-800 p-2 rounded-lg transition-colors">
+                        <h3 class="text-xl font-bold text-primary dark:text-white">Sessões Realizadas <span id="completedSessionsCount" class="text-sm font-normal text-gray-500 dark:text-gray-400">(0)</span></h3>
+                        <svg id="completedSessionsIcon" class="w-5 h-5 text-primary dark:text-white transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div id="completedSessions" class="space-y-3" style="display: block;">
+                        <div class="text-center text-gray-500 py-4">
+                            <div class="loading mx-auto mb-2"></div>
+                            <div class="text-sm">Carregando sessões...</div>
                         </div>
                     </div>
                 </section>
             </div>
-
-            <!-- All Plans Page -->
-            <div id="allPlans" class="tab-content space-y-6">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h2 class="text-2xl font-bold text-primary dark:text-white">📋 Todos os Planos</h2>
-                        <p class="text-secondary dark:text-gray-400 text-sm mt-1">Visualizar todos os planos do sistema</p>
-                    </div>
-                    <button onclick="goToDashboard()" class="text-blue-600 text-sm hover:text-blue-700">← Voltar ao Dashboard</button>
-                </div>
-
-                <!-- Filter Options -->
-                <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                    <h3 class="font-semibold mb-3 text-primary dark:text-white">🔍 Filtros</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <select class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-card-light dark:bg-card-dark text-primary dark:text-white">
-                            <option value="">Todos os Status</option>
-                            <option value="pendente">Pendente</option>
-                            <option value="aprovado">Aprovado</option>
-                            <option value="ativo">Ativo</option>
-                            <option value="concluido">Concluído</option>
-                        </select>
-                        <select class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-card-light dark:bg-card-dark text-primary dark:text-white">
-                            <option value="">Todos os Fisioterapeutas</option>
-                            <option value="maria">Dra. Maria Santos</option>
-                            <option value="carlos">Dr. Carlos Lima</option>
-                            <option value="joao">Dr. João Silva</option>
-                        </select>
-                        <input type="text" placeholder="Buscar por paciente..." class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-card-light dark:bg-card-dark text-primary dark:text-white">
-                    </div>
-                </div>
-
-                <!-- Plans List -->
-                <div class="space-y-4">
-                    <!-- Pending Plans -->
-                    <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                        <div class="flex justify-between items-start mb-3">
-                            <div>
-                                <h4 class="font-semibold text-primary dark:text-white">Plano de Reabilitação de Ombro</h4>
-                                <p class="text-sm text-secondary dark:text-gray-400">Paciente: Carlos Pereira</p>
-                                <p class="text-xs text-secondary dark:text-gray-400">Fisioterapeuta: Dra. Maria Santos</p>
-                            </div>
-                            <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">Pendente</span>
-                        </div>
-                        <div class="text-xs text-secondary dark:text-gray-400 space-y-1">
-                            <div>📅 Criado em: 15/01/2024</div>
-                            <div>🎯 Objetivo: Recuperação da mobilidade do ombro direito</div>
-                            <div>💪 Exercícios: 6</div>
-                        </div>
-                        <div class="mt-3 flex space-x-2">
-                            <button class="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700">✓ Aprovar</button>
-                            <button class="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700">✗ Rejeitar</button>
-                            <button class="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700">👁️ Ver Detalhes</button>
-                        </div>
-                    </div>
-
-                    <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                        <div class="flex justify-between items-start mb-3">
-                            <div>
-                                <h4 class="font-semibold text-primary dark:text-white">Plano de Fortalecimento Lombar</h4>
-                                <p class="text-sm text-secondary dark:text-gray-400">Paciente: Ana Costa</p>
-                                <p class="text-xs text-secondary dark:text-gray-400">Fisioterapeuta: Dr. Carlos Lima</p>
-                            </div>
-                            <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">Pendente</span>
-                        </div>
-                        <div class="text-xs text-secondary dark:text-gray-400 space-y-1">
-                            <div>📅 Criado em: 14/01/2024</div>
-                            <div>🎯 Objetivo: Fortalecimento da musculatura lombar</div>
-                            <div>💪 Exercícios: 8</div>
-                        </div>
-                        <div class="mt-3 flex space-x-2">
-                            <button class="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700">✓ Aprovar</button>
-                            <button class="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700">✗ Rejeitar</button>
-                            <button class="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700">👁️ Ver Detalhes</button>
-                        </div>
-                    </div>
-
-                    <!-- Active Plans -->
-                    <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                        <div class="flex justify-between items-start mb-3">
-                            <div>
-                                <h4 class="font-semibold text-primary dark:text-white">Plano de Reabilitação de Joelho</h4>
-                                <p class="text-sm text-secondary dark:text-gray-400">Paciente: Maria Oliveira</p>
-                                <p class="text-xs text-secondary dark:text-gray-400">Fisioterapeuta: Dra. Maria Santos</p>
-                            </div>
-                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Ativo</span>
-                        </div>
-                        <div class="text-xs text-secondary dark:text-gray-400 space-y-1">
-                            <div>📅 Aprovado em: 10/01/2024</div>
-                            <div>🎯 Objetivo: Recuperação pós-cirúrgica do joelho</div>
-                            <div>💪 Exercícios: 10</div>
-                            <div>📊 Progresso: 65% concluído</div>
-                        </div>
-                        <div class="mt-3 flex space-x-2">
-                            <button class="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700">👁️ Ver Detalhes</button>
-                            <button class="bg-purple-600 text-white px-3 py-1 rounded text-xs hover:bg-purple-700">📊 Relatório</button>
-                        </div>
-                    </div>
-
-                    <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                        <div class="flex justify-between items-start mb-3">
-                            <div>
-                                <h4 class="font-semibold text-primary dark:text-white">Plano de Fortalecimento Lombar</h4>
-                                <p class="text-sm text-secondary dark:text-gray-400">Paciente: Ana Costa</p>
-                                <p class="text-xs text-secondary dark:text-gray-400">Fisioterapeuta: Dr. Carlos Lima</p>
-                            </div>
-                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Ativo</span>
-                        </div>
-                        <div class="text-xs text-secondary dark:text-gray-400 space-y-1">
-                            <div>📅 Aprovado em: 08/01/2024</div>
-                            <div>🎯 Objetivo: Fortalecimento da região lombar</div>
-                            <div>💪 Exercícios: 6</div>
-                            <div>📊 Progresso: 40% concluído</div>
-                        </div>
-                        <div class="mt-3 flex space-x-2">
-                            <button class="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700">👁️ Ver Detalhes</button>
-                            <button class="bg-purple-600 text-white px-3 py-1 rounded text-xs hover:bg-purple-700">📊 Relatório</button>
-                        </div>
-                    </div>
-
-                    <!-- Completed Plans -->
-                    <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                        <div class="flex justify-between items-start mb-3">
-                            <div>
-                                <h4 class="font-semibold text-primary dark:text-white">Plano de Reabilitação Cervical</h4>
-                                <p class="text-sm text-secondary dark:text-gray-400">Paciente: Pedro Silva</p>
-                                <p class="text-xs text-secondary dark:text-gray-400">Fisioterapeuta: Dr. João Silva</p>
-                            </div>
-                            <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">Concluído</span>
-                        </div>
-                        <div class="text-xs text-secondary dark:text-gray-400 space-y-1">
-                            <div>📅 Concluído em: 05/01/2024</div>
-                            <div>🎯 Objetivo: Alívio de dores cervicais</div>
-                            <div>💪 Exercícios: 8</div>
-                            <div>✅ Resultado: Objetivos alcançados</div>
-                        </div>
-                        <div class="mt-3 flex space-x-2">
-                            <button class="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700">👁️ Ver Detalhes</button>
-                            <button class="bg-purple-600 text-white px-3 py-1 rounded text-xs hover:bg-purple-700">📊 Relatório Final</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Statistics Summary -->
-                <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                    <h3 class="font-semibold mb-3 text-primary dark:text-white">📊 Resumo Estatístico</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="text-center">
-                            <div class="text-2xl font-bold text-yellow-600">2</div>
-                            <div class="text-xs text-secondary dark:text-gray-400">Pendentes</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-2xl font-bold text-green-600">2</div>
-                            <div class="text-xs text-secondary dark:text-gray-400">Ativos</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-2xl font-bold text-gray-600">1</div>
-                            <div class="text-xs text-secondary dark:text-gray-400">Concluídos</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-2xl font-bold text-blue-600">5</div>
-                            <div class="text-xs text-secondary dark:text-gray-400">Total</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- User Management Page -->
-            <div id="userManagement" class="tab-content space-y-6">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h2 class="text-2xl font-bold text-primary dark:text-white">👥 Gestão de Utilizadores</h2>
-                        <p class="text-secondary dark:text-gray-400 text-sm mt-1">Gerir códigos de acesso e permissões</p>
-                    </div>
-                    <button onclick="showTab('master')" class="text-blue-600 text-sm hover:text-blue-700">← Voltar ao Dashboard</button>
-                </div>
-
-                <!-- Code Generator -->
-                <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                    <h3 class="font-semibold mb-4 text-primary dark:text-white">🔑 Gerador de Códigos</h3>
-                    <form id="codeGeneratorForm" class="space-y-4">
-                        <select id="userType" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-card-light dark:bg-card-dark text-primary dark:text-white" required>
-                            <option value="">Selecione o tipo</option>
-                            <option value="master">Master</option>
-                            <option value="fisioterapeuta">Fisioterapeuta</option>
-                            <option value="paciente">Paciente</option>
-                        </select>
-                        <input 
-                            type="text" 
-                            id="userName" 
-                            class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-card-light dark:bg-card-dark text-primary dark:text-white" 
-                            placeholder="Nome completo"
-                            required
-                        >
-                        <button 
-                            type="submit" 
-                            id="generateButton"
-                            class="w-full bg-primary text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-opacity-90"
-                        >
-                            <span id="generateText">Gerar Código</span>
-                            <span id="generateLoading" class="loading" style="display: none;"></span>
-                        </button>
-                    </form>
-                    
-                    <div id="generatedCodeSection" class="mt-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg" style="display: none;">
-                        <div class="text-xs text-gray-600 dark:text-gray-400 mb-1">Código gerado:</div>
-                        <div id="generatedCode" class="font-mono text-lg text-center bg-white dark:bg-gray-700 p-2 rounded border text-primary dark:text-white"></div>
-                        <button onclick="copyCode()" class="w-full mt-2 text-blue-600 text-sm hover:text-blue-700">📋 Copiar</button>
-                    </div>
-
-                    <div id="generateError" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm" style="display: none;">
-                        <strong>Erro:</strong> <span id="generateErrorMessage"></span>
-                    </div>
-                </div>
-
-                <!-- Users List -->
-                <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-semibold text-primary dark:text-white">👥 Usuários Cadastrados</h3>
-                        <button onclick="loadUsers()" class="text-blue-600 text-sm hover:text-blue-700">🔄 Atualizar</button>
-                    </div>
-                    
-                    <div id="usersList" class="space-y-2">
-                        <div class="text-center text-gray-500 py-4">
-                            <div class="loading mx-auto mb-2"></div>
-                            <div class="text-sm">Carregando usuários...</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Fisioterapeuta UI Tab -->
-            <div id="fisio" class="tab-content space-y-6">
-                <!-- Stats -->
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-card-light dark:bg-card-dark p-4 text-center rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                        <div class="text-2xl font-bold text-blue-600">8</div>
-                        <div class="text-xs text-secondary dark:text-gray-400">Pendentes</div>
-                    </div>
-                    <div class="bg-card-light dark:bg-card-dark p-4 text-center rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                        <div class="text-2xl font-bold text-green-600">23</div>
-                        <div class="text-xs text-secondary dark:text-gray-400">Aprovados</div>
-                    </div>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                    <h3 class="font-semibold mb-4 text-primary dark:text-white">Ações Rápidas</h3>
-                    <div class="space-y-3">
-                        <button class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg text-sm font-medium">
-                            ➕ Criar Plano
-                        </button>
-                        <button class="w-full bg-green-600 text-white py-3 px-4 rounded-lg text-sm font-medium">
-                            💪 Meus Exercícios
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Create Plan -->
-                <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                    <h3 class="font-semibold mb-4 text-primary dark:text-white">📋 Novo Plano</h3>
-                    <form class="space-y-4">
-                        <input type="text" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-card-light dark:bg-card-dark text-primary dark:text-white" placeholder="Nome do plano">
-                        <select class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-card-light dark:bg-card-dark text-primary dark:text-white">
-                            <option>Selecionar paciente</option>
-                            <option>João Silva</option>
-                            <option>Maria Oliveira</option>
-                        </select>
-                        <textarea class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm h-20 bg-card-light dark:bg-card-dark text-primary dark:text-white" placeholder="Descrição do plano"></textarea>
-                        
-                        <div class="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
-                            <div class="text-sm font-medium mb-2 text-primary dark:text-white">Exercícios Selecionados</div>
-                            <div class="space-y-2">
-                                <div class="flex justify-between items-center bg-white dark:bg-gray-700 p-2 rounded text-sm">
-                                    <span class="text-primary dark:text-white">Alongamento de Ombro</span>
-                                    <button class="text-red-600 text-xs">✗</button>
-                                </div>
-                                <div class="flex justify-between items-center bg-white dark:bg-gray-700 p-2 rounded text-sm">
-                                    <span class="text-primary dark:text-white">Fortalecimento Deltóide</span>
-                                    <button class="text-red-600 text-xs">✗</button>
-                                </div>
-                            </div>
-                            <button type="button" class="w-full mt-2 text-blue-600 text-sm">+ Adicionar Exercício</button>
-                        </div>
-                        
-                        <button type="submit" class="w-full bg-purple-600 text-white py-2 px-4 rounded-lg text-sm font-medium">
-                            📤 Enviar para Aprovação
-                        </button>
-                    </form>
-                </div>
-
-                <!-- Exercise Library -->
-                <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-semibold text-primary dark:text-white">💪 Meus Exercícios</h3>
-                        <button class="bg-green-600 text-white px-3 py-1 rounded text-sm">+ Novo</button>
-                    </div>
-                    
-                    <input type="text" placeholder="Buscar exercícios..." class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm mb-4 bg-card-light dark:bg-card-dark text-primary dark:text-white">
-                    
-                    <div class="space-y-3">
-                        <div class="border border-gray-200 dark:border-gray-600 rounded-lg p-3">
-                            <div class="flex justify-between items-start mb-2">
-                                <h4 class="font-medium text-sm text-primary dark:text-white">Alongamento de Ombro</h4>
-                                <button class="text-blue-600 text-xs">✏️</button>
-                            </div>
-                            <p class="text-xs text-secondary dark:text-gray-400 mb-2">Exercício para mobilidade do ombro direito</p>
-                            <div class="flex space-x-1 mb-2">
-                                <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">Ombro</span>
-                                <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Alongamento</span>
-                            </div>
-                            <div class="text-xs font-medium text-primary dark:text-white">3 séries • 15 repetições</div>
-                        </div>
-                        
-                        <div class="border border-gray-200 dark:border-gray-600 rounded-lg p-3">
-                            <div class="flex justify-between items-start mb-2">
-                                <h4 class="font-medium text-sm text-primary dark:text-white">Fortalecimento Deltóide</h4>
-                                <button class="text-blue-600 text-xs">✏️</button>
-                            </div>
-                            <p class="text-xs text-secondary dark:text-gray-400 mb-2">Exercício para fortalecimento do músculo deltóide</p>
-                            <div class="flex space-x-1 mb-2">
-                                <span class="bg-red-100 text-red-800 px-2 py-1 rounded text-xs">Fortalecimento</span>
-                                <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">Ombro</span>
-                            </div>
-                            <div class="text-xs font-medium text-primary dark:text-white">2 séries • 12 repetições</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Patient UI Tab -->
-            <div id="patient" class="tab-content space-y-6">
-                <!-- Welcome -->
-                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-4 rounded-lg">
-                    <h3 class="font-semibold text-blue-800 dark:text-blue-300" id="patientWelcome">Olá! 👋</h3>
-                    <p class="text-sm text-blue-700 dark:text-blue-400 mt-1">Você tem 2 planos ativos para sua recuperação.</p>
-                </div>
-
-                <!-- Active Plans -->
-                <div class="space-y-4">
-                    <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 cursor-pointer hover:shadow-md transition-shadow">
-                        <div class="flex justify-between items-start mb-2">
-                            <h4 class="font-semibold text-primary dark:text-white">Reabilitação de Ombro</h4>
-                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Ativo</span>
-                        </div>
-                        <p class="text-sm text-secondary dark:text-gray-400 mb-3">Plano focado na recuperação da mobilidade do ombro direito</p>
-                        <div class="text-xs text-secondary dark:text-gray-400 space-y-1">
-                            <div>👩‍⚕️ Dra. Maria Santos</div>
-                            <div>📅 Aprovado em 10/01/2024</div>
-                            <div><strong>8 exercícios</strong></div>
-                        </div>
-                    </div>
-
-                    <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 cursor-pointer hover:shadow-md transition-shadow">
-                        <div class="flex justify-between items-start mb-2">
-                            <h4 class="font-semibold text-primary dark:text-white">Fortalecimento Lombar</h4>
-                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Ativo</span>
-                        </div>
-                        <p class="text-sm text-secondary dark:text-gray-400 mb-3">Exercícios para fortalecimento da região lombar</p>
-                        <div class="text-xs text-secondary dark:text-gray-400 space-y-1">
-                            <div>👩‍⚕️ Dr. Carlos Lima</div>
-                            <div>📅 Aprovado em 08/01/2024</div>
-                            <div><strong>6 exercícios</strong></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Plan Details -->
-                <div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                    <div class="border-b border-gray-200 dark:border-gray-600 pb-3 mb-4">
-                        <h3 class="font-bold text-lg text-primary dark:text-white">Reabilitação de Ombro</h3>
-                        <p class="text-sm text-secondary dark:text-gray-400 mt-1">Plano focado na recuperação da mobilidade do ombro direito após lesão</p>
-                        <div class="text-xs text-secondary dark:text-gray-400 mt-2 space-y-1">
-                            <div>👩‍⚕️ Dra. Maria Santos</div>
-                            <div>📅 Aprovado em 10/01/2024</div>
-                        </div>
-                    </div>
-
-                    <!-- Exercises -->
-                    <div class="space-y-4">
-                        <div class="border border-gray-200 dark:border-gray-600 rounded-lg p-3">
-                            <div class="flex justify-between items-start mb-2">
-                                <h4 class="font-medium text-primary dark:text-white">1. Alongamento de Ombro</h4>
-                                <span class="text-xs text-secondary dark:text-gray-400">3 séries • 15 rep</span>
-                            </div>
-                            <p class="text-sm text-secondary dark:text-gray-400 mb-3">
-                                Posicione o braço direito cruzado sobre o peito. Com a mão esquerda, puxe suavemente o cotovelo direito em direção ao corpo.
-                            </p>
-                            <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 text-center text-gray-500 dark:text-gray-400 text-sm">
-                                🖼️ Imagem demonstrativa
-                            </div>
-                        </div>
-
-                        <div class="border border-gray-200 dark:border-gray-600 rounded-lg p-3">
-                            <div class="flex justify-between items-start mb-2">
-                                <h4 class="font-medium text-primary dark:text-white">2. Rotação Externa</h4>
-                                <span class="text-xs text-secondary dark:text-gray-400">2 séries • 10 rep</span>
-                            </div>
-                            <p class="text-sm text-secondary dark:text-gray-400 mb-3">
-                                Com o cotovelo flexionado a 90°, realize movimentos de rotação externa lentamente.
-                            </p>
-                            <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 text-center text-gray-500 dark:text-gray-400 text-sm">
-                                🖼️ Imagem demonstrativa
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Important Note -->
-                    <div class="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 rounded-r-lg">
-                        <h5 class="font-medium text-yellow-800 dark:text-yellow-300 text-sm">💡 Dica Importante</h5>
-                        <p class="text-sm text-yellow-700 dark:text-yellow-400 mt-1">Execute os exercícios lentamente e pare se sentir dor. Em caso de dúvidas, consulte sua fisioterapeuta.</p>
-                    </div>
-                </div>
-            </div>
-
         </main>
-
-
     </div>
 
     <script>
-        // API Configuration
-        const API_BASE = 'https://api.steinhq.com/v1/storages/68d29050affba40a62ffb0f6';
-        
-        // Current user data
-        let currentUser = null;
-        
-        // Offline mode for testing
-        let offlineMode = false;
-        let offlineUsers = [
-            {
-                codigo: 'FT-MASTER01',
-                nome: 'Dr. Joana Silva',
-                master: 'true',
-                email: 'joana@fisio.com',
-                especialidade: 'master',
-                ativos: 'true'
-            },
-            {
-                codigo: 'FT-FISIO001',
-                nome: 'Dr. João Silva',
-                master: 'false',
-                email: 'joao@fisio.com',
-                especialidade: 'fisioterapeuta',
-                ativos: 'true'
-            },
-            {
-                codigo: 'FT-PAC0001',
-                nome: 'Maria Santos',
-                master: 'false',
-                email: 'maria@email.com',
-                especialidade: 'paciente',
-                ativos: 'true'
-            }
-        ];
-
-        // Initialize app
-        document.addEventListener('DOMContentLoaded', function() {
-            // Force start with login page
-            document.getElementById('loginPage').classList.add('active');
-            document.getElementById('mainApp').classList.remove('active');
-            localStorage.removeItem('currentUser');
-            currentUser = null;
-
-            // Setup login form
-            document.getElementById('loginForm').addEventListener('submit', handleLogin);
-            
-            // Setup code generator form
-            document.getElementById('codeGeneratorForm').addEventListener('submit', handleCodeGeneration);
-
-            // Auto-uppercase access code input
-            document.getElementById('accessCode').addEventListener('input', function(e) {
-                e.target.value = e.target.value.toUpperCase();
-            });
-        });
-
-        // Handle login
-        async function handleLogin(e) {
-            e.preventDefault();
-            
-            const accessCode = document.getElementById('accessCode').value.trim().toUpperCase();
-            const loginButton = document.getElementById('loginButton');
-            const loginText = document.getElementById('loginText');
-            const loginLoading = document.getElementById('loginLoading');
-            const loginError = document.getElementById('loginError');
-            
-            // Show loading state
-            loginText.style.display = 'none';
-            loginLoading.style.display = 'inline-block';
-            loginButton.disabled = true;
-            loginError.style.display = 'none';
-
-            try {
-                let users = [];
-                
-                if (!offlineMode) {
-                    try {
-                        // Try to fetch from API first
-                        const response = await fetch(`${API_BASE}/utilizadores`, {
-                            method: 'GET',
-                            headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json'
-                            }
-                        });
-                        
-                        if (!response.ok) {
-                            throw new Error('API Error');
-                        }
-                        
-                        users = await response.json();
-                    } catch (apiError) {
-                        console.warn('API failed, switching to offline mode:', apiError);
-                        offlineMode = true;
-                        users = offlineUsers;
-                        
-                        // Show offline mode notification
-                        const offlineNotice = document.createElement('div');
-                        offlineNotice.className = 'mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-700 text-sm';
-                        offlineNotice.innerHTML = '<strong>Modo Offline:</strong> Usando dados de demonstração. Conecte-se à internet para acessar dados reais.';
-                        document.getElementById('loginError').parentNode.insertBefore(offlineNotice, document.getElementById('loginError').nextSibling);
-                    }
-                } else {
-                    users = offlineUsers;
-                }
-                
-                // Find user by access code
-                const user = users.find(u => u.codigo === accessCode);
-
-                if (!user) {
-                    throw new Error('Código de acesso não encontrado');
-                }
-                
-                if (user.ativos !== 'true') {
-                    throw new Error('Usuário inativo. Entre em contato com o administrador');
-                }
-
-                // Save user data
-                currentUser = user;
-                localStorage.setItem('currentUser', JSON.stringify(user));
-                
-                // Show main app
-                showMainApp();
-
-            } catch (error) {
-                console.error('Login error:', error);
-                document.getElementById('errorMessage').textContent = error.message;
-                loginError.style.display = 'block';
-            } finally {
-                // Reset loading state
-                loginText.style.display = 'inline';
-                loginLoading.style.display = 'none';
-                loginButton.disabled = false;
-            }
-        }
-
-        // Show main application
-        function showMainApp() {
-            document.getElementById('loginPage').classList.remove('active');
-            document.getElementById('mainApp').classList.add('active');
-            
-            // Setup navigation based on user type
-            setupNavigation();
-            
-            // Update side menu user info
-            updateSideMenuUserInfo();
-            
-
-            
-            // Update patient welcome message
-            if (currentUser.especialidade === 'paciente') {
-                const patientWelcome = document.getElementById('patientWelcome');
-                if (patientWelcome) {
-                    patientWelcome.textContent = `Olá, ${currentUser.nome}! 👋`;
-                }
-            }
-        }
-
-        // Update side menu user info
-        function updateSideMenuUserInfo() {
-            if (!currentUser) return;
-            
-            // Update user name and type in side menu
-            document.getElementById('sideMenuUserName').textContent = currentUser.nome;
-            document.getElementById('sideMenuUserType').textContent = currentUser.especialidade.charAt(0).toUpperCase() + currentUser.especialidade.slice(1);
-            
-            // Update user initials in side menu
-            const initials = currentUser.nome.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-            document.getElementById('sideMenuUserInitials').textContent = initials;
-            
-            // Update header user info
-            document.getElementById('headerUserName').textContent = currentUser.nome;
-            document.getElementById('headerUserType').textContent = currentUser.especialidade.charAt(0).toUpperCase() + currentUser.especialidade.slice(1);
-            document.getElementById('headerUserInitials').textContent = initials;
-            
-            // Show/hide user management menu item for master users
-            const userManagementMenuItem = document.getElementById('userManagementMenuItem');
-            if (currentUser.master === 'true' || currentUser.especialidade === 'master') {
-                userManagementMenuItem.style.display = 'block';
-            } else {
-                userManagementMenuItem.style.display = 'none';
-            }
-        }
-
-        // Toggle side menu
+        // Basic functionality to make the interface work
         function toggleSideMenu() {
             const sideMenu = document.getElementById('sideMenu');
             const overlay = document.getElementById('sideMenuOverlay');
             
-            if (sideMenu.classList.contains('translate-x-full')) {
-                // Open menu
-                sideMenu.classList.remove('translate-x-full');
-                overlay.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-            } else {
-                // Close menu
-                closeSideMenu();
-            }
+            sideMenu.classList.toggle('translate-x-full');
+            overlay.classList.toggle('hidden');
         }
 
-        // Close side menu
         function closeSideMenu() {
             const sideMenu = document.getElementById('sideMenu');
             const overlay = document.getElementById('sideMenuOverlay');
             
             sideMenu.classList.add('translate-x-full');
             overlay.classList.add('hidden');
-            document.body.style.overflow = '';
         }
 
-        // Go to dashboard
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const icon = document.getElementById(sectionId + 'Icon');
+            
+            // Check if section is currently hidden
+            const isHidden = section.style.display === 'none';
+            
+            if (isHidden) {
+                section.style.display = 'block';
+                icon.classList.remove('rotate-180');
+            } else {
+                section.style.display = 'none';
+                icon.classList.add('rotate-180');
+            }
+        }
+
         function goToDashboard() {
             closeSideMenu();
-            
-            if (currentUser.master === 'true' || currentUser.especialidade === 'master') {
-                showTab('master');
-            } else if (currentUser.especialidade === 'fisioterapeuta') {
-                showTab('fisio');
-            } else if (currentUser.especialidade === 'paciente') {
-                showTab('patient');
-            }
+            // Dashboard functionality would go here
         }
 
-        // Setup navigation tabs based on user type
-        function setupNavigation() {
-            const tabContainer = document.getElementById('tabContainer');
-            tabContainer.innerHTML = '';
-
-            // Check user type and show appropriate tab
-            if (currentUser.master === 'true' || currentUser.especialidade === 'master') {
-                // Master user - show only master tab
-                tabContainer.innerHTML = ``;
-                showTab('master');
-            } else if (currentUser.especialidade === 'fisioterapeuta') {
-                // Fisioterapeuta - show only fisio tab
-                tabContainer.innerHTML = `
-                    <button onclick="showTab('fisio')" class="tab-button active px-4 py-3 text-sm font-medium whitespace-nowrap">
-                        🩺 Fisioterapeuta
-                    </button>
-                `;
-                showTab('fisio');
-            } else if (currentUser.especialidade === 'paciente') {
-                // Paciente - show only patient tab
-                tabContainer.innerHTML = `
-                    <button onclick="showTab('patient')" class="tab-button active px-4 py-3 text-sm font-medium whitespace-nowrap">
-                        🧑‍🦽 Paciente
-                    </button>
-                `;
-                showTab('patient');
-            } else {
-                // Fallback - show error message
-                tabContainer.innerHTML = `
-                    <div class="px-4 py-3 text-sm text-red-600">
-                        Erro: Tipo de usuário não reconhecido (${currentUser.especialidade})
-                    </div>
-                `;
-            }
-        }
-
-        // Show tab content
-        function showTab(tabName) {
-            // Hide all tab contents
-            const contents = document.querySelectorAll('.tab-content');
-            contents.forEach(content => content.classList.remove('active'));
-            
-            // Remove active class from all buttons
-            const buttons = document.querySelectorAll('.tab-button');
-            buttons.forEach(button => button.classList.remove('active'));
-            
-            // Show selected tab content
-            document.getElementById(tabName).classList.add('active');
-            
-            // Add active class to clicked button (only if event exists)
-            if (typeof event !== 'undefined' && event.target) {
-                event.target.classList.add('active');
-            } else {
-                // Fallback: find and activate the correct button
-                const activeButton = document.querySelector(`button[onclick="showTab('${tabName}')"]`);
-                if (activeButton) {
-                    activeButton.classList.add('active');
-                }
-            }
-        }
-
-        // Show user management page
-        function showUserManagement() {
-            closeSideMenu();
-            showTab('userManagement');
-            loadUsers();
-        }
-
-        // Show all plans page
         function showAllPlans() {
             closeSideMenu();
-            showTab('allPlans');
+            // All plans functionality would go here
         }
 
-        // Handle code generation (Master only)
-        async function handleCodeGeneration(e) {
-            e.preventDefault();
-            
-            if (currentUser.master !== 'true') {
-                alert('Apenas usuários Master podem gerar códigos');
-                return;
-            }
-
-            const userType = document.getElementById('userType').value;
-            const userName = document.getElementById('userName').value.trim();
-
-            
-            const generateButton = document.getElementById('generateButton');
-            const generateText = document.getElementById('generateText');
-            const generateLoading = document.getElementById('generateLoading');
-            const generateError = document.getElementById('generateError');
-            
-            // Show loading state
-            generateText.style.display = 'none';
-            generateLoading.style.display = 'inline-block';
-            generateButton.disabled = true;
-            generateError.style.display = 'none';
-
-            try {
-                // Generate unique code
-                const code = generateUniqueCode();
-                
-                // Prepare user data
-                const userData = {
-                    codigo: code,
-                    nome: userName,
-                    master: userType === 'master' ? 'true' : 'false',
-                    email: '',
-                    especialidade: userType,
-                    ativos: 'true'
-                };
-
-                if (offlineMode) {
-                    // Add to offline users array
-                    offlineUsers.push(userData);
-                    
-                    // Show success message for offline mode
-                    alert('Usuário criado no modo offline! Código: ' + code);
-                } else {
-                    try {
-                        // Save to API
-                        const response = await fetch(`${API_BASE}/utilizadores`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify([userData])
-                        });
-
-                        if (!response.ok) {
-                            throw new Error('Erro ao salvar usuário');
-                        }
-                    } catch (apiError) {
-                        console.warn('API failed during user creation, adding to offline mode');
-                        offlineMode = true;
-                        offlineUsers.push(userData);
-                    }
-                }
-
-                // Show generated code
-                document.getElementById('generatedCode').textContent = code;
-                document.getElementById('generatedCodeSection').style.display = 'block';
-                
-                // Reset form
-                document.getElementById('codeGeneratorForm').reset();
-                
-                // Reload users list
-                loadUsers();
-
-            } catch (error) {
-                console.error('Code generation error:', error);
-                document.getElementById('generateErrorMessage').textContent = error.message;
-                generateError.style.display = 'block';
-            } finally {
-                // Reset loading state
-                generateText.style.display = 'inline';
-                generateLoading.style.display = 'none';
-                generateButton.disabled = false;
-            }
+        function showUserManagement() {
+            closeSideMenu();
+            // User management functionality would go here
         }
 
-        // Generate unique code
-        function generateUniqueCode() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let code = 'FT-';
-            for (let i = 0; i < 8; i++) {
-                code += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return code;
-        }
-
-        // Load users list (Master only)
-        async function loadUsers() {
-            if (currentUser.master !== 'true') return;
-
-            const usersList = document.getElementById('usersList');
-            
-            try {
-                let users = [];
-                
-                if (offlineMode) {
-                    users = offlineUsers;
-                } else {
-                    try {
-                        const response = await fetch(`${API_BASE}/utilizadores`);
-                        users = await response.json();
-                    } catch (apiError) {
-                        console.warn('API failed while loading users, using offline data');
-                        offlineMode = true;
-                        users = offlineUsers;
-                    }
-                }
-
-                if (users.length === 0) {
-                    usersList.innerHTML = `
-                        <div class="text-center text-gray-500 py-4">
-                            <div class="text-sm">Nenhum usuário cadastrado</div>
-                        </div>
-                    `;
-                    return;
-                }
-
-                usersList.innerHTML = users.map(user => `
-                    <div class="border border-gray-200 dark:border-gray-600 rounded-lg p-3 flex justify-between items-center bg-card-light dark:bg-card-dark">
-                        <div>
-                            <div class="font-medium text-sm text-primary dark:text-white">${user.nome}</div>
-                            <div class="text-xs text-secondary dark:text-gray-400">
-                                ${user.codigo} • ${user.especialidade}
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <span class="px-2 py-1 rounded text-xs ${
-                                user.ativos === 'true' 
-                                    ? 'bg-green-100 text-green-800' 
-                                    : 'bg-red-100 text-red-800'
-                            }">
-                                ${user.ativos === 'true' ? 'Ativo' : 'Inativo'}
-                            </span>
-                            ${user.master === 'true' ? '<span class="text-yellow-600 text-xs">👑</span>' : ''}
-                            <button onclick="toggleUserStatus('${user.codigo}')" class="text-blue-600 text-xs hover:text-blue-700">
-                                ${user.ativos === 'true' ? '🔒 Desativar' : '🔓 Ativar'}
-                            </button>
-                        </div>
-                    </div>
-                `).join('');
-
-            } catch (error) {
-                console.error('Error loading users:', error);
-                usersList.innerHTML = `
-                    <div class="text-center text-red-500 py-4">
-                        <div class="text-sm">Erro ao carregar usuários</div>
-                    </div>
-                `;
-            }
-        }
-
-        // Toggle user status (Master only)
-        async function toggleUserStatus(codigo) {
-            if (currentUser.master !== 'true') return;
-
-            try {
-                if (offlineMode) {
-                    // Update in offline array
-                    const userIndex = offlineUsers.findIndex(u => u.codigo === codigo);
-                    if (userIndex !== -1) {
-                        offlineUsers[userIndex].ativos = offlineUsers[userIndex].ativos === 'true' ? 'false' : 'true';
-                        loadUsers();
-                    }
-                    return;
-                }
-
-                // Get all users and find the one to update
-                const response = await fetch(`${API_BASE}/utilizadores`);
-                const users = await response.json();
-                
-                const userIndex = users.findIndex(u => u.codigo === codigo);
-                if (userIndex === -1) return;
-                
-                const user = users[userIndex];
-                const newStatus = user.ativos === 'true' ? 'false' : 'true';
-                
-                // Update user status using row number (index + 1)
-                const updateResponse = await fetch(`${API_BASE}/utilizadores/${userIndex + 1}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        codigo: user.codigo,
-                        nome: user.nome,
-                        master: user.master,
-                        email: user.email,
-                        especialidade: user.especialidade,
-                        ativos: newStatus
-                    })
-                });
-                
-                if (!updateResponse.ok) {
-                    throw new Error('Erro ao atualizar usuário');
-                }
-                
-                // Reload users list
-                loadUsers();
-                
-            } catch (error) {
-                console.error('Error toggling user status:', error);
-                alert('Erro ao alterar status do usuário');
-            }
-        }
-
-        // Copy generated code to clipboard
-        function copyCode() {
-            const code = document.getElementById('generatedCode').textContent;
-            navigator.clipboard.writeText(code).then(() => {
-                alert('Código copiado para a área de transferência!');
-            }).catch(() => {
-                // Fallback for older browsers
-                const textArea = document.createElement('textarea');
-                textArea.value = code;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                alert('Código copiado para a área de transferência!');
-            });
-        }
-
-        // Logout function
         function logout() {
-            localStorage.removeItem('currentUser');
-            currentUser = null;
+            // Close side menu first
+            closeSideMenu();
             
-            // Reset to login page
+            // Clear user session data
+            sessionStorage.removeItem('currentUser');
+            
+            // Reset login form
+            document.getElementById('accessCode').value = '';
+            document.getElementById('loginError').style.display = 'none';
+            
+            // Switch back to login page
             document.getElementById('mainApp').classList.remove('active');
             document.getElementById('loginPage').classList.add('active');
-            
-            // Reset forms
-            document.getElementById('loginForm').reset();
-            document.getElementById('accessCode').focus();
         }
+
+        // Helper function to parse date and time
+        function parseDateTime(dateStr, timeStr) {
+            if (!dateStr || !timeStr) return null;
+            
+            try {
+                // Handle different date formats
+                let formattedDate = dateStr;
+                if (dateStr.includes('/')) {
+                    // Convert DD/MM/YYYY to YYYY-MM-DD
+                    const parts = dateStr.split('/');
+                    if (parts.length === 3) {
+                        formattedDate = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+                    }
+                }
+                
+                // Handle time format (ensure HH:MM)
+                let formattedTime = timeStr;
+                if (timeStr.length === 4 && !timeStr.includes(':')) {
+                    // Convert HHMM to HH:MM
+                    formattedTime = `${timeStr.substring(0, 2)}:${timeStr.substring(2)}`;
+                }
+                
+                const dateTimeStr = `${formattedDate}T${formattedTime}:00`;
+                const dateTime = new Date(dateTimeStr);
+                
+                return isNaN(dateTime.getTime()) ? null : dateTime;
+            } catch (error) {
+                console.error('Error parsing date/time:', error);
+                return null;
+            }
+        }
+
+        // Check if user is master
+        function isMasterUser() {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+            const userSpecialty = currentUser.specialty || '';
+            const userType = currentUser.type || '';
+            const isMaster = userSpecialty.toLowerCase().includes('master') || userType.toLowerCase().includes('master') || userType.toLowerCase().includes('admin');
+            console.log(`🔍 Verificando se é master: Especialidade="${userSpecialty}", Tipo="${userType}" -> ${isMaster}`);
+            return isMaster;
+        }
+
+        // Get current user name for filtering
+        function getCurrentUserName() {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+            return currentUser.name || '';
+        }
+
+        // Steinhq API functions with improved error handling and filtering
+        async function loadActivePlans() {
+            const activePlansContainer = document.getElementById('activePlans');
+            const activePlansCount = document.getElementById('activePlansCount');
+            
+            try {
+                console.log('🔄 Iniciando carregamento de planos ativos...');
+                console.log('🔑 Storage ID: 68d29050affba40a62ffb0f6');
+                
+                // First, try to get the main sheet without guessing names
+                const baseUrl = 'https://api.steinhq.com/v1/storages/68d29050affba40a62ffb0f6';
+                
+                // Try the correct sheet names first
+                const possibleSheetNames = ['planos', 'planos_ativos', 'Sheet1', 'Planilha1', 'PlanosAtivos'];
+                let data = [];
+                let successfulSheet = null;
+                
+                for (const sheetName of possibleSheetNames) {
+                    try {
+                        console.log(`🔍 Testando sheet: ${sheetName}`);
+                        const url = `${baseUrl}/${sheetName}`;
+                        
+                        const response = await fetch(url, {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json'
+                            }
+                        });
+                        
+                        console.log(`📡 Status ${sheetName}: ${response.status}`);
+                        
+                        if (response.status === 200) {
+                            const rawData = await response.text();
+                            console.log(`📄 Dados recebidos de ${sheetName}:`, rawData.length, 'caracteres');
+                            
+                            if (rawData && rawData.trim() !== '') {
+                                try {
+                                    const parsedData = JSON.parse(rawData);
+                                    console.log(`📊 Dados parseados de ${sheetName}:`, parsedData);
+                                    
+                                    if (Array.isArray(parsedData) && parsedData.length > 0) {
+                                        // Check if it has valid data (not just empty objects)
+                                        const validData = parsedData.filter(item => 
+                                            item && typeof item === 'object' && Object.keys(item).length > 0
+                                        );
+                                        
+                                        if (validData.length > 0) {
+                                            data = validData;
+                                            successfulSheet = sheetName;
+                                            console.log(`✅ Dados válidos encontrados em ${sheetName}:`, data.length, 'registros');
+                                            console.log('🔍 Primeira linha:', data[0]);
+                                            break;
+                                        }
+                                    }
+                                } catch (parseError) {
+                                    console.error(`❌ Erro JSON em ${sheetName}:`, parseError);
+                                }
+                            }
+                        } else if (response.status === 400) {
+                            console.warn(`⚠️ Sheet ${sheetName} não existe (400)`);
+                        } else {
+                            console.warn(`⚠️ Erro ${response.status} para ${sheetName}`);
+                        }
+                    } catch (sheetError) {
+                        console.error(`❌ Erro de rede para ${sheetName}:`, sheetError.message);
+                    }
+                    
+                    // Small delay between requests
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+                
+                // Process data if found
+                if (data && data.length > 0) {
+                    console.log(`🎉 Processando ${data.length} planos do sheet ${successfulSheet}`);
+                    console.log('📋 Colunas disponíveis:', Object.keys(data[0]));
+                    
+                    // Filter data based on user permissions
+                    const isMaster = isMasterUser();
+                    let filteredData;
+                    
+                    if (isMaster) {
+                        // Master sees ALL data without any filters
+                        filteredData = data;
+                        console.log(`👑 MASTER USER DETECTADO - Mostrando TODOS os ${filteredData.length} planos (SEM FILTROS)`);
+                    } else {
+                        // Regular users see only their own data
+                        const currentUserName = getCurrentUserName();
+                        filteredData = data.filter(plan => {
+                            const physiotherapist = plan.fisioterapeuta || plan.physiotherapist || plan.terapeuta || plan.therapist || '';
+                            return physiotherapist.toLowerCase().includes(currentUserName.toLowerCase());
+                        });
+                        console.log(`🔒 Utilizador normal - Dados filtrados para ${currentUserName}: ${filteredData.length} registros`);
+                    }
+                    
+                    activePlansContainer.innerHTML = '';
+                    filteredData.forEach((plan, index) => {
+                        // Handle different possible column names
+                        const planName = plan.nome || plan.plano || plan.name || plan.plan_name || plan.titulo || `Plano ${index + 1}`;
+                        const patientName = plan.paciente || plan.patient || plan.cliente || plan.client || 'Paciente não informado';
+                        const sessionsLeft = plan.sessoes_restantes || plan.sessoes || plan.sessions || plan.remaining_sessions || '0';
+                        
+                        console.log(`📋 Plano ${index + 1}: ${planName} - ${patientName} - ${sessionsLeft} sessões`);
+                        
+                        // Get service, date and physiotherapist information
+                        const serviceName = plan.servico || plan.service || plan.tipo || plan.type || 'Serviço não informado';
+                        const sessionDate = plan.datasessao || plan.data_sessao || plan.session_date || plan.data || plan.date || 'Data não informada';
+                        const physiotherapist = plan.fisioterapeuta || plan.physiotherapist || plan.terapeuta || plan.therapist || 'Fisioterapeuta não informado';
+                        
+                        const planElement = document.createElement('div');
+                        planElement.className = 'flex items-center gap-4 rounded-lg bg-card-light dark:bg-card-dark p-3 shadow-sm border border-gray-200 dark:border-gray-700';
+                        planElement.innerHTML = `
+                            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-yellow-100 dark:bg-yellow-900/50 text-yellow-600 dark:text-yellow-400">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                    <path d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-semibold text-primary dark:text-white">${planName} - ${sessionDate}</p>
+                                <p class="text-sm text-secondary dark:text-gray-400">${serviceName}</p>
+                                <p class="text-xs text-yellow-600 dark:text-yellow-400">Fisioterapeuta: ${physiotherapist}</p>
+                            </div>
+                        `;
+                        activePlansContainer.appendChild(planElement);
+                    });
+                    activePlansCount.textContent = `(${filteredData.length})`;
+                } else {
+                    console.log('📝 Nenhum dado válido encontrado, usando dados de exemplo');
+                    loadActivePlansFromFallback();
+                }
+                
+            } catch (error) {
+                console.error('❌ Erro geral:', error);
+                loadActivePlansFromFallback();
+            }
+        }
+
+        function loadActivePlansFromFallback() {
+            const fallbackData = [
+                {
+                    nome: "Maria Silva",
+                    datasessao: "2024-01-20",
+                    servico: "Fisioterapia Ortopédica",
+                    fisioterapeuta: "Dr. Carlos Mendes"
+                },
+                {
+                    nome: "João Santos", 
+                    datasessao: "2024-01-21",
+                    servico: "Fisioterapia Respiratória",
+                    fisioterapeuta: "Dra. Ana Pereira"
+                },
+                {
+                    nome: "Pedro Oliveira",
+                    datasessao: "2024-01-22",
+                    servico: "Fortalecimento Muscular",
+                    fisioterapeuta: "Dr. Luis Costa"
+                }
+            ];
+
+            // Filter fallback data based on user permissions
+            let filteredFallbackData = fallbackData;
+            const isMaster = isMasterUser();
+            
+            if (isMaster) {
+                // Master sees ALL fallback data
+                filteredFallbackData = fallbackData;
+                console.log(`👑 MASTER USER - Mostrando todos os ${filteredFallbackData.length} planos de exemplo (sem filtros)`);
+            } else {
+                // Regular users see filtered data
+                const currentUserName = getCurrentUserName();
+                filteredFallbackData = fallbackData.filter(plan => {
+                    return plan.fisioterapeuta.toLowerCase().includes(currentUserName.toLowerCase());
+                });
+                console.log(`🔒 Utilizador normal - Planos de exemplo filtrados: ${filteredFallbackData.length}`);
+            }
+
+            const activePlansContainer = document.getElementById('activePlans');
+            const activePlansCount = document.getElementById('activePlansCount');
+            
+            activePlansContainer.innerHTML = '';
+            filteredFallbackData.forEach(plan => {
+                const planElement = document.createElement('div');
+                planElement.className = 'flex items-center gap-4 rounded-lg bg-card-light dark:bg-card-dark p-3 shadow-sm border border-gray-200 dark:border-gray-700';
+                planElement.innerHTML = `
+                    <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-yellow-100 dark:bg-yellow-900/50 text-yellow-600 dark:text-yellow-400">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <path d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="font-semibold text-primary dark:text-white">${plan.nome} - ${plan.datasessao}</p>
+                        <p class="text-sm text-secondary dark:text-gray-400">${plan.servico}</p>
+                        <p class="text-xs text-yellow-600 dark:text-yellow-400">Fisioterapeuta: ${plan.fisioterapeuta}</p>
+                    </div>
+                `;
+                activePlansContainer.appendChild(planElement);
+            });
+            activePlansCount.textContent = `(${filteredFallbackData.length})`;
+        }
+
+        async function loadCompletedSessions() {
+            const completedSessionsContainer = document.getElementById('completedSessions');
+            const completedSessionsCount = document.getElementById('completedSessionsCount');
+            
+            try {
+                console.log('🔄 Iniciando carregamento de sessões realizadas...');
+                console.log('🔑 Storage ID: 68d29050affba40a62ffb0f6');
+                
+                const baseUrl = 'https://api.steinhq.com/v1/storages/68d29050affba40a62ffb0f6';
+                
+                // Try the correct sheet names for sessions
+                const possibleSheetNames = ['sessoes', 'sessoes_realizadas', 'Sheet2', 'Planilha2', 'SessoesRealizadas'];
+                let data = [];
+                let successfulSheet = null;
+                
+                for (const sheetName of possibleSheetNames) {
+                    try {
+                        console.log(`🔍 Testando sheet de sessões: ${sheetName}`);
+                        const url = `${baseUrl}/${sheetName}`;
+                        
+                        const response = await fetch(url, {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json'
+                            }
+                        });
+                        
+                        console.log(`📡 Status ${sheetName}: ${response.status}`);
+                        
+                        if (response.status === 200) {
+                            const rawData = await response.text();
+                            console.log(`📄 Dados recebidos de ${sheetName}:`, rawData.length, 'caracteres');
+                            
+                            if (rawData && rawData.trim() !== '') {
+                                try {
+                                    const parsedData = JSON.parse(rawData);
+                                    console.log(`📊 Dados parseados de ${sheetName}:`, parsedData);
+                                    
+                                    if (Array.isArray(parsedData) && parsedData.length > 0) {
+                                        // Check if it has valid data (not just empty objects)
+                                        const validData = parsedData.filter(item => 
+                                            item && typeof item === 'object' && Object.keys(item).length > 0
+                                        );
+                                        
+                                        if (validData.length > 0) {
+                                            data = validData;
+                                            successfulSheet = sheetName;
+                                            console.log(`✅ Dados válidos de sessões encontrados em ${sheetName}:`, data.length, 'registros');
+                                            console.log('🔍 Primeira sessão:', data[0]);
+                                            break;
+                                        }
+                                    }
+                                } catch (parseError) {
+                                    console.error(`❌ Erro JSON em ${sheetName}:`, parseError);
+                                }
+                            }
+                        } else if (response.status === 400) {
+                            console.warn(`⚠️ Sheet ${sheetName} não existe (400)`);
+                        } else {
+                            console.warn(`⚠️ Erro ${response.status} para ${sheetName}`);
+                        }
+                    } catch (sheetError) {
+                        console.error(`❌ Erro de rede para ${sheetName}:`, sheetError.message);
+                    }
+                    
+                    // Small delay between requests
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+                
+                // Process data if found
+                if (data && data.length > 0) {
+                    console.log(`🎉 Processando ${data.length} sessões do sheet ${successfulSheet}`);
+                    console.log('📋 Colunas disponíveis:', Object.keys(data[0]));
+                    
+                    // Filter data based on user permissions and date/time
+                    const currentDateTime = new Date();
+                    const isMaster = isMasterUser();
+                    let filteredData;
+                    
+                    if (isMaster) {
+                        // Master sees ALL sessions without any filters (including future ones)
+                        filteredData = data;
+                        console.log(`👑 MASTER USER DETECTADO - Mostrando TODAS as ${filteredData.length} sessões (SEM FILTROS de data ou fisioterapeuta)`);
+                    } else {
+                        // Regular users see only their past sessions
+                        const currentUserName = getCurrentUserName();
+                        filteredData = data.filter(session => {
+                            // First filter by date/time (only past sessions)
+                            const sessionDate = session.data || session.date || '';
+                            const sessionTime = session.horasessao || session.hora || session.time || '';
+                            
+                            if (sessionDate && sessionTime) {
+                                const sessionDateTime = parseDateTime(sessionDate, sessionTime);
+                                if (sessionDateTime && sessionDateTime > currentDateTime) {
+                                    return false; // Skip future sessions
+                                }
+                            }
+                            
+                            // Then filter by user permissions
+                            const physiotherapist = session.fisioterapeuta || session.physiotherapist || session.terapeuta || session.therapist || '';
+                            return physiotherapist.toLowerCase().includes(currentUserName.toLowerCase());
+                        });
+                        console.log(`🔒 Utilizador normal - Dados filtrados: ${filteredData.length} sessões`);
+                    }
+                    
+                    completedSessionsContainer.innerHTML = '';
+                    filteredData.forEach((session, index) => {
+                        // Use the correct field names from your sessoes sheet
+                        const patientName = session.nome || 'Paciente não informado';
+                        const sessionDate = session.data || 'Data não informada';
+                        const sessionTime = session.horasessao || 'Hora não informada';
+                        const sessionNumber = session.numerosessao || 'N/A';
+                        const sessionStatus = session.estadosessao || 'Status não informado';
+                        const isClosed = session.fechada || 'N/A';
+                        
+                        console.log(`📋 Sessão ${index + 1}: ${patientName} - ${sessionDate} às ${sessionTime}`);
+                        console.log(`   Status: ${sessionStatus}, Fechada: ${isClosed}, Número: ${sessionNumber}`);
+                        
+                        // Get service and physiotherapist information using correct field names
+                        const serviceName = session.servico || 'Serviço não informado';
+                        const physiotherapist = session.fisioterapeuta || 'Fisioterapeuta não informado';
+                        const businessName = session.negocio || '';
+                        const county = session.concelho || '';
+                        const phone = session.telefone || '';
+                        const validation = session.validacao || '';
+                        
+                        const sessionElement = document.createElement('div');
+                        sessionElement.className = 'flex items-center gap-4 rounded-lg bg-card-light dark:bg-card-dark p-3 shadow-sm border border-gray-200 dark:border-gray-700';
+                        
+                        sessionElement.innerHTML = `
+                            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                    <path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-semibold text-primary dark:text-white">${patientName} - ${sessionDate}</p>
+                                <p class="text-sm text-secondary dark:text-gray-400">${serviceName}</p>
+                                <p class="text-xs text-purple-600 dark:text-purple-400">Fisioterapeuta: ${physiotherapist}</p>
+                            </div>
+                        `;
+                        completedSessionsContainer.appendChild(sessionElement);
+                    });
+                    completedSessionsCount.textContent = `(${filteredData.length})`;
+                } else {
+                    console.log('📝 Nenhum dado válido de sessões encontrado, usando dados de exemplo');
+                    loadCompletedSessionsFromFallback();
+                }
+                
+            } catch (error) {
+                console.error('❌ Erro geral ao carregar sessões:', error);
+                loadCompletedSessionsFromFallback();
+            }
+        }
+
+        function loadCompletedSessionsFromFallback() {
+            const fallbackData = [
+                {
+                    paciente: "Carlos Pereira",
+                    data: "2024-01-15",
+                    servico: "Fisioterapia Ortopédica",
+                    fisioterapeuta: "Dr. Carlos Mendes"
+                },
+                {
+                    paciente: "Ana Costa",
+                    data: "2024-01-14",
+                    servico: "Fisioterapia Neurológica",
+                    fisioterapeuta: "Dra. Ana Pereira"
+                },
+                {
+                    paciente: "Luis Ferreira",
+                    data: "2024-01-13",
+                    servico: "Reabilitação Cardíaca",
+                    fisioterapeuta: "Dr. Luis Costa"
+                },
+                {
+                    paciente: "Sofia Rodrigues",
+                    data: "2024-01-12",
+                    servico: "Fortalecimento Lombar",
+                    fisioterapeuta: "Dra. Sofia Martins"
+                }
+            ];
+
+            // Filter fallback data based on user permissions
+            let filteredFallbackData = fallbackData;
+            const isMaster = isMasterUser();
+            
+            if (isMaster) {
+                // Master sees ALL fallback sessions
+                filteredFallbackData = fallbackData;
+                console.log(`👑 MASTER USER - Mostrando todas as ${filteredFallbackData.length} sessões de exemplo (sem filtros)`);
+            } else {
+                // Regular users see filtered sessions
+                const currentUserName = getCurrentUserName();
+                filteredFallbackData = fallbackData.filter(session => {
+                    return session.fisioterapeuta.toLowerCase().includes(currentUserName.toLowerCase());
+                });
+                console.log(`🔒 Utilizador normal - Sessões de exemplo filtradas: ${filteredFallbackData.length}`);
+            }
+
+            const completedSessionsContainer = document.getElementById('completedSessions');
+            const completedSessionsCount = document.getElementById('completedSessionsCount');
+            
+            completedSessionsContainer.innerHTML = '';
+            filteredFallbackData.forEach(session => {
+                const sessionElement = document.createElement('div');
+                sessionElement.className = 'flex items-center gap-4 rounded-lg bg-card-light dark:bg-card-dark p-3 shadow-sm border border-gray-200 dark:border-gray-700';
+                sessionElement.innerHTML = `
+                    <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="font-semibold text-primary dark:text-white">${session.paciente} - ${session.data}</p>
+                        <p class="text-sm text-secondary dark:text-gray-400">${session.servico}</p>
+                        <p class="text-xs text-purple-600 dark:text-purple-400">Fisioterapeuta: ${session.fisioterapeuta}</p>
+                    </div>
+                `;
+                completedSessionsContainer.appendChild(sessionElement);
+            });
+            completedSessionsCount.textContent = `(${filteredFallbackData.length})`;
+        }
+
+        // Login authentication with Google Sheets
+        async function authenticateUser(accessCode) {
+            try {
+                console.log('🔐 Iniciando autenticação...');
+                console.log('🔑 Código inserido:', accessCode);
+                
+                const baseUrl = 'https://api.steinhq.com/v1/storages/68d29050affba40a62ffb0f6';
+                
+                // Try different possible sheet names for users
+                const possibleUserSheets = ['utilizadores', 'users', 'usuarios', 'Sheet3', 'Planilha3', 'Users'];
+                
+                for (const sheetName of possibleUserSheets) {
+                    try {
+                        console.log(`🔍 Testando sheet de utilizadores: ${sheetName}`);
+                        const url = `${baseUrl}/${sheetName}`;
+                        
+                        const response = await fetch(url, {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json'
+                            }
+                        });
+                        
+                        console.log(`📡 Status ${sheetName}: ${response.status}`);
+                        
+                        if (response.status === 200) {
+                            const rawData = await response.text();
+                            console.log(`📄 Dados recebidos de ${sheetName}:`, rawData.length, 'caracteres');
+                            
+                            if (rawData && rawData.trim() !== '') {
+                                try {
+                                    const users = JSON.parse(rawData);
+                                    console.log(`📊 Utilizadores encontrados:`, users.length);
+                                    
+                                    if (Array.isArray(users) && users.length > 0) {
+                                        // Check if user exists with this access code
+                                        const user = users.find(u => {
+                                            const userCode = u.codigo || u.code || u.access_code || u.accesscode || u.password || u.senha;
+                                            return userCode && userCode.toString().trim() === accessCode.trim();
+                                        });
+                                        
+                                        if (user) {
+                                            console.log('✅ Utilizador encontrado:', user);
+                                            
+                                            // Get user info
+                                            const userName = user.nome || user.name || user.usuario || user.user || 'Utilizador';
+                                            const userType = user.tipo || user.type || user.role || user.nivel || 'Utilizador';
+                                            const userEmail = user.email || user.mail || '';
+                                            const userSpecialty = user.especialidade || user.specialty || user.speciality || user.area || '';
+                                            
+                                            // Store user info
+                                            sessionStorage.setItem('currentUser', JSON.stringify({
+                                                name: userName,
+                                                type: userType,
+                                                email: userEmail,
+                                                specialty: userSpecialty,
+                                                code: accessCode
+                                            }));
+                                            
+                                            // Update UI with user info
+                                            updateUserInterface(userName, userType, userSpecialty);
+                                            
+                                            return { success: true, user: { name: userName, type: userType, email: userEmail, specialty: userSpecialty } };
+                                        }
+                                    }
+                                } catch (parseError) {
+                                    console.error(`❌ Erro JSON em ${sheetName}:`, parseError);
+                                }
+                            }
+                        } else if (response.status === 400) {
+                            console.warn(`⚠️ Sheet ${sheetName} não existe (400)`);
+                        }
+                    } catch (sheetError) {
+                        console.error(`❌ Erro de rede para ${sheetName}:`, sheetError.message);
+                    }
+                    
+                    // Small delay between requests
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+                
+                console.log('❌ Utilizador não encontrado em nenhuma sheet');
+                return { success: false, error: 'Código de acesso inválido' };
+                
+            } catch (error) {
+                console.error('❌ Erro geral na autenticação:', error);
+                return { success: false, error: 'Erro de conexão. Tente novamente.' };
+            }
+        }
+
+        function updateUserInterface(userName, userType, userSpecialty) {
+            console.log(`🔧 Atualizando interface para: ${userName}, Tipo: ${userType}, Especialidade: ${userSpecialty}`);
+            
+            // Update header user info
+            document.getElementById('headerUserName').textContent = userName;
+            // Show specialty if available, otherwise show user type
+            document.getElementById('headerUserType').textContent = userSpecialty || userType;
+            
+            // Update side menu user info
+            document.getElementById('sideMenuUserName').textContent = userName;
+            // Show specialty if available, otherwise show user type
+            document.getElementById('sideMenuUserType').textContent = userSpecialty || userType;
+            
+            // Update user initials
+            const initials = userName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+            document.getElementById('headerUserInitials').textContent = initials;
+            document.getElementById('sideMenuUserInitials').textContent = initials;
+            
+            // Show/hide user management based on specialty or user type
+            const userManagementItem = document.getElementById('userManagementMenuItem');
+            const isMasterOrAdmin = userSpecialty.toLowerCase().includes('master') || userType.toLowerCase().includes('master') || userType.toLowerCase().includes('admin');
+            console.log(`🔧 É master/admin? ${isMasterOrAdmin} (especialidade: "${userSpecialty}", tipo: "${userType}")`);
+            
+            if (isMasterOrAdmin) {
+                userManagementItem.style.display = 'block';
+                console.log(`👑 Menu de gestão de utilizadores ATIVADO para ${userName} (especialidade: ${userSpecialty})`);
+            } else {
+                userManagementItem.style.display = 'none';
+                console.log(`🔒 Menu de gestão de utilizadores DESATIVADO para ${userName} (especialidade: ${userSpecialty})`);
+            }
+        }
+
+        // Login form handling
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const loginButton = document.getElementById('loginButton');
+            const loginText = document.getElementById('loginText');
+            const loginLoading = document.getElementById('loginLoading');
+            const loginError = document.getElementById('loginError');
+            const errorMessage = document.getElementById('errorMessage');
+            const accessCode = document.getElementById('accessCode').value;
+            
+            // Hide previous errors
+            loginError.style.display = 'none';
+            
+            // Show loading state
+            loginText.style.display = 'none';
+            loginLoading.style.display = 'inline-block';
+            loginButton.disabled = true;
+            
+            try {
+                // Authenticate with Google Sheets
+                const authResult = await authenticateUser(accessCode);
+                
+                if (authResult.success) {
+                    // Success - switch to main app
+                    document.getElementById('loginPage').classList.remove('active');
+                    document.getElementById('mainApp').classList.add('active');
+                    
+                    // Load data from Steinhq after successful login
+                    setTimeout(() => {
+                        loadActivePlans();
+                        loadCompletedSessions();
+                    }, 500);
+                } else {
+                    // Show error
+                    errorMessage.textContent = authResult.error;
+                    loginError.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('❌ Erro no login:', error);
+                errorMessage.textContent = 'Erro de conexão. Verifique sua internet e tente novamente.';
+                loginError.style.display = 'block';
+            }
+            
+            // Reset button state
+            loginText.style.display = 'inline';
+            loginLoading.style.display = 'none';
+            loginButton.disabled = false;
+        });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'983b965921d98c92',t:'MTc1ODY0NjcxMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9853a4f626248c92',t:'MTc1ODg5ODk2OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
